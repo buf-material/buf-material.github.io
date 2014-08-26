@@ -1,0 +1,490 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Octopress + GitHub Pages = Simple Blog - My Octopress Blog</title>
+  <meta name="author" content="Your Name">
+
+  
+  <meta name="description" content="いきなりですが、ブログを開設したいと思いました。 VimやMarkdownの勉強も兼ねることができるので、Octopress + GitHub Pagesで書いてみることにします。 Octopress http://octopress.org/ Octopressとは、mojombo/ &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+  <link href="/stylesheets/data-table.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">My Octopress Blog</a></h1>
+  
+    <h2>A blogging framework for hackers.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:buf-material.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Octopress + GitHub Pages = Simple Blog</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-20T23:49:28+09:00" pubdate data-updated="true">Jul 20<sup>th</sup>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>いきなりですが、ブログを開設したいと思いました。</p>
+
+<p>VimやMarkdownの勉強も兼ねることができるので、<strong>Octopress + GitHub Pages</strong>で書いてみることにします。</p>
+
+<h2>Octopress</h2>
+
+<p><a href="http://octopress.org/">http://octopress.org/</a></p>
+
+<p><img src="/images/octopress_top.jpg" alt="" /></p>
+
+<p><strong><a href="http://octopress.org/">Octopress</a></strong>とは、<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>という静的ファイルジェネレータのためのフレームワークです。</p>
+
+<p><strong>jekyll</strong>がMarkdownでの記事作成に対応しているのでエンジニアの方で利用されている方が多いようです。</p>
+
+<ol>
+<li> HTML5,レスポンシブデザイン対応
+
+<ul>
+<li>デフォルトのテンプレートデザインで既にレスポンシブデザイン対応</li>
+</ul>
+</li>
+<li> Compass,Sassを用いたデザイン</li>
+<li> 記事の新規作成やローカルレビューなどの操作はrakeタスクに纏まっていてシンプル</li>
+<li> ローカルで作成した記事を反映させる方法は、<code>Github pages</code>や<code>Rsync</code>を利用
+
+<ul>
+<li><code>Github pages</code>の場合はgithubへpushして更新</li>
+</ul>
+</li>
+<li> <code>POW</code>,<code>WEBrick</code>,<code>thin</code>などのRackサーバをサポート</li>
+<li> カラースキームとして<a href="http://ethanschoonover.com/solarized">solarized</a>を採用することで美しいシンタックスハイライトを実現</li>
+<li> Markdownで記事を作成可能</li>
+</ol>
+
+
+<h2>GitHub Pages</h2>
+
+<p><a href="https://pages.github.com/">https://pages.github.com/</a></p>
+
+<p><img src="/images/github_pages_top.jpg" alt="" /></p>
+
+<p><strong><a href="https://pages.github.com/">GitHub Pages</a></strong>とは、<code>username.github.io</code>というレポジトリに静的コンテンツを置くことでWebサイトとして公開できるものです。
+WebサイトのデフォルトURLはレポジトリ名と同じ<code>http://username.github.io</code>となります。
+ちなみに、<code>username</code>は自分のGitHubアカウント名に置き換えてください。</p>
+
+<p><strong>GitHub Pages</strong>としてWebページを作成することでコンテンツをGit管理にできるほか、GitHubレポジトリに置けることでバックアップとしての意味合いも果たします。</p>
+
+<p>そして、<strong>GitHub Pages</strong>では静的ファイルジェネレータの<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>を使ったブログ作成が可能なので、<strong>Octopress</strong>もインストール可能なのです。</p>
+
+<h2>Octopressをローカル環境にインストール</h2>
+
+<p>今回の最終目標は<strong>GitHub Pages</strong>でOctopressのエントリー記事を表示させることですが、記事作成などの主な操作はローカル環境で行う必要があります(GitHubレポジトリの内容を直接操作することはできない)。ローカル環境で記事作成などの操作を行った後に<code>GitHubへPushする</code>ことで<strong>GitHub Pages</strong>に反映させるのです。</p>
+
+<p>Octopressのソースコードを<code>git clone</code>でローカル環境に持ってきます。
+ローカル環境側のRubyバージョンが<code>1.9.3</code>以上の必要があるので、<a href="https://github.com/sstephenson/rbenv">rbenv</a>や<a href="https://github.com/wayneeseguin/rvm">rvm</a>などでインストールしておきます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>git clone git@github.com:imathis/octopress.git username.github.io
+</span><span class='line'><span class="nb">cd </span>username.github.io
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>gemモジュール群をインストールします。私の環境では、<code>Could not find a JavaScript runtime</code>エラーが発生するのを防ぐために、<strong>therubyracer</strong>プラグインも一緒にインストールします。</p>
+
+<p><code>Gemfile</code>に追記します。</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># for &quot;Could not find a JavaScript runtime&quot; Error</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;therubyracer&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>Gemfile</code>に記述されているGemモジュール、および依存関係のあるGemモジュールをインストールします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>rake install</code>コマンドを実行して<strong>Octopress初期セットアップとしてデフォルトテーマ用のファイルをJekyllの静的コンテンツ生成パスにコピー</strong>します。
+rakeタスク実行時の標準出力をそのまま記載しているので<code>mkdir</code>や<code>cp</code>はrakeタスク内で実行済みです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>bundle <span class="nb">exec </span>rake install
+</span><span class='line'><span class="c">## Copying classic theme into ./source and ./sass</span>
+</span><span class='line'>mkdir -p <span class="nb">source</span>
+</span><span class='line'>cp -r .themes/classic/source/. <span class="nb">source</span>
+</span><span class='line'>mkdir -p sass
+</span><span class='line'>cp -r .themes/classic/sass/. sass
+</span><span class='line'>mkdir -p <span class="nb">source</span>/_posts
+</span><span class='line'>mkdir -p public
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この段階で初期ページの表示確認は可能なはずですので<code>rake preview</code>コマンドを実行して、ローカル環境でWebページを公開します。</p>
+
+<p><code>rake preview</code>コマンドを実行することで<strong>Rakefile内のpreviewタスクを実行</strong>します。previewタスクでは<code>jekyll build --watch</code>コマンドを実行して静的コンテンツをジェネレートしつつ、以降の変更を監視し続けます。変更を検知すると再ジェネレートを自動実行してくれます。そして<code>rackup</code>コマンドを実行し、TCPポート4000番でWEBrickサーバを起動します。</p>
+
+<p>ここでも<code>rake preview</code>タスクの実行時の標準出力を(_config.ymlパス以外は)そのまま記載します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>bundle <span class="nb">exec </span>rake preview
+</span><span class='line'>Starting to watch <span class="nb">source </span>with Jekyll and Compass. Starting Rack on port 4000
+</span><span class='line'><span class="o">[</span>2014-07-22 01:08:53<span class="o">]</span> INFO  WEBrick 1.3.1
+</span><span class='line'><span class="o">[</span>2014-07-22 01:08:53<span class="o">]</span> INFO  ruby 2.1.0 <span class="o">(</span>2013-12-25<span class="o">)</span> <span class="o">[</span>x86_64-linux<span class="o">]</span>
+</span><span class='line'><span class="o">[</span>2014-07-22 01:08:53<span class="o">]</span> INFO  WEBrick::HTTPServer#start: <span class="nv">pid</span><span class="o">=</span>4585 <span class="nv">port</span><span class="o">=</span>4000
+</span><span class='line'>Configuration file: /path/to/username.github.io/_config.yml
+</span><span class='line'>&gt;&gt;&gt; Change detected at 01:08:54 to: screen.scss
+</span><span class='line'>            Source: <span class="nb">source</span>
+</span><span class='line'><span class="nb">       </span>Destination: public
+</span><span class='line'>      Generating...
+</span><span class='line'>                    <span class="k">done</span>.
+</span><span class='line'> Auto-regeneration: enabled
+</span><span class='line'>identical public/stylesheets/screen.css
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスすると以下のような初期ページが確認できます。</p>
+
+<p><img src="/images/octopress_initial.jpg" alt="" /></p>
+
+<h2>Octopressで指定可能なrakeタスク</h2>
+
+<p>Octopressをインストールする際に<code>rake install</code>コマンドや<code>rake preview</code>コマンドを実行しましたが、<strong>rakeコマンドの後ろに指定したサブコマンドはRakefileに定義されたタスク</strong>に対応しています。</p>
+
+<p>指定可能なrakeタスクは<code>rake -T</code>コマンドで確認できます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>bundle <span class="nb">exec </span>rake -T
+</span><span class='line'>rake clean                     <span class="c"># Clean out caches: .pygments-cache, .gist-cache, .sass-cache</span>
+</span><span class='line'>rake copydot<span class="o">[</span><span class="nb">source</span>,dest<span class="o">]</span>      <span class="c"># copy dot files for deployment</span>
+</span><span class='line'>rake deploy                    <span class="c"># Default deploy task</span>
+</span><span class='line'>rake gen_deploy                <span class="c"># Generate website and deploy</span>
+</span><span class='line'>rake generate                  <span class="c"># Generate jekyll site</span>
+</span><span class='line'>rake install<span class="o">[</span>theme<span class="o">]</span>            <span class="c"># Initial setup for Octopress: copies the default theme into the path of Jekyll&#39;s generator</span>
+</span><span class='line'>rake integrate                 <span class="c"># Move all stashed posts back into the posts directory, ready for site generation</span>
+</span><span class='line'>rake isolate<span class="o">[</span>filename<span class="o">]</span>         <span class="c"># Move all other posts than the one currently being worked on to a temporary stash location (stash) so regenerating the site happens much more quickly</span>
+</span><span class='line'>rake list                      <span class="c"># list tasks</span>
+</span><span class='line'>rake new_page<span class="o">[</span>filename<span class="o">]</span>        <span class="c"># Create a new page in source/(filename)/index.markdown</span>
+</span><span class='line'>rake new_post<span class="o">[</span>title<span class="o">]</span>           <span class="c"># Begin a new post in source/_posts</span>
+</span><span class='line'>rake preview                   <span class="c"># preview the site in a web browser</span>
+</span><span class='line'>rake push                      <span class="c"># deploy public directory to github pages</span>
+</span><span class='line'>rake rsync                     <span class="c"># Deploy website via rsync</span>
+</span><span class='line'>rake set_root_dir<span class="o">[</span>dir<span class="o">]</span>         <span class="c"># Update configurations to support publishing to root or sub directory</span>
+</span><span class='line'>rake setup_github_pages<span class="o">[</span>repo<span class="o">]</span>  <span class="c"># Set up _deploy folder and deploy branch for Github Pages deployment</span>
+</span><span class='line'>rake update_source<span class="o">[</span>theme<span class="o">]</span>      <span class="c"># Move source to source.old, install source theme updates, replace source/_includes/navigation.html with source.old&#39;s navigation</span>
+</span><span class='line'>rake update_style<span class="o">[</span>theme<span class="o">]</span>       <span class="c"># Move sass to sass.old, install sass theme updates, replace sass/custom with sass.old/custom</span>
+</span><span class='line'>rake watch                     <span class="c"># Watch the site and regenerate when it changes</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>記事を投稿する</h2>
+
+<p>新しい記事を投稿するためには<code>rake new_post[title]</code>コマンドを実行します。<code>title</code>部分は任意のタイトル文字を記述します。英字以外だとうまく認識できないケースが考えられるので、ここでは英字で指定します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake new_post<span class="o">[</span>test_post<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>rake new_post[test_post]</code>コマンドで<code>source/_posts/yyyy-mm-dd-test-post.markdown</code>というファイルが作成されます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vim <span class="nb">source</span>/_posts/yyyy-mm-dd-test-post.markdown
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>テストのために本文を１行だけ追記しました。</p>
+
+<figure class='code'><figcaption><span>source/_posts/yyyy-mm-dd-test-post.markdown</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>---
+</span><span class='line'>layout: post
+</span><span class='line'>title: &quot;test_post&quot;
+</span><span class='line'>date: yyyy-mm-dd 00:00:00 +0900
+</span><span class='line'>comments: true
+</span><span class='line'>categories:
+</span><span class='line'>---
+</span><span class='line'>
+</span><span class='line'>テスト投稿です
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>静的ページを生成します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake generate
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>サーバを立ち上げます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake preview
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスします。</p>
+
+<p><img src="/images/octopress_test_page.jpg" alt="" /></p>
+
+<h2>OctopressをGithub Pagesで表示させる</h2>
+
+<p>今までローカル環境で編集してきたOctopressコードを新規作成した記事と共にGitHubにpushします。</p>
+
+<h3>GitHubレポジトリ作成</h3>
+
+<p>GitHubの新規レポジトリ作成ページにアクセスします。</p>
+
+<p><a href="https://github.com/new">https://github.com/new</a></p>
+
+<p><code>Repository name</code>に<code>username.github.io</code>(usernameは自分のGitHubアカウント名)を指定し、<code>Create repository</code>ボタンをクリックします。</p>
+
+<p><img src="/images/create_new_repo.jpg" alt="" /></p>
+
+<h3>ローカル環境にてgitレポジトリの作成</h3>
+
+<p><strong>OctopressでGitHub Pagesを利用する場合のgitレポジトリ作成には<code>setup_github_pages</code>という専用のrakeタスクが用意されています。</strong></p>
+
+<p><code>rake setup_github_pages</code>コマンドを作成したレポジトリのURLと共に実行します。</p>
+
+<ul>
+<li>レポジトリのURL例
+
+<ul>
+<li><code>git@github.com:your_username/your_username.github.io.git</code></li>
+<li><code>https://github.com/your_username/your_username.github.io</code></li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake setup_github_pages<span class="o">[</span>git@github.com:username/username.github.io.git<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>GitHubへpush</h3>
+
+<p>Octopressで記事などをGitHubへpushする時には<code>deploy</code>タスクを利用します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake deploy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>GitHubにpush後10分程度待つと、<code>http://username.github.io</code>で先ほどまでローカル環境で表示できていたOctopressページを表示させることに成功しました。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-20T23:49:28+09:00" pubdate data-updated="true">Jul 20<sup>th</sup>, 2014</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages/" data-via="" data-counturl="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/20/installation_octopress_on_github_pages/">Octopress + GitHub Pages = Simple Blog</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Your Name -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
