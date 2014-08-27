@@ -17,3 +17,8 @@ group :development do
 end
 
 gem 'sinatra', '~> 1.4.2'
+
+# for "Could not find a JavaScript runtime" Error
+gem 'therubyracer'
+
+gem 'redcarpet'
