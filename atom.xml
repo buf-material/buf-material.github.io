@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[My Octopress Blog]]></title>
-  <link href="http://buf-material.github.io/atom.xml" rel="self"/>
-  <link href="http://buf-material.github.io/"/>
-  <updated>2014-07-26T00:23:07+09:00</updated>
-  <id>http://buf-material.github.io/</id>
+  <link href="http://yoursite.com/atom.xml" rel="self"/>
+  <link href="http://yoursite.com/"/>
+  <updated>2014-08-30T20:10:22+09:00</updated>
+  <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Octopress + GitHub Pages = Simple Blog]]></title>
-    <link href="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages/"/>
+    <link href="http://yoursite.com/blog/2014/07/20/installation_octopress_on_github_pages/"/>
     <updated>2014-07-20T23:49:28+09:00</updated>
-    <id>http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages</id>
+    <id>http://yoursite.com/blog/2014/07/20/installation_octopress_on_github_pages</id>
     <content type="html"><![CDATA[<p>いきなりですが、ブログを開設したいと思いました。</p>
 
 <p>VimやMarkdownの勉強も兼ねることができるので、<strong>Octopress + GitHub Pages</strong>で書いてみることにします。</p>
@@ -26,7 +26,7 @@
 
 <p><a href="http://octopress.org/">http://octopress.org/</a></p>
 
-<p><img src="http://buf-material.github.io/images/octopress_top.jpg" alt="" /></p>
+<p><img src="http://yoursite.com/images/octopress_top.jpg" alt="" /></p>
 
 <p><strong><a href="http://octopress.org/">Octopress</a></strong>とは、<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>という静的ファイルジェネレータのためのフレームワークです。</p>
 
@@ -57,7 +57,7 @@
 
 <p><a href="https://pages.github.com/">https://pages.github.com/</a></p>
 
-<p><img src="http://buf-material.github.io/images/github_pages_top.jpg" alt="" /></p>
+<p><img src="http://yoursite.com/images/github_pages_top.jpg" alt="" /></p>
 
 <p><strong><a href="https://pages.github.com/">GitHub Pages</a></strong>とは、<code>username.github.io</code>というレポジトリに静的コンテンツを置くことでWebサイトとして公開できるものです。
 WebサイトのデフォルトURLはレポジトリ名と同じ<code>http://username.github.io</code>となります。
@@ -158,7 +158,7 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
 
 <p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスすると以下のような初期ページが確認できます。</p>
 
-<p><img src="http://buf-material.github.io/images/octopress_initial.jpg" alt="" /></p>
+<p><img src="http://yoursite.com/images/octopress_initial.jpg" alt="" /></p>
 
 <h2>Octopressで指定可能なrakeタスク</h2>
 
@@ -264,7 +264,7 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
 
 <p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスします。</p>
 
-<p><img src="http://buf-material.github.io/images/octopress_test_page.jpg" alt="" /></p>
+<p><img src="http://yoursite.com/images/octopress_test_page.jpg" alt="" /></p>
 
 <h2>OctopressをGithub Pagesで表示させる</h2>
 
@@ -278,7 +278,7 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
 
 <p><code>Repository name</code>に<code>username.github.io</code>(usernameは自分のGitHubアカウント名)を指定し、<code>Create repository</code>ボタンをクリックします。</p>
 
-<p><img src="http://buf-material.github.io/images/create_new_repo.jpg" alt="" /></p>
+<p><img src="http://yoursite.com/images/create_new_repo.jpg" alt="" /></p>
 
 <h3>ローカル環境にてgitレポジトリの作成</h3>
 
@@ -302,7 +302,7 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h3>GitHubへpush</h3>
+<h3>GitHub Pagesへ反映</h3>
 
 <p>Octopressで記事などをGitHubへpushする時には<code>deploy</code>タスクを利用します。</p>
 
@@ -312,6 +312,79 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
 
 
 <p>GitHubにpush後10分程度待つと、<code>http://username.github.io</code>で先ほどまでローカル環境で表示できていたOctopressページを表示させることに成功しました。</p>
+
+<h2>ソースをBitbucketで管理</h2>
+
+<p><code>rake deploy</code>コマンドでは、GitHub上に作成されたレポジトリのmasterブランチに<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>の静的コンテンツのみがpushされます。そして<code>Gemfile</code>,<code>Rakefile</code>,<code>sassディレクトリ</code>,<code>sourceディレクトリ</code>がレポジトリ管理になっていません。</p>
+
+<p><a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages</a>では、同一レポジトリに<code>sourceブランチ</code>を作成してソースをcommit、pushするように説明していますが、ソースは公開する必要はないので<strong>Bitbucketで管理</strong>します。</p>
+
+<h3>Bitbucketに新規レポジトリを作成</h3>
+
+<p>Bitbucketの新規レポジトリ作成ページにアクセスします。</p>
+
+<p><a href="https://bitbucket.org/repo/create">https://bitbucket.org/repo/create</a></p>
+
+<p>今回は<code>octopress</code>という名前のレポジトリ`を作成しています。</p>
+
+<p><img src="http://yoursite.com/images/octopress_repo_bitbucket.jpg" alt="" /></p>
+
+<h3>ソースをコミット</h3>
+
+<p><code>Gemfile</code>,<code>Rakefile</code>,<code>sassディレクトリ</code>,<code>sourceディレクトリ</code>などをレポジトリにコミットします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>git add -A
+</span><span class='line'>git commit -m <span class="s1">&#39;Modify config. Add source and sass&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Bitbucketに作成したレポジトリへpush</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>git remote add bitbucket git@bitbucket.org:username/octopress.git
+</span><span class='line'>git push -u bitbucket <span class="nb">source</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>まとめ</h2>
+
+<h3>Octopressのインストール</h3>
+
+<ol>
+<li> <a href="https://github.com/imathis/octopress">https://github.com/imathis/octopress</a> からソースコードをclone</li>
+<li> <code>rake install</code>を実行して初期セットアップ</li>
+<li> <code>rake new_post['blog_title']</code>で新規記事を投稿</li>
+<li> <code>rake generate</code>で静的ページを生成</li>
+<li> <code>rake preview</code>でlocalhostの4000番ポートでWebサーバを起動</li>
+</ol>
+
+
+<h3>GtiHub PagesでOctopressで生成した静的ページを表示</h3>
+
+<ol>
+<li> <a href="https://github.com/new">https://github.com/new</a> で新規レポジトリを作成
+
+<ul>
+<li><code>Repository name</code>はusername.github.io(usernameは自分のGitHubアカウント名)</li>
+</ul>
+</li>
+<li> <code>rake setup_github_pages</code>でGitHub pagesを利用するための初期セットアップ</li>
+<li> <code>rake deploy</code>でGitHubレポジトリへpush</li>
+</ol>
+
+
+<h3>Bitbucketでソースコード管理</h3>
+
+<ol>
+<li> <a href="https://bitbucket.org/repo/create">https://bitbucket.org/repo/create</a> で新規レポジトリを作成</li>
+<li> <code>git add -A</code>と<code>git commit</code>でソースコードをコミット</li>
+<li> <code>git remote add</code>でBitbucketレポジトリをremote先として追加</li>
+<li> <code>git push</code>でBitbucketレポジトリにpush</li>
+</ol>
+
 ]]></content>
   </entry>
   
