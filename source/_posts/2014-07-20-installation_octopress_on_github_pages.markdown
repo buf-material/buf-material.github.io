@@ -219,7 +219,7 @@ https://github.com/new
 rake setup_github_pages[git@github.com:username/username.github.io.git]
 ```
 
-### GitHubへpush
+### GitHub Pagesへ反映
 
 Octopressで記事などをGitHubへpushする時には`deploy`タスクを利用します。
 
@@ -228,4 +228,57 @@ rake deploy
 ```
 
 GitHubにpush後10分程度待つと、`http://username.github.io`で先ほどまでローカル環境で表示できていたOctopressページを表示させることに成功しました。
+
+## ソースをBitbucketで管理
+
+`rake deploy`コマンドでは、GitHub上に作成されたレポジトリのmasterブランチに[mojombo/jekyll](https://github.com/jekyll/jekyll)の静的コンテンツのみがpushされます。そして`Gemfile`,`Rakefile`,`sassディレクトリ`,`sourceディレクトリ`がレポジトリ管理になっていません。
+
+[Deploying to Github Pages](http://octopress.org/docs/deploying/github/)では、同一レポジトリに`sourceブランチ`を作成してソースをcommit、pushするように説明していますが、ソースは公開する必要はないので**Bitbucketで管理**します。
+
+### Bitbucketに新規レポジトリを作成
+
+Bitbucketの新規レポジトリ作成ページにアクセスします。
+
+https://bitbucket.org/repo/create
+
+今回は`octopress`という名前のレポジトリ`を作成しています。
+
+![](/images/octopress_repo_bitbucket.jpg)
+
+
+### ソースをコミット
+
+`Gemfile`,`Rakefile`,`sassディレクトリ`,`sourceディレクトリ`などをレポジトリにコミットします。
+
+```sh
+git add -A
+git commit -m 'Modify config. Add source and sass'
+```
+
+### Bitbucketに作成したレポジトリへpush
+
+```sh
+git remote add bitbucket git@bitbucket.org:username/octopress.git
+git push -u bitbucket source
+```
+
+## まとめ
+### Octopressのインストール
+  1. https://github.com/imathis/octopress からソースコードをclone
+  1. `rake install`を実行して初期セットアップ
+  1. `rake new_post['blog_title']`で新規記事を投稿
+  1. `rake generate`で静的ページを生成
+  1. `rake preview`でlocalhostの4000番ポートでWebサーバを起動
+
+### GtiHub PagesでOctopressで生成した静的ページを表示
+  1. https://github.com/new で新規レポジトリを作成
+    - `Repository name`はusername.github.io(usernameは自分のGitHubアカウント名)
+  1. `rake setup_github_pages`でGitHub pagesを利用するための初期セットアップ
+  1. `rake deploy`でGitHubレポジトリへpush
+
+### Bitbucketでソースコード管理
+  1. https://bitbucket.org/repo/create で新規レポジトリを作成
+  1. `git add -A`と`git commit`でソースコードをコミット
+  1. `git remote add`でBitbucketレポジトリをremote先として追加
+  1. `git push`でBitbucketレポジトリにpush
 
