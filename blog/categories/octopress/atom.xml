@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Octopress | My Octopress Blog]]></title>
+  <link href="http://buf-material.github.io/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://buf-material.github.io/"/>
+  <updated>2014-09-02T21:08:37+09:00</updated>
+  <id>http://buf-material.github.io/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Add Category_list and Tag_list on Asides]]></title>
+    <link href="http://buf-material.github.io/blog/2014/09/01/add-category-list-and-tag-list-on-asides/"/>
+    <updated>2014-09-01T19:40:34+09:00</updated>
+    <id>http://buf-material.github.io/blog/2014/09/01/add-category-list-and-tag-list-on-asides</id>
+    <content type="html"><![CDATA[<h2>デフォルトのサイドメニュー</h2>
+
+<p>Octopressをインストールした直後は、サイドメニューは<code>Recent Posts</code>のみです。</p>
+
+<p><img src="/images/add-category-list-asides_01.jpg" alt="" /></p>
+
+<br>
+
+
+<p>そこで<strong>Octopress向けに公開されているプラグインを使ってサイドメニューにカテゴリーリストとタグクラウドを実装</strong>します。</p>
+
+<h2>プラグイン</h2>
+
+<p><a href="https://github.com/jekyll/jekyll">jekyll</a>には、特定コンテンツをHTMLとして生成してあなたのサイトに表示させるための<a href="http://jekyllrb.com/docs/plugins/">プラグイン</a>という仕組みを持っています。そして同時に、多くのプラグインが作成・公開されています。</p>
+
+<p><a href="https://github.com/imathis/octopress">imathis/octopress</a>は<a href="https://github.com/jekyll/jekyll">jekyll</a>のためのフレームワークであり、静的コンテンツ生成にはjekyllを使用しているため、もちろんプラグインを導入することが可能です。</p>
+
+<h2>tokkonopapa/octopress-tagcloud プラグインのインストール</h2>
+
+<p><a href="https://github.com/tokkonopapa/octopress-tagcloud">tokkonopapa/octopress-tagcloud</a>のソースコードをcloneして、<a href="http://jekyllrb.com/docs/plugins/#installing-a-plugin">jekyllプラグインインストール作法</a>に準じてファイルを配布します。</p>
+
+<p><code>sh
+git clone git@github.com:tokkonopapa/octopress-tagcloud.git
+cp -p octopress-tagcloud/plugins/tag_cloud.rb plugins/
+cp -p octopress-tagcloud/source/_includes/custom/asides/* source/_includes/custom/asides/
+</code></p>
+
+<p>jekyllの設定ファイル<code>_config.yml</code>にtokkonopapa/octopress-tagcloud プラグインで生成する静的ファイルをサイドメニューのコンテンツとして使用するための設定を記述します。</p>
+
+<p>Octopressの<code>_config.yml</code>に<code>default_asides:</code>から始まる行があります。<code>default_asides:</code>はサイドメニューに表示するHTMLファイルを配列で記述していきます。</p>
+
+<p>```yaml tokkonopapa/octopress-tagcloud configuration (_config.yml)
+default_asides: [</p>
+
+<pre><code>asides/recent_posts.html,
+custom/asides/category_list.html,
+custom/asides/tag_cloud.html
+</code></pre>
+
+<p>]
+```</p>
+
+<p>静的ファイルを生成してWebサーバを起動します。</p>
+
+<p>```sh
+rake preview</p>
+
+<h1>GitHub Pages等でホスティングさせている場合はデプロイコマンドも実行しましょう</h1>
+
+<p>rake deploy
+```</p>
+
+<p>これでサイドメニューに以下画像のようなカテゴリーリストとタグクラウドが表示されたはずです。</p>
+
+<p><img src="/images/add-category-list-asides_02.jpg" alt="" /></p>
+
+<br>
+
+
+<p>簡単でした!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress + GitHub Pages = Simple Blog]]></title>
+    <link href="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages/"/>
+    <updated>2014-07-20T23:49:28+09:00</updated>
+    <id>http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages</id>
+    <content type="html"><![CDATA[<p>いきなりですが、ブログを開設したいと思いました。</p>
+
+<p>VimやMarkdownの勉強も兼ねることができるので、<strong>Octopress + GitHub Pages</strong>で書いてみることにします。</p>
+
+<h2>Octopress</h2>
+
+<p><a href="http://octopress.org/">http://octopress.org/</a></p>
+
+<p><img src="/images/octopress_top.jpg" alt="" /></p>
+
+<p><strong><a href="http://octopress.org/">Octopress</a></strong>とは、<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>という静的ファイルジェネレータのためのフレームワークです。</p>
+
+<p><strong>jekyll</strong>がMarkdownでの記事作成に対応しているのでエンジニアの方で利用されている方が多いようです。</p>
+
+<ol>
+<li> HTML5,レスポンシブデザイン対応
+
+<ul>
+<li>デフォルトのテンプレートデザインで既にレスポンシブデザイン対応</li>
+</ul>
+</li>
+<li> Compass,Sassを用いたデザイン</li>
+<li> 記事の新規作成やローカルレビューなどの操作はrakeタスクに纏まっていてシンプル</li>
+<li> ローカルで作成した記事を反映させる方法は、<code>Github pages</code>や<code>Rsync</code>を利用
+
+<ul>
+<li><code>Github pages</code>の場合はgithubへpushして更新</li>
+</ul>
+</li>
+<li> <code>POW</code>,<code>WEBrick</code>,<code>thin</code>などのRackサーバをサポート</li>
+<li> カラースキームとして<a href="http://ethanschoonover.com/solarized">solarized</a>を採用することで美しいシンタックスハイライトを実現</li>
+<li> Markdownで記事を作成可能</li>
+</ol>
+
+
+<h2>GitHub Pages</h2>
+
+<p><a href="https://pages.github.com/">https://pages.github.com/</a></p>
+
+<p><img src="/images/github_pages_top.jpg" alt="" /></p>
+
+<p><strong><a href="https://pages.github.com/">GitHub Pages</a></strong>とは、<code>username.github.io</code>というレポジトリに静的コンテンツを置くことでWebサイトとして公開できるものです。
+WebサイトのデフォルトURLはレポジトリ名と同じ<code>http://username.github.io</code>となります。
+ちなみに、<code>username</code>は自分のGitHubアカウント名に置き換えてください。</p>
+
+<p><strong>GitHub Pages</strong>としてWebページを作成することでコンテンツをGit管理にできるほか、GitHubレポジトリに置けることでバックアップとしての意味合いも果たします。</p>
+
+<p>そして、<strong>GitHub Pages</strong>では静的ファイルジェネレータの<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>を使ったブログ作成が可能なので、<strong>Octopress</strong>もインストール可能なのです。</p>
+
+<h2>Octopressをローカル環境にインストール</h2>
+
+<p>今回の最終目標は<strong>GitHub Pages</strong>でOctopressのエントリー記事を表示させることですが、記事作成などの主な操作はローカル環境で行う必要があります(GitHubレポジトリの内容を直接操作することはできない)。ローカル環境で記事作成などの操作を行った後に<code>GitHubへPushする</code>ことで<strong>GitHub Pages</strong>に反映させるのです。</p>
+
+<p>Octopressのソースコードを<code>git clone</code>でローカル環境に持ってきます。
+ローカル環境側のRubyバージョンが<code>1.9.3</code>以上の必要があるので、<a href="https://github.com/sstephenson/rbenv">rbenv</a>や<a href="https://github.com/wayneeseguin/rvm">rvm</a>などでインストールしておきます。</p>
+
+<p><code>sh
+git clone git@github.com:imathis/octopress.git username.github.io
+cd username.github.io
+</code></p>
+
+<p>gemモジュール群をインストールします。私の環境では、<code>Could not find a JavaScript runtime</code>エラーが発生するのを防ぐために、<strong>therubyracer</strong>プラグインも一緒にインストールします。</p>
+
+<p><code>Gemfile</code>に追記します。</p>
+
+<p>```ruby Gemfile</p>
+
+<h1>for &ldquo;Could not find a JavaScript runtime&rdquo; Error</h1>
+
+<p>gem &lsquo;therubyracer&rsquo;
+```</p>
+
+<p><code>Gemfile</code>に記述されているGemモジュール、および依存関係のあるGemモジュールをインストールします。</p>
+
+<p><code>sh
+bundle install
+</code></p>
+
+<p><code>rake install</code>コマンドを実行して<strong>Octopress初期セットアップとしてデフォルトテーマ用のファイルをJekyllの静的コンテンツ生成パスにコピー</strong>します。
+rakeタスク実行時の標準出力をそのまま記載しているので<code>mkdir</code>や<code>cp</code>はrakeタスク内で実行済みです。</p>
+
+<p>```sh
+$ bundle exec rake install</p>
+
+<h2>Copying classic theme into ./source and ./sass</h2>
+
+<p>mkdir -p source
+cp -r .themes/classic/source/. source
+mkdir -p sass
+cp -r .themes/classic/sass/. sass
+mkdir -p source/_posts
+mkdir -p public
+```</p>
+
+<p>この段階で初期ページの表示確認は可能なはずですので<code>rake preview</code>コマンドを実行して、ローカル環境でWebページを公開します。</p>
+
+<p><code>rake preview</code>コマンドを実行することで<strong>Rakefile内のpreviewタスクを実行</strong>します。previewタスクでは<code>jekyll build --watch</code>コマンドを実行して静的コンテンツをジェネレートしつつ、以降の変更を監視し続けます。変更を検知すると再ジェネレートを自動実行してくれます。そして<code>rackup</code>コマンドを実行し、TCPポート4000番でWEBrickサーバを起動します。</p>
+
+<p>ここでも<code>rake preview</code>タスクの実行時の標準出力を(_config.ymlパス以外は)そのまま記載します。</p>
+
+<p>```sh
+$ bundle exec rake preview
+Starting to watch source with Jekyll and Compass. Starting Rack on port 4000
+[2014-07-22 01:08:53] INFO  WEBrick 1.3.1
+[2014-07-22 01:08:53] INFO  ruby 2.1.0 (2013-12-25) [x86_64-linux]
+[2014-07-22 01:08:53] INFO  WEBrick::HTTPServer#start: pid=4585 port=4000
+Configuration file: /path/to/username.github.io/_config.yml</p>
+
+<blockquote><blockquote><blockquote><p>Change detected at 01:08:54 to: screen.scss</p>
+
+<pre><code>        Source: source
+   Destination: public
+  Generating... 
+                done.
+</code></pre>
+
+<p> Auto-regeneration: enabled
+identical public/stylesheets/screen.css
+```</p></blockquote></blockquote></blockquote>
+
+<p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスすると以下のような初期ページが確認できます。</p>
+
+<p><img src="/images/octopress_initial.jpg" alt="" /></p>
+
+<h2>Octopressで指定可能なrakeタスク</h2>
+
+<p>Octopressをインストールする際に<code>rake install</code>コマンドや<code>rake preview</code>コマンドを実行しましたが、<strong>rakeコマンドの後ろに指定したサブコマンドはRakefileに定義されたタスク</strong>に対応しています。</p>
+
+<p>指定可能なrakeタスクは<code>rake -T</code>コマンドで確認できます。</p>
+
+<p><code>sh
+$ bundle exec rake -T
+rake clean                     # Clean out caches: .pygments-cache, .gist-cache, .sass-cache
+rake copydot[source,dest]      # copy dot files for deployment
+rake deploy                    # Default deploy task
+rake gen_deploy                # Generate website and deploy
+rake generate                  # Generate jekyll site
+rake install[theme]            # Initial setup for Octopress: copies the default theme into the path of Jekyll's generator
+rake integrate                 # Move all stashed posts back into the posts directory, ready for site generation
+rake isolate[filename]         # Move all other posts than the one currently being worked on to a temporary stash location (stash) so regenerating the site happens much more quickly
+rake list                      # list tasks
+rake new_page[filename]        # Create a new page in source/(filename)/index.markdown
+rake new_post[title]           # Begin a new post in source/_posts
+rake preview                   # preview the site in a web browser
+rake push                      # deploy public directory to github pages
+rake rsync                     # Deploy website via rsync
+rake set_root_dir[dir]         # Update configurations to support publishing to root or sub directory
+rake setup_github_pages[repo]  # Set up _deploy folder and deploy branch for Github Pages deployment
+rake update_source[theme]      # Move source to source.old, install source theme updates, replace source/_includes/navigation.html with source.old's navigation
+rake update_style[theme]       # Move sass to sass.old, install sass theme updates, replace sass/custom with sass.old/custom
+rake watch                     # Watch the site and regenerate when it changes
+</code></p>
+
+<h2>記事を投稿する</h2>
+
+<p>新しい記事を投稿するためには<code>rake new_post[title]</code>コマンドを実行します。<code>title</code>部分は任意のタイトル文字を記述します。英字以外だとうまく認識できないケースが考えられるので、ここでは英字で指定します。</p>
+
+<p><code>sh
+rake new_post[test_post]
+</code></p>
+
+<p><code>rake new_post[test_post]</code>コマンドで<code>source/_posts/yyyy-mm-dd-test-post.markdown</code>というファイルが作成されます。</p>
+
+<p><code>sh
+vim source/_posts/yyyy-mm-dd-test-post.markdown
+</code></p>
+
+<p>テストのために本文を１行だけ追記しました。</p>
+
+<h2>```text source/_posts/yyyy-mm-dd-test-post.markdown</h2>
+
+<p>layout: post
+title: &ldquo;test_post&rdquo;
+date: yyyy-mm-dd 00:00:00 +0900
+comments: true</p>
+
+<h2>categories: </h2>
+
+<p>テスト投稿です
+```</p>
+
+<p>静的ページを生成します。</p>
+
+<p><code>sh
+rake generate
+</code></p>
+
+<p>サーバを立ち上げます。</p>
+
+<p><code>sh
+rake preview
+</code></p>
+
+<p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスします。</p>
+
+<p><img src="/images/octopress_test_page.jpg" alt="" /></p>
+
+<h2>OctopressをGithub Pagesで表示させる</h2>
+
+<p>今までローカル環境で編集してきたOctopressコードを新規作成した記事と共にGitHubにpushします。</p>
+
+<h3>GitHubレポジトリ作成</h3>
+
+<p>GitHubの新規レポジトリ作成ページにアクセスします。</p>
+
+<p><a href="https://github.com/new">https://github.com/new</a></p>
+
+<p><code>Repository name</code>に<code>username.github.io</code>(usernameは自分のGitHubアカウント名)を指定し、<code>Create repository</code>ボタンをクリックします。</p>
+
+<p><img src="/images/create_new_repo.jpg" alt="" /></p>
+
+<h3>ローカル環境にてgitレポジトリの作成</h3>
+
+<p><strong>OctopressでGitHub Pagesを利用する場合のgitレポジトリ作成には<code>setup_github_pages</code>という専用のrakeタスクが用意されています。</strong></p>
+
+<p><code>rake setup_github_pages</code>コマンドを作成したレポジトリのURLと共に実行します。</p>
+
+<ul>
+<li>レポジトリのURL例
+
+<ul>
+<li><code>git@github.com:your_username/your_username.github.io.git</code></li>
+<li><code>https://github.com/your_username/your_username.github.io</code></li>
+</ul>
+</li>
+</ul>
+
+
+<p><code>sh
+rake setup_github_pages[git@github.com:username/username.github.io.git]
+</code></p>
+
+<h3>GitHub Pagesへ反映</h3>
+
+<p>Octopressで記事などをGitHubへpushする時には<code>deploy</code>タスクを利用します。</p>
+
+<p><code>sh
+rake deploy
+</code></p>
+
+<p>GitHubにpush後10分程度待つと、<code>http://username.github.io</code>で先ほどまでローカル環境で表示できていたOctopressページを表示させることに成功しました。</p>
+
+<h2>ソースをBitbucketで管理</h2>
+
+<p><code>rake deploy</code>コマンドでは、GitHub上に作成されたレポジトリのmasterブランチに<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>の静的コンテンツのみがpushされます。そして<code>Gemfile</code>,<code>Rakefile</code>,<code>sassディレクトリ</code>,<code>sourceディレクトリ</code>がレポジトリ管理になっていません。</p>
+
+<p><a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages</a>では、同一レポジトリに<code>sourceブランチ</code>を作成してソースをcommit、pushするように説明していますが、ソースは公開する必要はないので<strong>Bitbucketで管理</strong>します。</p>
+
+<h3>Bitbucketに新規レポジトリを作成</h3>
+
+<p>Bitbucketの新規レポジトリ作成ページにアクセスします。</p>
+
+<p><a href="https://bitbucket.org/repo/create">https://bitbucket.org/repo/create</a></p>
+
+<p>今回は<code>octopress</code>という名前のレポジトリ`を作成しています。</p>
+
+<p><img src="/images/octopress_repo_bitbucket.jpg" alt="" /></p>
+
+<h3>ソースをコミット</h3>
+
+<p><code>Gemfile</code>,<code>Rakefile</code>,<code>sassディレクトリ</code>,<code>sourceディレクトリ</code>などをレポジトリにコミットします。</p>
+
+<p><code>sh
+git add -A
+git commit -m 'Modify config. Add source and sass'
+</code></p>
+
+<h3>Bitbucketに作成したレポジトリへpush</h3>
+
+<p><code>sh
+git remote add bitbucket git@bitbucket.org:username/octopress.git
+git push -u bitbucket source
+</code></p>
+
+<h2>まとめ</h2>
+
+<h3>Octopressのインストール</h3>
+
+<ol>
+<li> <a href="https://github.com/imathis/octopress">https://github.com/imathis/octopress</a> からソースコードをclone</li>
+<li> <code>rake install</code>を実行して初期セットアップ</li>
+<li> <code>rake new_post['blog_title']</code>で新規記事を投稿</li>
+<li> <code>rake generate</code>で静的ページを生成</li>
+<li> <code>rake preview</code>でlocalhostの4000番ポートでWebサーバを起動</li>
+</ol>
+
+
+<h3>GtiHub PagesでOctopressで生成した静的ページを表示</h3>
+
+<ol>
+<li> <a href="https://github.com/new">https://github.com/new</a> で新規レポジトリを作成
+
+<ul>
+<li><code>Repository name</code>はusername.github.io(usernameは自分のGitHubアカウント名)</li>
+</ul>
+</li>
+<li> <code>rake setup_github_pages</code>でGitHub pagesを利用するための初期セットアップ</li>
+<li> <code>rake deploy</code>でGitHubレポジトリへpush</li>
+</ol>
+
+
+<h3>Bitbucketでソースコード管理</h3>
+
+<ol>
+<li> <a href="https://bitbucket.org/repo/create">https://bitbucket.org/repo/create</a> で新規レポジトリを作成</li>
+<li> <code>git add -A</code>と<code>git commit</code>でソースコードをコミット</li>
+<li> <code>git remote add</code>でBitbucketレポジトリをremote先として追加</li>
+<li> <code>git push</code>でBitbucketレポジトリにpush</li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

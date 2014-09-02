@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>My Octopress Blog</title>
+  <title>Octopress + GitHub Pages = Simple Blog - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
-  <meta name="description" content="デフォルトのサイドメニュー Octopressをインストールした直後は、サイドメニューはRecent Postsのみです。 そこでOctopress向けに公開されているプラグインを使ってサイドメニューにカテゴリーリストとタグクラウドを実装します。 プラグイン jekyllには、 &hellip;">
+  <meta name="description" content="いきなりですが、ブログを開設したいと思いました。 VimやMarkdownの勉強も兼ねることができるので、Octopress + GitHub Pagesで書いてみることにします。 Octopress http://octopress.org/ Octopressとは、mojombo/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://buf-material.github.io">
+  <link rel="canonical" href="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
@@ -63,118 +63,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2014/09/01/add-category-list-and-tag-list-on-asides/">Add Category_list and Tag_list on Asides</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-01T19:40:34+09:00" pubdate data-updated="true">Sep 1<sup>st</sup>, 2014</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>デフォルトのサイドメニュー</h2>
-
-<p>Octopressをインストールした直後は、サイドメニューは<code>Recent Posts</code>のみです。</p>
-
-<p><img src="/images/add-category-list-asides_01.jpg" alt="" /></p>
-
-<br>
-
-
-<p>そこで<strong>Octopress向けに公開されているプラグインを使ってサイドメニューにカテゴリーリストとタグクラウドを実装</strong>します。</p>
-
-<h2>プラグイン</h2>
-
-<p><a href="https://github.com/jekyll/jekyll">jekyll</a>には、特定コンテンツをHTMLとして生成してあなたのサイトに表示させるための<a href="http://jekyllrb.com/docs/plugins/">プラグイン</a>という仕組みを持っています。そして同時に、多くのプラグインが作成・公開されています。</p>
-
-<p><a href="https://github.com/imathis/octopress">imathis/octopress</a>は<a href="https://github.com/jekyll/jekyll">jekyll</a>のためのフレームワークであり、静的コンテンツ生成にはjekyllを使用しているため、もちろんプラグインを導入することが可能です。</p>
-
-<h2>tokkonopapa/octopress-tagcloud プラグインのインストール</h2>
-
-<p><a href="https://github.com/tokkonopapa/octopress-tagcloud">tokkonopapa/octopress-tagcloud</a>のソースコードをcloneして、<a href="http://jekyllrb.com/docs/plugins/#installing-a-plugin">jekyllプラグインインストール作法</a>に準じてファイルを配布します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>git clone git@github.com:tokkonopapa/octopress-tagcloud.git
-</span><span class='line'>cp -p octopress-tagcloud/plugins/tag_cloud.rb plugins/
-</span><span class='line'>cp -p octopress-tagcloud/source/_includes/custom/asides/* <span class="nb">source</span>/_includes/custom/asides/
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>jekyllの設定ファイル<code>_config.yml</code>にtokkonopapa/octopress-tagcloud プラグインで生成する静的ファイルをサイドメニューのコンテンツとして使用するための設定を記述します。</p>
-
-<p>Octopressの<code>_config.yml</code>に<code>default_asides:</code>から始まる行があります。<code>default_asides:</code>はサイドメニューに表示するHTMLファイルを配列で記述していきます。</p>
-
-<figure class='code'><figcaption><span>tokkonopapa/octopress-tagcloud configuration (_config.yml)</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default_asides</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span>
-</span><span class='line'>    <span class="nv">asides/recent_posts.html</span><span class="p-Indicator">,</span>
-</span><span class='line'>    <span class="nv">custom/asides/category_list.html</span><span class="p-Indicator">,</span>
-</span><span class='line'>    <span class="nv">custom/asides/tag_cloud.html</span>
-</span><span class='line'><span class="p-Indicator">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>静的ファイルを生成してWebサーバを起動します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake preview
-</span><span class='line'>
-</span><span class='line'><span class="c"># GitHub Pages等でホスティングさせている場合はデプロイコマンドも実行しましょう</span>
-</span><span class='line'>rake deploy
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>これでサイドメニューに以下画像のようなカテゴリーリストとタグクラウドが表示されたはずです。</p>
-
-<p><img src="/images/add-category-list-asides_02.jpg" alt="" /></p>
-
-<br>
-
-
-<p>簡単でした!</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/20/installation_octopress_on_github_pages/">Octopress + GitHub Pages = Simple Blog</a></h1>
+      <h1 class="entry-title">Octopress + GitHub Pages = Simple Blog</h1>
     
     
       <p class="meta">
@@ -197,7 +91,7 @@
   </header>
 
 
-  <div class="entry-content"><p>いきなりですが、ブログを開設したいと思いました。</p>
+<div class="entry-content"><p>いきなりですが、ブログを開設したいと思いました。</p>
 
 <p>VimやMarkdownの勉強も兼ねることができるので、<strong>Octopress + GitHub Pages</strong>で書いてみることにします。</p>
 
@@ -565,18 +459,59 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
 </ol>
 
 </div>
+
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Your Name</span></span>
+
+      
+
+
+
+
+
+
+
+
   
 
 
-    </article>
+<time datetime="2014-07-20T23:49:28+09:00" pubdate data-updated="true">Jul 20<sup>th</sup>, 2014</time>
+      
+
+<span class="categories">
   
-  <div class="pagination">
+    <a class='category' href='/blog/categories/blog/'>blog</a>, <a class='category' href='/blog/categories/github-pages/'>github pages</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>
+  
+</span>
+
+
+    </p>
     
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages/" data-via="" data-counturl="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages/" >Tweet</a>
+  
+  
+  
 </div>
+
+    
+    <p class="meta">
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/09/01/add-category-list-and-tag-list-on-asides/" title="Next Post: Add category_list and Tag_list on asides">Add category_list and Tag_list on asides &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -604,6 +539,7 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
 
   
 </aside>
+
 
     </div>
   </div>
