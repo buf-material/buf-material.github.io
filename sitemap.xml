@@ -3,22 +3,22 @@
   
   
   <url>
-    <loc>http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages/</loc>
+    <loc>http://yoursite.com/blog/2014/07/20/installation_octopress_on_github_pages/</loc>
     <lastmod>2014-07-20T23:49:28+09:00</lastmod>
     <priority>0.8</priority>
   </url>
   
   
   <url>
-    <loc>http://buf-material.github.io/blog/archives/</loc>
-    <lastmod>2014-07-26T00:23:07+09:00</lastmod>
+    <loc>http://yoursite.com/blog/archives/</loc>
+    <lastmod>2014-08-30T20:10:22+09:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>http://buf-material.github.io/</loc>
-    <lastmod>2014-07-26T00:23:07+09:00</lastmod>
+    <loc>http://yoursite.com/</loc>
+    <lastmod>2014-08-30T20:10:22+09:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
