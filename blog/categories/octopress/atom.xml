@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | My Octopress Blog]]></title>
   <link href="http://buf-material.github.io/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://buf-material.github.io/"/>
-  <updated>2014-09-02T21:08:37+09:00</updated>
+  <updated>2014-09-03T19:38:49+09:00</updated>
   <id>http://buf-material.github.io/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Add Category_list and Tag_list on Asides]]></title>
+    <title type="html"><![CDATA[Octopressでカテゴリーリストとタグクラウドをサイドメニューに追加する]]></title>
     <link href="http://buf-material.github.io/blog/2014/09/01/add-category-list-and-tag-list-on-asides/"/>
     <updated>2014-09-01T19:40:34+09:00</updated>
     <id>http://buf-material.github.io/blog/2014/09/01/add-category-list-and-tag-list-on-asides</id>
@@ -78,6 +78,61 @@ rake preview</p>
 
 
 <p>簡単でした!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[OctopressのコンテンツデータをGitHub Pagesへdeployしようとしたらrejectedで失敗する件]]></title>
+    <link href="http://buf-material.github.io/blog/2014/08/31/rejected-octopress-deploy-to-github-pages/"/>
+    <updated>2014-08-31T21:17:02+09:00</updated>
+    <id>http://buf-material.github.io/blog/2014/08/31/rejected-octopress-deploy-to-github-pages</id>
+    <content type="html"><![CDATA[<p><a href="http://octopress.org/">Octopress</a>を<a href="https://pages.github.com/">GitHub pages</a>でホスティングさせているのですが、<strong>GitHubレポジトリへのdeployタスク</strong>が<code>rejected</code>となって失敗してしまうことがあります。</p>
+
+<p>```</p>
+
+<h2>Pushing generated _deploy website</h2>
+
+<p>Enter passphrase for key &lsquo;/home/maehachi08/.ssh/id_rsa&rsquo;:
+To git@github.com:buf-material/buf-material.github.io.git
+ ! [rejected]        master &ndash;> master (non-fast-forward)
+error: failed to push some refs to &lsquo;git@github.com:buf-material/buf-material.github.io.git&rsquo;
+To prevent you from losing history, non-fast-forward updates were rejected
+Merge the remote changes before pushing again.  See the &lsquo;Note about
+fast-forwards&rsquo; section of &lsquo;git push &mdash;help&rsquo; for details.</p>
+
+<h2>Github Pages deploy complete</h2>
+
+<p>cd &ndash;</p>
+
+<p>```</p>
+
+<h2>暫定対処</h2>
+
+<p>他にも解決方法があるかもしれませんので暫定と思っています。</p>
+
+<p>Octopressの<code>Rakefile</code>に記述されている<strong>deployタスク内で実行されているpushタスクをforceオプションで実行</strong>します。</p>
+
+<p><code>git push</code>コマンドのremoteレポジトリ名の頭に<code>+</code>を付加することでforceオプションと同じ効果を付加できるようです。</p>
+
+<p>```diff diff of Rakefile
+&mdash;&ndash; a/Rakefile
++++ b/Rakefile
+@@ -265,7 +265,7 @@ multitask :push do</p>
+
+<pre><code> puts "\n## Committing: #{message}"
+ system "git commit -m \"#{message}\""
+ puts "\n## Pushing generated #{deploy_dir} website"
+</code></pre>
+
+<ul>
+<li> Bundler.with_clean_env { system &ldquo;git push origin #{deploy_branch}&rdquo; }</li>
+<li> Bundler.with_clean_env { system &ldquo;git push origin +#{deploy_branch}&rdquo; }
+ puts &ldquo;\n## Github Pages deploy complete&rdquo;
+end
+end
+```</li>
+</ul>
+
 ]]></content>
   </entry>
   
