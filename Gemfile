@@ -2,11 +2,11 @@ source "https://rubygems.org"
 
 group :development do
   gem 'rake', '~> 10.0'
-  gem 'jekyll', '~> 2.0'
+  gem 'jekyll', '2.1'
   gem 'jekyll-page-hooks', '~> 1.2'
   gem 'jekyll-date-format', '~> 1.0'
   gem 'jekyll-sitemap'
-  gem 'rdiscount', '~> 2.0'
+  gem 'rdiscount', '2.1.7'
   gem 'RedCloth', '~> 4.2.9'
   gem 'haml', '~> 4.0'
   gem 'compass', '~> 0.12.2'
@@ -20,5 +20,3 @@ gem 'sinatra', '~> 1.4.2'
 
 # for "Could not find a JavaScript runtime" Error
 gem 'therubyracer'
-
-gem 'redcarpet'
