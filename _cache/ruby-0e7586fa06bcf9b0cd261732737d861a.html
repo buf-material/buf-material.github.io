@@ -1,0 +1,15 @@
+<div class="highlight"><pre><span class="n">task</span> <span class="ss">:install</span><span class="p">,</span> <span class="ss">:theme</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="p">,</span> <span class="n">args</span><span class="o">|</span>
+  <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">directory?</span><span class="p">(</span><span class="n">source_dir</span><span class="p">)</span> <span class="o">||</span> <span class="no">File</span><span class="o">.</span><span class="n">directory?</span><span class="p">(</span><span class="s2">&quot;sass&quot;</span><span class="p">)</span>
+    <span class="nb">abort</span><span class="p">(</span><span class="s2">&quot;rake aborted!&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">ask</span><span class="p">(</span><span class="s2">&quot;A theme is already installed, proceeding will overwrite existing files. Are you sure?&quot;</span><span class="p">,</span> <span class="o">[</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="o">]</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span>
+  <span class="k">end</span>
+  <span class="c1"># copy theme into working Jekyll directories</span>
+  <span class="n">theme</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">theme</span> <span class="o">||</span> <span class="s1">&#39;classic&#39;</span>
+  <span class="nb">puts</span> <span class="s2">&quot;## Copying &quot;</span><span class="o">+</span><span class="n">theme</span><span class="o">+</span><span class="s2">&quot; theme into ./</span><span class="si">#{</span><span class="n">source_dir</span><span class="si">}</span><span class="s2"> and ./sass&quot;</span>
+  <span class="n">mkdir_p</span> <span class="n">source_dir</span>
+  <span class="n">cp_r</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">themes_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">theme</span><span class="si">}</span><span class="s2">/source/.&quot;</span><span class="p">,</span> <span class="n">source_dir</span>
+  <span class="n">mkdir_p</span> <span class="s2">&quot;sass&quot;</span>
+  <span class="n">cp_r</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">themes_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">theme</span><span class="si">}</span><span class="s2">/sass/.&quot;</span><span class="p">,</span> <span class="s2">&quot;sass&quot;</span>
+  <span class="n">mkdir_p</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">source_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">posts_dir</span><span class="si">}</span><span class="s2">&quot;</span>
+  <span class="n">mkdir_p</span> <span class="n">public_dir</span>
+<span class="k">end</span>
+</pre></div>

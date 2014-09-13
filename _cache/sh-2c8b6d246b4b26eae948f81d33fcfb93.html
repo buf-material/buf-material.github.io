@@ -1,0 +1,21 @@
+<div class="highlight"><pre><span class="nv">$ </span>bundle <span class="nb">exec </span>rake -T 
+rake clean                     <span class="c"># Clean out caches: .pygments-cache, .gist-cache, .sass-cache</span>
+rake copydot<span class="o">[</span><span class="nb">source</span>,dest<span class="o">]</span>      <span class="c"># copy dot files for deployment</span>
+rake deploy                    <span class="c"># Default deploy task</span>
+rake gen_deploy                <span class="c"># Generate website and deploy</span>
+rake generate                  <span class="c"># Generate jekyll site</span>
+rake install<span class="o">[</span>theme<span class="o">]</span>            <span class="c"># Initial setup for Octopress: copies the default theme into the path of Jekyll&#39;s generator</span>
+rake integrate                 <span class="c"># Move all stashed posts back into the posts directory, ready for site generation</span>
+rake isolate<span class="o">[</span>filename<span class="o">]</span>         <span class="c"># Move all other posts than the one currently being worked on to a temporary stash location (stash) so regenerating the site happens much more quickly</span>
+rake list                      <span class="c"># list tasks</span>
+rake new_page<span class="o">[</span>filename<span class="o">]</span>        <span class="c"># Create a new page in source/(filename)/index.markdown</span>
+rake new_post<span class="o">[</span>title<span class="o">]</span>           <span class="c"># Begin a new post in source/_posts</span>
+rake preview                   <span class="c"># preview the site in a web browser</span>
+rake push                      <span class="c"># deploy public directory to github pages</span>
+rake rsync                     <span class="c"># Deploy website via rsync</span>
+rake set_root_dir<span class="o">[</span>dir<span class="o">]</span>         <span class="c"># Update configurations to support publishing to root or sub directory</span>
+rake setup_github_pages<span class="o">[</span>repo<span class="o">]</span>  <span class="c"># Set up _deploy folder and deploy branch for Github Pages deployment</span>
+rake update_source<span class="o">[</span>theme<span class="o">]</span>      <span class="c"># Move source to source.old, install source theme updates, replace source/_includes/navigation.html with source.old&#39;s navigation</span>
+rake update_style<span class="o">[</span>theme<span class="o">]</span>       <span class="c"># Move sass to sass.old, install sass theme updates, replace sass/custom with sass.old/custom</span>
+rake watch                     <span class="c"># Watch the site and regenerate when it changes</span>
+</pre></div>

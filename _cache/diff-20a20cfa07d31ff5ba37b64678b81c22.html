@@ -1,0 +1,12 @@
+<div class="highlight"><pre><span class="gd">--- a/Rakefile</span>
+<span class="gi">+++ b/Rakefile</span>
+<span class="gu">@@ -265,7 +265,7 @@ multitask :push do</span>
+     puts &quot;\n## Committing: #{message}&quot;
+     system &quot;git commit -m \&quot;#{message}\&quot;&quot;
+     puts &quot;\n## Pushing generated #{deploy_dir} website&quot;
+<span class="gd">-    Bundler.with_clean_env { system &quot;git push origin #{deploy_branch}&quot; }</span>
+<span class="gi">+    Bundler.with_clean_env { system &quot;git push origin +#{deploy_branch}&quot; }</span>
+     puts &quot;\n## Github Pages deploy complete&quot;
+   end
+ end
+</pre></div>
