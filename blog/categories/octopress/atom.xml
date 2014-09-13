@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Octopress | My Octopress Blog]]></title>
-  <link href="http://buf-material.github.io/blog/categories/octopress/atom.xml" rel="self"/>
-  <link href="http://buf-material.github.io/"/>
-  <updated>2014-09-03T19:38:49+09:00</updated>
-  <id>http://buf-material.github.io/</id>
+  <link href="http://yoursite.com/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://yoursite.com/"/>
+  <updated>2014-09-13T16:50:40+09:00</updated>
+  <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
     
@@ -14,20 +14,195 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Octopressのテーマをclassicからoctostrap3に変更してみる]]></title>
+    <link href="http://yoursite.com/blog/2014/09/02/customize-octopress-themes-from-classic-to-octostrap3/"/>
+    <updated>2014-09-02T19:50:02+09:00</updated>
+    <id>http://yoursite.com/blog/2014/09/02/customize-octopress-themes-from-classic-to-octostrap3</id>
+    <content type="html"><![CDATA[<h2>デフォルトテーマ</h2>
+
+<p>Octopressではデザインテーマを<code>install</code>タスクにてインストールします。デフォルトでインストールされるテーマは<strong>classic</strong>です。</p>
+
+<p><img src="/images/octopress_test_page.jpg" alt="" /></p>
+
+<h2>installタスクの動作を理解する</h2>
+
+<p>Octopressでテーマを適用する<code>install</code>タスクの動作を見てみようと思います。</p>
+
+<p>下記コードはOctopressの<code>Rakefile</code>に記述された<code>install</code>タスクです。</p>
+
+<pre><code class="ruby">task :install, :theme do |t, args|
+  if File.directory?(source_dir) || File.directory?("sass")
+    abort("rake aborted!") if ask("A theme is already installed, proceeding will overwrite existing files. Are you sure?", ['y', 'n']) == 'n'
+  end
+  # copy theme into working Jekyll directories
+  theme = args.theme || 'classic'
+  puts "## Copying "+theme+" theme into ./#{source_dir} and ./sass"
+  mkdir_p source_dir
+  cp_r "#{themes_dir}/#{theme}/source/.", source_dir
+  mkdir_p "sass"
+  cp_r "#{themes_dir}/#{theme}/sass/.", "sass"
+  mkdir_p "#{source_dir}/#{posts_dir}"
+  mkdir_p public_dir
+end
+</code></pre>
+
+<p>コードを見ても分かる通り、installタスクで実行していることは以下の6つの事だけで、とてもシンプルな動作です。<code>#{theme}</code>はデフォルトでは<strong>classic</strong>が代入される変数です(上記コードの6行目)。</p>
+
+<ol>
+<li><code>source</code>ディレクトリを作成</li>
+<li><code>.themes/#{theme}/source</code>ディレクトリ以下のファイルやディレクトリを再帰的に<code>source</code>ディレクトリにコピー</li>
+<li><code>sass</code>ディレクトリを作成</li>
+<li><code>.themes/#{theme}/sass</code>ディレクトリ以下のファイルやディレクトリを再帰的に<code>sass</code>ディレクトリにコピー</li>
+<li><code>source/_posts</code>ディレクトリを作成</li>
+<li><code>public</code>ディレクトリを作成</li>
+</ol>
+
+
+<h2>テーマのインストール</h2>
+
+<p>テーマのインストールに必要な作業は以下の3つだけです。</p>
+
+<ol>
+<li><code>.themes</code>ディレクトリ以下にインストールしたいテーマをプロジェクトごとコピーする
+
+<ul>
+<li><code>.themes/octostrap3/</code>のようになる</li>
+</ul>
+</li>
+<li>installタスクをインストールしたいテーマを明示して実行する
+
+<ul>
+<li><code>rake 'install[octostrap3]'</code>のようになる</li>
+</ul>
+</li>
+<li><code>generate</code>タスクを実行して静的ファイルを生成する</li>
+</ol>
+
+
+<h2>octostrap3テーマをインストールする</h2>
+
+<p>今回は<a href="https://github.com/kAworu/octostrap3">Octostrap3</a>をテーマとしてインストールしてみます。</p>
+
+<h4>octostrap3プロジェクトを<code>.themes</code>ディレクトリ以下にcloneしてきます。</h4>
+
+<pre><code class="sh">git clone https://github.com/kAworu/octostrap3 .themes/octostrap3
+</code></pre>
+
+<p><code>.themes</code>ディレクトリ以下はこのようなディレクトリ構成になるはずです。</p>
+
+<pre><code>octopress
+└── .themes/
+    ├── classic
+    └── octostrap3
+</code></pre>
+
+<h4>Octopressのinstallタスクをテーマを指定して実行</h4>
+
+<pre><code class="sh">rake 'install[octostrap3]'
+</code></pre>
+
+<h4>Octopressのgenerateタスクを実行して静的コンテンツを生成</h4>
+
+<pre><code class="sh">rake generate
+</code></pre>
+
+<p><br>
+これでサイトのデザインテーマを<code>octostrap3</code>に変更できました！</p>
+
+<p><img src="/images/customize-octopress-themes_01.jpg" alt="" /></p>
+
+<p><br></p>
+
+<h3><code>と思ったらサイドサイドメニューのoctopress-tagcloud プラグインで生成されているulタグのデザインがoctostrap3に合っていない...</code></h3>
+
+<p><img src="/images/customize-octopress-themes_02.jpg" alt="" /></p>
+
+<p><br>
+これは<a href="https://github.com/tokkonopapa/octopress-tagcloud">octopress-tagcloud</a>プラグインをインストールした際に置いたテンプレートファイルの書き方を修正することで対応できます。</p>
+
+<h2>octopress-tagcloud プラグイン向けのHTMLテンプレートファイルを修正</h2>
+
+<p>プラグインを利用してコンテンツを生成している場合、<code>source/_includes/custom/asides</code>ディレクトリ以下にコンテンツ生成用のHTMLテンプレートファイルを配置していると思います。</p>
+
+<p>今回、デザインテンプレートを<code>classic</code>から<code>octostrap3</code>に変更したので、追加したテンプレートファイルの<code>div</code>などのブロック構成、<code>class</code>や<code>id</code>などのデザインに関わるコードも<code>octostrap3</code>のデザインに合う様に修正しようと思います。</p>
+
+<p>ちょうど、<a href="https://github.com/kAworu/octostrap3">octostrap3</a>のブログページに<a href="http://kaworu.github.io/octopress/blog/2013/10/03/category-list-aside/">Category List Aside</a>という記事でサイドメニューにカテゴリーリストを追加するためのテンプレートコードが掲載されていましたのでそのまま利用させて頂きます。</p>
+
+<h3>修正対象ファイル</h3>
+
+<p>以下のディレクトリツリーにある2つのHTMLファイルを修正します。</p>
+
+<pre><code>### octostrap3導入にあたって修正するテンプレートファイルのパス
+octopress
+└── source/
+    └── _includes
+        └── custom
+            └── asides
+                ├── category_list.html
+                └── tag_cloud.html
+</code></pre>
+
+
+<h3>修正</h3>
+
+<h5>source/_includes/custom/asides/category_list.html</h5>
+
+<pre><code>&lt;section class="panel panel-default"&gt;
+  &lt;div class="panel-heading"&gt;
+    &lt;h3 class="panel-title"&gt;Categories&lt;/h3&gt;
+  &lt;/div&gt;
+  &lt;div class="list-group"&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/blog/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        blog
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/github-pages/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        github pages
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/octopress/index.html"&gt;
+        &lt;span class="badge"&gt;4&lt;/span&gt;
+        octopress
+      &lt;/a&gt;
+    
+  &lt;/div&gt;
+&lt;/section&gt;
+</code></pre>
+
+<h5>source/_includes/custom/asides/tag_cloud.html</h5>
+
+<pre><code>&lt;section class="panel panel-default"&gt;
+  &lt;div class="panel-heading"&gt;
+    &lt;h3 class="panel-title"&gt;Tag cloud&lt;/h3&gt;
+  &lt;/div&gt;
+  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/blog' style='font-size: 115.0%'>blog(1)</a> <a href='/blog/categories/github-pages' style='font-size: 115.0%'>github pages(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(4)</a> &lt;/span&gt;
+&lt;/section&gt;
+</code></pre>
+
+<p><br>
+簡単でした！</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Octopressでカテゴリーリストとタグクラウドをサイドメニューに追加する]]></title>
-    <link href="http://buf-material.github.io/blog/2014/09/01/add-category-list-and-tag-list-on-asides/"/>
+    <link href="http://yoursite.com/blog/2014/09/01/add-category-list-and-tag-list-on-asides/"/>
     <updated>2014-09-01T19:40:34+09:00</updated>
-    <id>http://buf-material.github.io/blog/2014/09/01/add-category-list-and-tag-list-on-asides</id>
+    <id>http://yoursite.com/blog/2014/09/01/add-category-list-and-tag-list-on-asides</id>
     <content type="html"><![CDATA[<h2>デフォルトのサイドメニュー</h2>
 
 <p>Octopressをインストールした直後は、サイドメニューは<code>Recent Posts</code>のみです。</p>
 
 <p><img src="/images/add-category-list-asides_01.jpg" alt="" /></p>
 
-<br>
-
-
-<p>そこで<strong>Octopress向けに公開されているプラグインを使ってサイドメニューにカテゴリーリストとタグクラウドを実装</strong>します。</p>
+<p><br>
+そこで<strong>Octopress向けに公開されているプラグインを使ってサイドメニューにカテゴリーリストとタグクラウドを実装</strong>します。</p>
 
 <h2>プラグイン</h2>
 
@@ -39,72 +214,58 @@
 
 <p><a href="https://github.com/tokkonopapa/octopress-tagcloud">tokkonopapa/octopress-tagcloud</a>のソースコードをcloneして、<a href="http://jekyllrb.com/docs/plugins/#installing-a-plugin">jekyllプラグインインストール作法</a>に準じてファイルを配布します。</p>
 
-<p><code>sh
-git clone git@github.com:tokkonopapa/octopress-tagcloud.git
+<pre><code class="sh">git clone git@github.com:tokkonopapa/octopress-tagcloud.git
 cp -p octopress-tagcloud/plugins/tag_cloud.rb plugins/
 cp -p octopress-tagcloud/source/_includes/custom/asides/* source/_includes/custom/asides/
-</code></p>
+</code></pre>
 
 <p>jekyllの設定ファイル<code>_config.yml</code>にtokkonopapa/octopress-tagcloud プラグインで生成する静的ファイルをサイドメニューのコンテンツとして使用するための設定を記述します。</p>
 
 <p>Octopressの<code>_config.yml</code>に<code>default_asides:</code>から始まる行があります。<code>default_asides:</code>はサイドメニューに表示するHTMLファイルを配列で記述していきます。</p>
 
-<p>```yaml tokkonopapa/octopress-tagcloud configuration (_config.yml)
-default_asides: [</p>
-
-<pre><code>asides/recent_posts.html,
-custom/asides/category_list.html,
-custom/asides/tag_cloud.html
+<pre><code class="yaml tokkonopapa/octopress-tagcloud configuration (_config.yml)">default_asides: [
+    asides/recent_posts.html,
+    custom/asides/category_list.html,
+    custom/asides/tag_cloud.html
+]
 </code></pre>
-
-<p>]
-```</p>
 
 <p>静的ファイルを生成してWebサーバを起動します。</p>
 
-<p>```sh
-rake preview</p>
+<pre><code class="sh">rake preview
 
-<h1>GitHub Pages等でホスティングさせている場合はデプロイコマンドも実行しましょう</h1>
-
-<p>rake deploy
-```</p>
+# GitHub Pages等でホスティングさせている場合はデプロイコマンドも実行しましょう
+rake deploy
+</code></pre>
 
 <p>これでサイドメニューに以下画像のようなカテゴリーリストとタグクラウドが表示されたはずです。</p>
 
 <p><img src="/images/add-category-list-asides_02.jpg" alt="" /></p>
 
-<br>
-
-
-<p>簡単でした!</p>
+<p><br>
+簡単でした!</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[OctopressのコンテンツデータをGitHub Pagesへdeployしようとしたらrejectedで失敗する件]]></title>
-    <link href="http://buf-material.github.io/blog/2014/08/31/rejected-octopress-deploy-to-github-pages/"/>
+    <link href="http://yoursite.com/blog/2014/08/31/rejected-octopress-deploy-to-github-pages/"/>
     <updated>2014-08-31T21:17:02+09:00</updated>
-    <id>http://buf-material.github.io/blog/2014/08/31/rejected-octopress-deploy-to-github-pages</id>
+    <id>http://yoursite.com/blog/2014/08/31/rejected-octopress-deploy-to-github-pages</id>
     <content type="html"><![CDATA[<p><a href="http://octopress.org/">Octopress</a>を<a href="https://pages.github.com/">GitHub pages</a>でホスティングさせているのですが、<strong>GitHubレポジトリへのdeployタスク</strong>が<code>rejected</code>となって失敗してしまうことがあります。</p>
 
-<p>```</p>
-
-<h2>Pushing generated _deploy website</h2>
-
-<p>Enter passphrase for key &lsquo;/home/maehachi08/.ssh/id_rsa&rsquo;:
+<pre><code>## Pushing generated _deploy website
+Enter passphrase for key '/home/maehachi08/.ssh/id_rsa':
 To git@github.com:buf-material/buf-material.github.io.git
- ! [rejected]        master &ndash;> master (non-fast-forward)
-error: failed to push some refs to &lsquo;git@github.com:buf-material/buf-material.github.io.git&rsquo;
+ ! [rejected]        master -&gt; master (non-fast-forward)
+error: failed to push some refs to 'git@github.com:buf-material/buf-material.github.io.git'
 To prevent you from losing history, non-fast-forward updates were rejected
-Merge the remote changes before pushing again.  See the &lsquo;Note about
-fast-forwards&rsquo; section of &lsquo;git push &mdash;help&rsquo; for details.</p>
+Merge the remote changes before pushing again.  See the 'Note about
+fast-forwards' section of 'git push --help' for details.
 
-<h2>Github Pages deploy complete</h2>
-
-<p>cd &ndash;</p>
-
-<p>```</p>
+## Github Pages deploy complete
+cd -
+</code></pre>
 
 <h2>暫定対処</h2>
 
@@ -114,33 +275,26 @@ fast-forwards&rsquo; section of &lsquo;git push &mdash;help&rsquo; for details.<
 
 <p><code>git push</code>コマンドのremoteレポジトリ名の頭に<code>+</code>を付加することでforceオプションと同じ効果を付加できるようです。</p>
 
-<p>```diff diff of Rakefile
-&mdash;&ndash; a/Rakefile
+<pre><code class="diff diff of Rakefile">--- a/Rakefile
 +++ b/Rakefile
-@@ -265,7 +265,7 @@ multitask :push do</p>
-
-<pre><code> puts "\n## Committing: #{message}"
- system "git commit -m \"#{message}\""
- puts "\n## Pushing generated #{deploy_dir} website"
+@@ -265,7 +265,7 @@ multitask :push do
+     puts "\n## Committing: #{message}"
+     system "git commit -m \"#{message}\""
+     puts "\n## Pushing generated #{deploy_dir} website"
+-    Bundler.with_clean_env { system "git push origin #{deploy_branch}" }
++    Bundler.with_clean_env { system "git push origin +#{deploy_branch}" }
+     puts "\n## Github Pages deploy complete"
+   end
+ end
 </code></pre>
-
-<ul>
-<li> Bundler.with_clean_env { system &ldquo;git push origin #{deploy_branch}&rdquo; }</li>
-<li> Bundler.with_clean_env { system &ldquo;git push origin +#{deploy_branch}&rdquo; }
- puts &ldquo;\n## Github Pages deploy complete&rdquo;
-end
-end
-```</li>
-</ul>
-
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Octopress + GitHub Pages = Simple Blog]]></title>
-    <link href="http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages/"/>
+    <link href="http://yoursite.com/blog/2014/07/20/installation_octopress_on_github_pages/"/>
     <updated>2014-07-20T23:49:28+09:00</updated>
-    <id>http://buf-material.github.io/blog/2014/07/20/installation_octopress_on_github_pages</id>
+    <id>http://yoursite.com/blog/2014/07/20/installation_octopress_on_github_pages</id>
     <content type="html"><![CDATA[<p>いきなりですが、ブログを開設したいと思いました。</p>
 
 <p>VimやMarkdownの勉強も兼ねることができるので、<strong>Octopress + GitHub Pages</strong>で書いてみることにします。</p>
@@ -197,43 +351,35 @@ WebサイトのデフォルトURLはレポジトリ名と同じ<code>http://user
 <p>Octopressのソースコードを<code>git clone</code>でローカル環境に持ってきます。
 ローカル環境側のRubyバージョンが<code>1.9.3</code>以上の必要があるので、<a href="https://github.com/sstephenson/rbenv">rbenv</a>や<a href="https://github.com/wayneeseguin/rvm">rvm</a>などでインストールしておきます。</p>
 
-<p><code>sh
-git clone git@github.com:imathis/octopress.git username.github.io
+<pre><code class="sh">git clone git@github.com:imathis/octopress.git username.github.io
 cd username.github.io
-</code></p>
+</code></pre>
 
 <p>gemモジュール群をインストールします。私の環境では、<code>Could not find a JavaScript runtime</code>エラーが発生するのを防ぐために、<strong>therubyracer</strong>プラグインも一緒にインストールします。</p>
 
 <p><code>Gemfile</code>に追記します。</p>
 
-<p>```ruby Gemfile</p>
-
-<h1>for &ldquo;Could not find a JavaScript runtime&rdquo; Error</h1>
-
-<p>gem &lsquo;therubyracer&rsquo;
-```</p>
+<pre><code class="ruby Gemfile"># for "Could not find a JavaScript runtime" Error
+gem 'therubyracer'
+</code></pre>
 
 <p><code>Gemfile</code>に記述されているGemモジュール、および依存関係のあるGemモジュールをインストールします。</p>
 
-<p><code>sh
-bundle install
-</code></p>
+<pre><code class="sh">bundle install
+</code></pre>
 
 <p><code>rake install</code>コマンドを実行して<strong>Octopress初期セットアップとしてデフォルトテーマ用のファイルをJekyllの静的コンテンツ生成パスにコピー</strong>します。
 rakeタスク実行時の標準出力をそのまま記載しているので<code>mkdir</code>や<code>cp</code>はrakeタスク内で実行済みです。</p>
 
-<p>```sh
-$ bundle exec rake install</p>
-
-<h2>Copying classic theme into ./source and ./sass</h2>
-
-<p>mkdir -p source
+<pre><code class="sh">$ bundle exec rake install
+## Copying classic theme into ./source and ./sass
+mkdir -p source
 cp -r .themes/classic/source/. source
 mkdir -p sass
 cp -r .themes/classic/sass/. sass
 mkdir -p source/_posts
 mkdir -p public
-```</p>
+</code></pre>
 
 <p>この段階で初期ページの表示確認は可能なはずですので<code>rake preview</code>コマンドを実行して、ローカル環境でWebページを公開します。</p>
 
@@ -241,25 +387,20 @@ mkdir -p public
 
 <p>ここでも<code>rake preview</code>タスクの実行時の標準出力を(_config.ymlパス以外は)そのまま記載します。</p>
 
-<p>```sh
-$ bundle exec rake preview
+<pre><code class="sh">$ bundle exec rake preview
 Starting to watch source with Jekyll and Compass. Starting Rack on port 4000
 [2014-07-22 01:08:53] INFO  WEBrick 1.3.1
 [2014-07-22 01:08:53] INFO  ruby 2.1.0 (2013-12-25) [x86_64-linux]
 [2014-07-22 01:08:53] INFO  WEBrick::HTTPServer#start: pid=4585 port=4000
-Configuration file: /path/to/username.github.io/_config.yml</p>
-
-<blockquote><blockquote><blockquote><p>Change detected at 01:08:54 to: screen.scss</p>
-
-<pre><code>        Source: source
-   Destination: public
-  Generating... 
-                done.
+Configuration file: /path/to/username.github.io/_config.yml
+&gt;&gt;&gt; Change detected at 01:08:54 to: screen.scss
+            Source: source
+       Destination: public
+      Generating... 
+                    done.
+ Auto-regeneration: enabled
+identical public/stylesheets/screen.css 
 </code></pre>
-
-<p> Auto-regeneration: enabled
-identical public/stylesheets/screen.css
-```</p></blockquote></blockquote></blockquote>
 
 <p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスすると以下のような初期ページが確認できます。</p>
 
@@ -271,8 +412,7 @@ identical public/stylesheets/screen.css
 
 <p>指定可能なrakeタスクは<code>rake -T</code>コマンドで確認できます。</p>
 
-<p><code>sh
-$ bundle exec rake -T
+<pre><code class="sh">$ bundle exec rake -T 
 rake clean                     # Clean out caches: .pygments-cache, .gist-cache, .sass-cache
 rake copydot[source,dest]      # copy dot files for deployment
 rake deploy                    # Default deploy task
@@ -292,47 +432,42 @@ rake setup_github_pages[repo]  # Set up _deploy folder and deploy branch for Git
 rake update_source[theme]      # Move source to source.old, install source theme updates, replace source/_includes/navigation.html with source.old's navigation
 rake update_style[theme]       # Move sass to sass.old, install sass theme updates, replace sass/custom with sass.old/custom
 rake watch                     # Watch the site and regenerate when it changes
-</code></p>
+</code></pre>
 
 <h2>記事を投稿する</h2>
 
 <p>新しい記事を投稿するためには<code>rake new_post[title]</code>コマンドを実行します。<code>title</code>部分は任意のタイトル文字を記述します。英字以外だとうまく認識できないケースが考えられるので、ここでは英字で指定します。</p>
 
-<p><code>sh
-rake new_post[test_post]
-</code></p>
+<pre><code class="sh">rake new_post[test_post]
+</code></pre>
 
 <p><code>rake new_post[test_post]</code>コマンドで<code>source/_posts/yyyy-mm-dd-test-post.markdown</code>というファイルが作成されます。</p>
 
-<p><code>sh
-vim source/_posts/yyyy-mm-dd-test-post.markdown
-</code></p>
+<pre><code class="sh">vim source/_posts/yyyy-mm-dd-test-post.markdown
+</code></pre>
 
 <p>テストのために本文を１行だけ追記しました。</p>
 
-<h2>```text source/_posts/yyyy-mm-dd-test-post.markdown</h2>
-
-<p>layout: post
-title: &ldquo;test_post&rdquo;
+<pre><code class="text source/_posts/yyyy-mm-dd-test-post.markdown">---
+layout: post
+title: "test_post"
 date: yyyy-mm-dd 00:00:00 +0900
-comments: true</p>
+comments: true
+categories: 
+---
 
-<h2>categories: </h2>
-
-<p>テスト投稿です
-```</p>
+テスト投稿です
+</code></pre>
 
 <p>静的ページを生成します。</p>
 
-<p><code>sh
-rake generate
-</code></p>
+<pre><code class="sh">rake generate
+</code></pre>
 
 <p>サーバを立ち上げます。</p>
 
-<p><code>sh
-rake preview
-</code></p>
+<pre><code class="sh">rake preview
+</code></pre>
 
 <p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスします。</p>
 
@@ -369,17 +504,15 @@ rake preview
 </ul>
 
 
-<p><code>sh
-rake setup_github_pages[git@github.com:username/username.github.io.git]
-</code></p>
+<pre><code class="sh">rake setup_github_pages[git@github.com:username/username.github.io.git]
+</code></pre>
 
 <h3>GitHub Pagesへ反映</h3>
 
 <p>Octopressで記事などをGitHubへpushする時には<code>deploy</code>タスクを利用します。</p>
 
-<p><code>sh
-rake deploy
-</code></p>
+<pre><code class="sh">rake deploy
+</code></pre>
 
 <p>GitHubにpush後10分程度待つと、<code>http://username.github.io</code>で先ほどまでローカル環境で表示できていたOctopressページを表示させることに成功しました。</p>
 
@@ -403,17 +536,15 @@ rake deploy
 
 <p><code>Gemfile</code>,<code>Rakefile</code>,<code>sassディレクトリ</code>,<code>sourceディレクトリ</code>などをレポジトリにコミットします。</p>
 
-<p><code>sh
-git add -A
+<pre><code class="sh">git add -A
 git commit -m 'Modify config. Add source and sass'
-</code></p>
+</code></pre>
 
 <h3>Bitbucketに作成したレポジトリへpush</h3>
 
-<p><code>sh
-git remote add bitbucket git@bitbucket.org:username/octopress.git
+<pre><code class="sh">git remote add bitbucket git@bitbucket.org:username/octopress.git
 git push -u bitbucket source
-</code></p>
+</code></pre>
 
 <h2>まとめ</h2>
 
