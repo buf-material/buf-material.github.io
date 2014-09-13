@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-09-13T16:50:40+09:00</updated>
+  <updated>2014-09-13T16:54:20+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -107,15 +107,12 @@
 
 <p><code>.themes</code>ディレクトリ以下はこのようなディレクトリ構成になるはずです。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>octopress
-</span><span class='line'>└── .themes/
-</span><span class='line'>    ├── classic
-</span><span class='line'>    └── octostrap3
-</span></code></pre></td></tr></table></div></figure>
+<pre><code>### octostrap3テーマをローカル環境にcloneした状態
+octopress
+└── .themes/
+    ├── classic
+    └── octostrap3
+</code></pre>
 
 
 <h4>Octopressのinstallタスクをテーマを指定して実行</h4>
