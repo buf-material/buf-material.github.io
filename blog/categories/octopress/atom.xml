@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-09-20T15:06:41+09:00</updated>
+  <updated>2014-09-21T00:17:46+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -55,31 +55,23 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
 
 <p>Google AdSenseにおける広告は広告タイプ(テキスト広告とディスプレイ広告、テキスト広告のみ、ディスプレイ広告のみ)や広告サイズ(468x60、160x600、レスポンシブ、など)を定義した<strong>広告ユニット</strong>が広告の生成単位となり、広告コードもこの<strong>広告ユニット</strong>単位で生成されます。</p>
 
-<p>[広告の設定] > [コンテンツ] > [広告ユニット]までページを進め、<strong>＋新しい広告ユニット</strong>をクリックします。</p>
+<p>サイドバー向けの広告ユニットを作成します。</p>
 
-<p><img src="/images/google_adsense_04.jpg" alt="" /></p>
+<p>[広告の設定] > [コンテンツ] > [広告ユニット]までページを進め、<strong>＋新しい広告ユニット</strong>をクリックします。
+ <img src="/images/google_adsense_04.jpg" alt="" /></p>
 
-<p><br></p>
+<p><br>
+名前は、あとで広告ユニットを特定しやすいように一意の名前と説明を入力するといいでしょう。
+今回は<code>buf-material_aside_336x280</code>とします。</p>
 
-<h4>1. 名前の指定</h4>
-
-<p>名前あとで広告ユニットを特定しやすいように一意の名前と説明を入力するといいでしょう。
-今回は<code>buf-material_aside_01</code>とします。</p>
-
-<h4>2. 広告サイズのを指定</h4>
-
-<p>広告サイズは最初に表示されている<strong>推奨</strong>から選ぶと無難かもしれません。これら推奨の広告サイズはGoogle AdSense側で広告の掲載効果があったとされる広告サイズのようです。</p>
+<p>広告サイズは最初に表示されている<strong>推奨</strong>から選ぶと無難かもしれません。これら推奨の広告サイズはGoogle AdSense側で広告の掲載効果があったとされる広告サイズのようです。今回は<code>336x280 レクタングル (大)</code>を選択します。</p>
 
 <p>また、モバイルで効果的な広告サイズにはモバイルのアイコン（<img src="//storage.googleapis.com/support-kms-prod/SNP_E2D5EEDDCF0F04F7FDDA2775FC774BEA6061_6002584_en_v0" height="auto" alt="mobile icon" title="mobile icon">）が表示されます。</p>
 
-<p>プレビューを選択することでポップアップで実際の大きさを確認できますので参考に出来ますね。</p>
+<p>広告サイズに関しては、<code>プレビュー</code>を選択することでポップアップで実際の大きさを確認できますので参考に出来ますね。</p>
 
-<h4>3. 広告タイプの指定</h4>
-
-<p>広告タイプとして以下の3つから選択することになります。
-  * テキスト広告とディスプレイ広告
-  * テキスト広告のみ
-  * ディスプレイ広告のみ</p>
+<p><br>
+広告タイプは、<code>テキスト広告とディスプレイ広告</code>、<code>テキスト広告のみ</code>、<code>ディスプレイ広告のみ</code>の3つから選択します。今回は推奨されている<code>テキスト広告とディスプレイ広告</code>を選択します。</p>
 
 <p><br>
 <img src="/images/google_adsense_03.jpg" alt="" />
@@ -103,7 +95,7 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 
-<!-- buf-material_aside_01 -->
+<!-- buf-material_aside_336x280 -->
 
 
 <p><ins class="adsbygoogle"
@@ -124,7 +116,7 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
 <p><code>_config.yml</code>の<code>default_asides:</code>に<code>google_adsense_336x280.html</code>を追記します。この広告はサイドバーの最上段に表示させたいので、<code>default_asides:</code>リストの1番上に記述します。</p>
 
 <pre><code class="yaml _config.yml">default_asides: [
-    custom/asides/google_adsense.html,
+    custom/asides/google_adsense_336x280.html,
     asides/recent_posts.html,
     custom/asides/category_list.html,
     custom/asides/tag_cloud.html,
@@ -156,7 +148,7 @@ rake preview
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 
-<!-- buf-material_aside_01 -->
+<!-- buf-material_aside_336x280 -->
 
 
 <p><ins class="adsbygoogle"

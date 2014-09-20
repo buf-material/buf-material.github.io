@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-09-20T15:06:41+09:00</updated>
+  <updated>2014-09-21T00:17:46+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -55,31 +55,23 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
 
 <p>Google AdSenseにおける広告は広告タイプ(テキスト広告とディスプレイ広告、テキスト広告のみ、ディスプレイ広告のみ)や広告サイズ(468x60、160x600、レスポンシブ、など)を定義した<strong>広告ユニット</strong>が広告の生成単位となり、広告コードもこの<strong>広告ユニット</strong>単位で生成されます。</p>
 
-<p>[広告の設定] > [コンテンツ] > [広告ユニット]までページを進め、<strong>＋新しい広告ユニット</strong>をクリックします。</p>
+<p>サイドバー向けの広告ユニットを作成します。</p>
 
-<p><img src="http://yoursite.com/images/google_adsense_04.jpg" alt="" /></p>
+<p>[広告の設定] > [コンテンツ] > [広告ユニット]までページを進め、<strong>＋新しい広告ユニット</strong>をクリックします。
+ <img src="http://yoursite.com/images/google_adsense_04.jpg" alt="" /></p>
 
-<p><br></p>
+<p><br>
+名前は、あとで広告ユニットを特定しやすいように一意の名前と説明を入力するといいでしょう。
+今回は<code>buf-material_aside_336x280</code>とします。</p>
 
-<h4>1. 名前の指定</h4>
-
-<p>名前あとで広告ユニットを特定しやすいように一意の名前と説明を入力するといいでしょう。
-今回は<code>buf-material_aside_01</code>とします。</p>
-
-<h4>2. 広告サイズのを指定</h4>
-
-<p>広告サイズは最初に表示されている<strong>推奨</strong>から選ぶと無難かもしれません。これら推奨の広告サイズはGoogle AdSense側で広告の掲載効果があったとされる広告サイズのようです。</p>
+<p>広告サイズは最初に表示されている<strong>推奨</strong>から選ぶと無難かもしれません。これら推奨の広告サイズはGoogle AdSense側で広告の掲載効果があったとされる広告サイズのようです。今回は<code>336x280 レクタングル (大)</code>を選択します。</p>
 
 <p>また、モバイルで効果的な広告サイズにはモバイルのアイコン（<img src="//storage.googleapis.com/support-kms-prod/SNP_E2D5EEDDCF0F04F7FDDA2775FC774BEA6061_6002584_en_v0" height="auto" alt="mobile icon" title="mobile icon">）が表示されます。</p>
 
-<p>プレビューを選択することでポップアップで実際の大きさを確認できますので参考に出来ますね。</p>
+<p>広告サイズに関しては、<code>プレビュー</code>を選択することでポップアップで実際の大きさを確認できますので参考に出来ますね。</p>
 
-<h4>3. 広告タイプの指定</h4>
-
-<p>広告タイプとして以下の3つから選択することになります。
-  * テキスト広告とディスプレイ広告
-  * テキスト広告のみ
-  * ディスプレイ広告のみ</p>
+<p><br>
+広告タイプは、<code>テキスト広告とディスプレイ広告</code>、<code>テキスト広告のみ</code>、<code>ディスプレイ広告のみ</code>の3つから選択します。今回は推奨されている<code>テキスト広告とディスプレイ広告</code>を選択します。</p>
 
 <p><br>
 <img src="http://yoursite.com/images/google_adsense_03.jpg" alt="" />
@@ -110,7 +102,7 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
 <span class='line-number'>11</span>
 </pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;section&gt;</span>
 </span><span class='line'><span class="nt">&lt;script </span><span class="na">async</span> <span class="na">src=</span><span class="s">&quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'><span class="c">&lt;!-- buf-material_aside_01 --&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- buf-material_aside_336x280 --&gt;</span>
 </span><span class='line'><span class="nt">&lt;ins</span> <span class="na">class=</span><span class="s">&quot;adsbygoogle&quot;</span>
 </span><span class='line'>     <span class="na">style=</span><span class="s">&quot;display:inline-block;width:336px;height:280px&quot;</span>
 </span><span class='line'>     <span class="na">data-ad-client=</span><span class="s">&quot;ca-pub-XXXXXXXXXXXXXXXX&quot;</span>
@@ -133,7 +125,7 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 </pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default_asides</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span>
-</span><span class='line'>    <span class="nv">custom/asides/google_adsense.html</span><span class="p-Indicator">,</span>
+</span><span class='line'>    <span class="nv">custom/asides/google_adsense_336x280.html</span><span class="p-Indicator">,</span>
 </span><span class='line'>    <span class="nv">asides/recent_posts.html</span><span class="p-Indicator">,</span>
 </span><span class='line'>    <span class="nv">custom/asides/category_list.html</span><span class="p-Indicator">,</span>
 </span><span class='line'>    <span class="nv">custom/asides/tag_cloud.html</span><span class="p-Indicator">,</span>
@@ -180,7 +172,7 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
 <span class='line-number'>11</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">async</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
-</span><span class='line'><span class="c">&lt;!--</span> <span class="nx">buf</span><span class="o">-</span><span class="nx">material_aside_01</span> <span class="o">--&gt;</span>
+</span><span class='line'><span class="c">&lt;!--</span> <span class="nx">buf</span><span class="o">-</span><span class="nx">material_aside_336x280</span> <span class="o">--&gt;</span>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">ins</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;adsbygoogle&quot;</span>
 </span><span class='line'>     <span class="nx">style</span><span class="o">=</span><span class="s2">&quot;display:inline-block;width:336px;height:280px&quot;</span>
 </span><span class='line'>     <span class="nx">data</span><span class="o">-</span><span class="nx">ad</span><span class="o">-</span><span class="nx">client</span><span class="o">=</span><span class="s2">&quot;ca-pub-XXXXXXXXXXXXXXXX&quot;</span>
