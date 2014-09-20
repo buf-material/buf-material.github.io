@@ -144,7 +144,7 @@
 
 <p>Octopressの場合、このトラッキングコードの大枠のコードがテーマのテンプレートHTMLファイルとして用意されているケースがあります。このような場合には<code>_config.yml</code>の<code>google_analytics_tracking_id:</code>という箇所に<a href="https://support.google.com/analytics/answer/1032385?hl=ja">トラッキング ID</a>を記述するだけです。</p>
 
-<p>トラッキング IDとはUA-000000-01」のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
+<p>トラッキング IDとは<code>UA-000000-01</code>のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
 
 <h2>トラッキングIDの取得</h2>
 
@@ -186,7 +186,11 @@ octopress
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
 </pre></td><td class='code'><pre><code class='sh'><span class='line'>rake generate
+</span><span class='line'>
+</span><span class='line'><span class="c">## ローカル環境で確認する場合はpreviewタスクも実行します</span>
 </span><span class='line'>rake preview
 </span></code></pre></td></tr></table></div></figure>
 
@@ -277,6 +281,8 @@ octopress
             <li class="previous"><a href="/blog/2014/09/02/customize-octopress-themes-from-classic-to-octostrap3/" title="Previous Post: Octopressのテーマをclassicからoctostrap3に変更してみる">&laquo; Octopressのテーマをclassicからoctostrap3に変更してみる</a></li>
             
             
+            <li class="next"><a href="/blog/2014/09/18/setting-google-adsense-octopress/" title="Next Post: OctopressにGoogle AdSenseを導入する">OctopressにGoogle AdSenseを導入する &raquo;</a></li>
+            
           </ul>
         
       </footer>
@@ -287,12 +293,14 @@ octopress
   
   <aside class="sidebar col-md-3">
     
-      <section class="panel panel-default">
+      Included file 'custom/asides/google_adsense.html' not found in _includes directory<section class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Recent Posts</h3>
   </div>
   
   <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item " href="/blog/2014/09/18/setting-google-adsense-octopress/">OctopressにGoogle AdSenseを導入する</a>
     
     <a class="list-group-item active" href="/blog/2014/09/16/setting-google-alalytics-octopress/">OctopressにGoogle Analyticsを導入する</a>
     
@@ -301,8 +309,6 @@ octopress
     <a class="list-group-item " href="/blog/2014/09/01/add-category-list-and-tag-list-on-asides/">Octopressでカテゴリーリストとタグクラウドをサイドメニューに追加する</a>
     
     <a class="list-group-item " href="/blog/2014/08/31/rejected-octopress-deploy-to-github-pages/">OctopressのコンテンツデータをGitHub Pagesへdeployしようとしたらrejectedで失敗する件</a>
-    
-    <a class="list-group-item " href="/blog/2014/07/20/installation_octopress_on_github_pages/">Octopress + GitHub Pages = Simple Blog</a>
     
   </div>
 </section>
@@ -326,7 +332,7 @@ octopress
     
     
     <a class="list-group-item " href="/blog/categories/octopress/index.html">
-        <span class="badge">5</span>
+        <span class="badge">6</span>
         octopress
       </a>
     
@@ -336,13 +342,19 @@ octopress
         google analytics
       </a>
     
+    
+    <a class="list-group-item " href="/blog/categories/google-adsense/index.html">
+        <span class="badge">1</span>
+        google adsense
+      </a>
+    
   </div>
 </section>
 <section class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Tag cloud</h3>
   </div>
-  <span id="tag-cloud"><a href='/blog/categories/blog' style='font-size: 112.0%'>blog(1)</a> <a href='/blog/categories/github-pages' style='font-size: 112.0%'>github pages(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 112.0%'>google analytics(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(5)</a> </span>
+  <span id="tag-cloud"><a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> </span>
 </section>
 
     

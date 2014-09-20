@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-09-17T23:02:48+09:00</updated>
+  <updated>2014-09-20T14:19:31+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,189 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[OctopressにGoogle AdSenseを導入する]]></title>
+    <link href="http://yoursite.com/blog/2014/09/18/setting-google-adsense-octopress/"/>
+    <updated>2014-09-18T15:27:28+09:00</updated>
+    <id>http://yoursite.com/blog/2014/09/18/setting-google-adsense-octopress</id>
+    <content type="html"><![CDATA[<h2>Google AdSenseとは</h2>
+
+<p>広告収入を稼ぐためのアフィリエイトサービスと言えばいいのでしょうか。</p>
+
+<p>詳細は、<a href="https://www.google.com/adsense/">Google AdSense</a>について<a href="http://ja.wikipedia.org/wiki/Google_AdSense">wikipedia</a>から転記します。</p>
+
+<pre><code>### http://ja.wikipedia.org/wiki/Google_AdSense から転記
+
+Google AdSense（グーグルアドセンス）はGoogleの提供している検索連動型およびコンテンツ連動型広告の広告配信サービスの総称である。
+
+AdSenseは、Googleが広告ネットワークに対して提供する配信サービスの総称であり、その形態は多岐にわたる。
+コンテンツ向けAdSenseは所有するWebサイト（ブログでも可）にGoogle AdSenseの広告コードを貼り付けると広告が表示され、その広告がクリックされると報酬が得られる仕組みである。Google AdSenseのシステムが自動的にサイトの内容を解析し、そのサイトにあったコンテンツ連動型広告を配信するシステムである[1]。例えば、ゴルフ関連のサイトなら、自動的にゴルフの広告が表示されるよう設計されている(サイトの内容によっては、それと関連する適切な広告がなく、まったく分野の異なる広告が表示されることもある)。Googleでの検索履歴から広告が表示されることもある[2]。 日本では2003年12月一般向けに募集を開始[3]したことでブロガーなどに広まり急速にシェアを広げた。
+その他、ウェブページ内に検索の機能を提供し、検索キーワードに関連する広告を表示する検索向けAdSense、RSSフィードの記事内にAdSense広告を自動的に表示するフィード向けAdSense[4]などがある。
+</code></pre>
+
+
+<p><br>
+ということで、<a href="https://www.google.com/adsense/">Google AdSense</a>を使用してOctopressサイト内に広告を表示してみようと思います。</p>
+
+<h2>Google AdSense側の設定</h2>
+
+<h3>所有サイトのURLを追加する(任意)</h3>
+
+<p><strong>所有サイト</strong>としてサイトのURLを登録しておくことでサイト固有の広告ブロック ルールを作成するなど、サイトに関連する操作を行うことができるようになるようです。具体的には、特定広告主URLや広告ネットワーク、特定カテゴリに関わる広告を表示させたくない場合等に非表示設定をおこなうことが可能です。</p>
+
+<p><img src="http://yoursite.com/images/google_adsense_02.jpg" alt="" /></p>
+
+<p><a href="https://www.google.com/adsense/">Google AdSense</a>へGoogleアカウントにてログインし、<strong>アカウント > サイト管理</strong>の順にページを移動します。</p>
+
+<p>下の画像のようなテキスト入力フォームがあるので、広告を表示させたいサイトのトップURLを入力し、<strong>サイトを追加</strong>します。</p>
+
+<p><img src="http://yoursite.com/images/google_adsense_01.jpg" alt="" /></p>
+
+<h3>広告ユニットを作成し、コードを取得する</h3>
+
+<p>Google AdSenseにおける広告は広告タイプ(テキスト広告とディスプレイ広告、テキスト広告のみ、ディスプレイ広告のみ)や広告サイズ(468x60、160x600、レスポンシブ、など)を定義した<strong>広告ユニット</strong>が広告の生成単位となり、広告コードもこの<strong>広告ユニット</strong>単位で生成されます。</p>
+
+<p>[広告の設定] > [コンテンツ] > [広告ユニット]までページを進め、<strong>＋新しい広告ユニット</strong>をクリックします。</p>
+
+<p><img src="http://yoursite.com/images/google_adsense_04.jpg" alt="" /></p>
+
+<p><br></p>
+
+<h4>1. 名前の指定</h4>
+
+<p>名前あとで広告ユニットを特定しやすいように一意の名前と説明を入力するといいでしょう。
+今回は<code>buf-material_side</code>とします。</p>
+
+<h4>2. 広告サイズのを指定</h4>
+
+<p>広告サイズは最初に表示されている<strong>推奨</strong>から選ぶと無難かもしれません。これら推奨の広告サイズはGoogle AdSense側で広告の掲載効果があったとされる広告サイズのようです。</p>
+
+<p>また、モバイルで効果的な広告サイズにはモバイルのアイコン（<img src="//storage.googleapis.com/support-kms-prod/SNP_E2D5EEDDCF0F04F7FDDA2775FC774BEA6061_6002584_en_v0" height="auto" alt="mobile icon" title="mobile icon">）が表示されます。</p>
+
+<p>プレビューを選択することでポップアップで実際の大きさを確認できますので参考に出来ますね。</p>
+
+<h4>3. 広告タイプの指定</h4>
+
+<p>広告タイプとして以下の3つから選択することになります。
+  * テキスト広告とディスプレイ広告
+  * テキスト広告のみ
+  * ディスプレイ広告のみ</p>
+
+<p><br>
+<img src="http://yoursite.com/images/google_adsense_03.jpg" alt="" />
+<br></p>
+
+<p><code>保存してコードを取得</code>を選択し、コードを取得します。</p>
+
+<h2>Octopress側の設定</h2>
+
+<p>今回は、広告をサイドバーに表示してみようと思います。</p>
+
+<p>Octopressではサイドバーのコンテンツはセクションごとに<code>source/_includes/custom/asides/</code>ディレクトリ以下にHTMLファイルを用意し、<code>_config.yml</code>内の<code>default_asides:</code>に表示させたいファイル名をリストで持つことになっています。この時、Octopress側で1つのセクションであることを定義するために一番外枠として<code>&lt;section&gt;と&lt;/section&gt;</code>で括るようにします。</p>
+
+<h3>サイドバーに表示するHTMLの準備</h3>
+
+<p><code>source/_includes/custom/asides/google_adsense_336x280.html</code>として作成します。</p>
+
+<figure class='code'><figcaption><span>source/_includes/custom/asides//google_adsense_336x280.html </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;section&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">async</span> <span class="na">src=</span><span class="s">&quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- buf-material_aside_01 --&gt;</span>
+</span><span class='line'><span class="nt">&lt;ins</span> <span class="na">class=</span><span class="s">&quot;adsbygoogle&quot;</span>
+</span><span class='line'>     <span class="na">style=</span><span class="s">&quot;display:inline-block;width:336px;height:280px&quot;</span>
+</span><span class='line'>     <span class="na">data-ad-client=</span><span class="s">&quot;ca-pub-XXXXXXXXXXXXXXXX&quot;</span>
+</span><span class='line'>     <span class="na">data-ad-slot=</span><span class="s">&quot;XXXXXXXXXX&quot;</span><span class="nt">&gt;&lt;/ins&gt;</span>
+</span><span class='line'><span class="nt">&lt;script&gt;</span>
+</span><span class='line'><span class="p">(</span><span class="nx">adsbygoogle</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">adsbygoogle</span> <span class="o">||</span> <span class="p">[]).</span><span class="nx">push</span><span class="p">({});</span>
+</span><span class='line'><span class="nt">&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;/section&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>_config.yml の設定</h3>
+
+<p><code>_config.yml</code>の<code>default_asides:</code>に<code>google_adsense_336x280.html</code>を追記します。この広告はサイドバーの最上段に表示させたいので、<code>default_asides:</code>リストの1番上に記述します。</p>
+
+<figure class='code'><figcaption><span>_config.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default_asides</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span>
+</span><span class='line'>    <span class="nv">custom/asides/google_adsense.html</span><span class="p-Indicator">,</span>
+</span><span class='line'>    <span class="nv">asides/recent_posts.html</span><span class="p-Indicator">,</span>
+</span><span class='line'>    <span class="nv">custom/asides/category_list.html</span><span class="p-Indicator">,</span>
+</span><span class='line'>    <span class="nv">custom/asides/tag_cloud.html</span><span class="p-Indicator">,</span>
+</span><span class='line'><span class="p-Indicator">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>静的ファイルの再生成とデプロイ</h2>
+
+<p>静的ファイルを再生成します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake generate
+</span><span class='line'>
+</span><span class='line'><span class="c">## ローカル環境で確認する場合はpreviewタスクも実行します</span>
+</span><span class='line'>rake preview
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>GitHub Pages</code>へデプロイします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake deploy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>確認</h2>
+
+<p><code>GitHub Pages</code>へアクセスした際に表示されるHTMLコードを確認し、<code>&lt;aside&gt;</code>タグ内に以下のscriptコードが組み込まれていれば設定できています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">async</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'><span class="c">&lt;!--</span> <span class="nx">buf</span><span class="o">-</span><span class="nx">material_aside_01</span> <span class="o">--&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">ins</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;adsbygoogle&quot;</span>
+</span><span class='line'>     <span class="nx">style</span><span class="o">=</span><span class="s2">&quot;display:inline-block;width:336px;height:280px&quot;</span>
+</span><span class='line'>     <span class="nx">data</span><span class="o">-</span><span class="nx">ad</span><span class="o">-</span><span class="nx">client</span><span class="o">=</span><span class="s2">&quot;ca-pub-XXXXXXXXXXXXXXXX&quot;</span>
+</span><span class='line'>     <span class="nx">data</span><span class="o">-</span><span class="nx">ad</span><span class="o">-</span><span class="nx">slot</span><span class="o">=</span><span class="s2">&quot;XXXXXXXXXX&quot;</span><span class="o">&gt;&lt;</span><span class="err">/ins&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'><span class="p">(</span><span class="nx">adsbygoogle</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">adsbygoogle</span> <span class="o">||</span> <span class="p">[]).</span><span class="nx">push</span><span class="p">({});</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/section&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[OctopressにGoogle Analyticsを導入する]]></title>
@@ -29,7 +212,7 @@
 
 <p>Octopressの場合、このトラッキングコードの大枠のコードがテーマのテンプレートHTMLファイルとして用意されているケースがあります。このような場合には<code>_config.yml</code>の<code>google_analytics_tracking_id:</code>という箇所に<a href="https://support.google.com/analytics/answer/1032385?hl=ja">トラッキング ID</a>を記述するだけです。</p>
 
-<p>トラッキング IDとはUA-000000-01」のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
+<p>トラッキング IDとは<code>UA-000000-01</code>のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
 
 <h2>トラッキングIDの取得</h2>
 
@@ -71,7 +254,11 @@ octopress
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
 </pre></td><td class='code'><pre><code class='sh'><span class='line'>rake generate
+</span><span class='line'>
+</span><span class='line'><span class="c">## ローカル環境で確認する場合はpreviewタスクも実行します</span>
 </span><span class='line'>rake preview
 </span></code></pre></td></tr></table></div></figure>
 

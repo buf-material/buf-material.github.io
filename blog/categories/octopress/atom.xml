@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-09-17T23:02:48+09:00</updated>
+  <updated>2014-09-20T14:19:31+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,167 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[OctopressにGoogle AdSenseを導入する]]></title>
+    <link href="http://yoursite.com/blog/2014/09/18/setting-google-adsense-octopress/"/>
+    <updated>2014-09-18T15:27:28+09:00</updated>
+    <id>http://yoursite.com/blog/2014/09/18/setting-google-adsense-octopress</id>
+    <content type="html"><![CDATA[<h2>Google AdSenseとは</h2>
+
+<p>広告収入を稼ぐためのアフィリエイトサービスと言えばいいのでしょうか。</p>
+
+<p>詳細は、<a href="https://www.google.com/adsense/">Google AdSense</a>について<a href="http://ja.wikipedia.org/wiki/Google_AdSense">wikipedia</a>から転記します。</p>
+
+<pre><code>### http://ja.wikipedia.org/wiki/Google_AdSense から転記
+
+Google AdSense（グーグルアドセンス）はGoogleの提供している検索連動型およびコンテンツ連動型広告の広告配信サービスの総称である。
+
+AdSenseは、Googleが広告ネットワークに対して提供する配信サービスの総称であり、その形態は多岐にわたる。
+コンテンツ向けAdSenseは所有するWebサイト（ブログでも可）にGoogle AdSenseの広告コードを貼り付けると広告が表示され、その広告がクリックされると報酬が得られる仕組みである。Google AdSenseのシステムが自動的にサイトの内容を解析し、そのサイトにあったコンテンツ連動型広告を配信するシステムである[1]。例えば、ゴルフ関連のサイトなら、自動的にゴルフの広告が表示されるよう設計されている(サイトの内容によっては、それと関連する適切な広告がなく、まったく分野の異なる広告が表示されることもある)。Googleでの検索履歴から広告が表示されることもある[2]。 日本では2003年12月一般向けに募集を開始[3]したことでブロガーなどに広まり急速にシェアを広げた。
+その他、ウェブページ内に検索の機能を提供し、検索キーワードに関連する広告を表示する検索向けAdSense、RSSフィードの記事内にAdSense広告を自動的に表示するフィード向けAdSense[4]などがある。
+</code></pre>
+
+
+<p><br>
+ということで、<a href="https://www.google.com/adsense/">Google AdSense</a>を使用してOctopressサイト内に広告を表示してみようと思います。</p>
+
+<h2>Google AdSense側の設定</h2>
+
+<h3>所有サイトのURLを追加する(任意)</h3>
+
+<p><strong>所有サイト</strong>としてサイトのURLを登録しておくことでサイト固有の広告ブロック ルールを作成するなど、サイトに関連する操作を行うことができるようになるようです。具体的には、特定広告主URLや広告ネットワーク、特定カテゴリに関わる広告を表示させたくない場合等に非表示設定をおこなうことが可能です。</p>
+
+<p><img src="/images/google_adsense_02.jpg" alt="" /></p>
+
+<p><a href="https://www.google.com/adsense/">Google AdSense</a>へGoogleアカウントにてログインし、<strong>アカウント > サイト管理</strong>の順にページを移動します。</p>
+
+<p>下の画像のようなテキスト入力フォームがあるので、広告を表示させたいサイトのトップURLを入力し、<strong>サイトを追加</strong>します。</p>
+
+<p><img src="/images/google_adsense_01.jpg" alt="" /></p>
+
+<h3>広告ユニットを作成し、コードを取得する</h3>
+
+<p>Google AdSenseにおける広告は広告タイプ(テキスト広告とディスプレイ広告、テキスト広告のみ、ディスプレイ広告のみ)や広告サイズ(468x60、160x600、レスポンシブ、など)を定義した<strong>広告ユニット</strong>が広告の生成単位となり、広告コードもこの<strong>広告ユニット</strong>単位で生成されます。</p>
+
+<p>[広告の設定] > [コンテンツ] > [広告ユニット]までページを進め、<strong>＋新しい広告ユニット</strong>をクリックします。</p>
+
+<p><img src="/images/google_adsense_04.jpg" alt="" /></p>
+
+<p><br></p>
+
+<h4>1. 名前の指定</h4>
+
+<p>名前あとで広告ユニットを特定しやすいように一意の名前と説明を入力するといいでしょう。
+今回は<code>buf-material_side</code>とします。</p>
+
+<h4>2. 広告サイズのを指定</h4>
+
+<p>広告サイズは最初に表示されている<strong>推奨</strong>から選ぶと無難かもしれません。これら推奨の広告サイズはGoogle AdSense側で広告の掲載効果があったとされる広告サイズのようです。</p>
+
+<p>また、モバイルで効果的な広告サイズにはモバイルのアイコン（<img src="//storage.googleapis.com/support-kms-prod/SNP_E2D5EEDDCF0F04F7FDDA2775FC774BEA6061_6002584_en_v0" height="auto" alt="mobile icon" title="mobile icon">）が表示されます。</p>
+
+<p>プレビューを選択することでポップアップで実際の大きさを確認できますので参考に出来ますね。</p>
+
+<h4>3. 広告タイプの指定</h4>
+
+<p>広告タイプとして以下の3つから選択することになります。
+  * テキスト広告とディスプレイ広告
+  * テキスト広告のみ
+  * ディスプレイ広告のみ</p>
+
+<p><br>
+<img src="/images/google_adsense_03.jpg" alt="" />
+<br></p>
+
+<p><code>保存してコードを取得</code>を選択し、コードを取得します。</p>
+
+<h2>Octopress側の設定</h2>
+
+<p>今回は、広告をサイドバーに表示してみようと思います。</p>
+
+<p>Octopressではサイドバーのコンテンツはセクションごとに<code>source/_includes/custom/asides/</code>ディレクトリ以下にHTMLファイルを用意し、<code>_config.yml</code>内の<code>default_asides:</code>に表示させたいファイル名をリストで持つことになっています。この時、Octopress側で1つのセクションであることを定義するために一番外枠として<code>&lt;section&gt;と&lt;/section&gt;</code>で括るようにします。</p>
+
+<h3>サイドバーに表示するHTMLの準備</h3>
+
+<p><code>source/_includes/custom/asides/google_adsense_336x280.html</code>として作成します。</p>
+
+<p>&#8220;`html source/_includes/custom/asides//google_adsense_336x280.html
+<section></p>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+<!-- buf-material_aside_01 -->
+
+
+<p><ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+     data-ad-slot="XXXXXXXXXX"></ins></p>
+
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+<p></section>
+&#8220;`</p>
+
+<h3>_config.yml の設定</h3>
+
+<p><code>_config.yml</code>の<code>default_asides:</code>に<code>google_adsense_336x280.html</code>を追記します。この広告はサイドバーの最上段に表示させたいので、<code>default_asides:</code>リストの1番上に記述します。</p>
+
+<pre><code class="yaml _config.yml">default_asides: [
+    custom/asides/google_adsense.html,
+    asides/recent_posts.html,
+    custom/asides/category_list.html,
+    custom/asides/tag_cloud.html,
+]
+</code></pre>
+
+<h2>静的ファイルの再生成とデプロイ</h2>
+
+<p>静的ファイルを再生成します。</p>
+
+<pre><code class="sh">rake generate
+
+## ローカル環境で確認する場合はpreviewタスクも実行します
+rake preview
+</code></pre>
+
+<p><code>GitHub Pages</code>へデプロイします。</p>
+
+<pre><code class="sh">rake deploy
+</code></pre>
+
+<h2>確認</h2>
+
+<p><code>GitHub Pages</code>へアクセスした際に表示されるHTMLコードを確認し、<code>&lt;aside&gt;</code>タグ内に以下のscriptコードが組み込まれていれば設定できています。</p>
+
+<p>&#8220;`javascript
+<section></p>
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+<!-- buf-material_aside_01 -->
+
+
+<p><ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+     data-ad-slot="XXXXXXXXXX"></ins></p>
+
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+<p></section>
+&#8220;`</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[OctopressにGoogle Analyticsを導入する]]></title>
@@ -29,7 +190,7 @@
 
 <p>Octopressの場合、このトラッキングコードの大枠のコードがテーマのテンプレートHTMLファイルとして用意されているケースがあります。このような場合には<code>_config.yml</code>の<code>google_analytics_tracking_id:</code>という箇所に<a href="https://support.google.com/analytics/answer/1032385?hl=ja">トラッキング ID</a>を記述するだけです。</p>
 
-<p>トラッキング IDとはUA-000000-01」のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
+<p>トラッキング IDとは<code>UA-000000-01</code>のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
 
 <h2>トラッキングIDの取得</h2>
 
@@ -68,6 +229,8 @@ octopress
 <p>静的ファイルを再生成します。</p>
 
 <pre><code class="sh">rake generate
+
+## ローカル環境で確認する場合はpreviewタスクも実行します
 rake preview
 </code></pre>
 
@@ -252,7 +415,7 @@ octopress
     
     
     &lt;a class="list-group-item " href="/blog/categories/octopress/index.html"&gt;
-        &lt;span class="badge"&gt;5&lt;/span&gt;
+        &lt;span class="badge"&gt;6&lt;/span&gt;
         octopress
       &lt;/a&gt;
     
@@ -260,6 +423,12 @@ octopress
     &lt;a class="list-group-item " href="/blog/categories/google-analytics/index.html"&gt;
         &lt;span class="badge"&gt;1&lt;/span&gt;
         google analytics
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/google-adsense/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        google adsense
       &lt;/a&gt;
     
   &lt;/div&gt;
@@ -272,7 +441,7 @@ octopress
   &lt;div class="panel-heading"&gt;
     &lt;h3 class="panel-title"&gt;Tag cloud&lt;/h3&gt;
   &lt;/div&gt;
-  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/blog' style='font-size: 112.0%'>blog(1)</a> <a href='/blog/categories/github-pages' style='font-size: 112.0%'>github pages(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 112.0%'>google analytics(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(5)</a> &lt;/span&gt;
+  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> &lt;/span&gt;
 &lt;/section&gt;
 </code></pre>
 
@@ -378,301 +547,6 @@ cd -
    end
  end
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Octopress + GitHub Pages = Simple Blog]]></title>
-    <link href="http://yoursite.com/blog/2014/07/20/installation_octopress_on_github_pages/"/>
-    <updated>2014-07-20T23:49:28+09:00</updated>
-    <id>http://yoursite.com/blog/2014/07/20/installation_octopress_on_github_pages</id>
-    <content type="html"><![CDATA[<p>いきなりですが、ブログを開設したいと思いました。</p>
-
-<p>VimやMarkdownの勉強も兼ねることができるので、<strong>Octopress + GitHub Pages</strong>で書いてみることにします。</p>
-
-<h2>Octopress</h2>
-
-<p><a href="http://octopress.org/">http://octopress.org/</a></p>
-
-<p><img src="/images/octopress_top.jpg" alt="" /></p>
-
-<p><strong><a href="http://octopress.org/">Octopress</a></strong>とは、<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>という静的ファイルジェネレータのためのフレームワークです。</p>
-
-<p><strong>jekyll</strong>がMarkdownでの記事作成に対応しているのでエンジニアの方で利用されている方が多いようです。</p>
-
-<ol>
-<li> HTML5,レスポンシブデザイン対応
-
-<ul>
-<li>デフォルトのテンプレートデザインで既にレスポンシブデザイン対応</li>
-</ul>
-</li>
-<li> Compass,Sassを用いたデザイン</li>
-<li> 記事の新規作成やローカルレビューなどの操作はrakeタスクに纏まっていてシンプル</li>
-<li> ローカルで作成した記事を反映させる方法は、<code>Github pages</code>や<code>Rsync</code>を利用
-
-<ul>
-<li><code>Github pages</code>の場合はgithubへpushして更新</li>
-</ul>
-</li>
-<li> <code>POW</code>,<code>WEBrick</code>,<code>thin</code>などのRackサーバをサポート</li>
-<li> カラースキームとして<a href="http://ethanschoonover.com/solarized">solarized</a>を採用することで美しいシンタックスハイライトを実現</li>
-<li> Markdownで記事を作成可能</li>
-</ol>
-
-
-<h2>GitHub Pages</h2>
-
-<p><a href="https://pages.github.com/">https://pages.github.com/</a></p>
-
-<p><img src="/images/github_pages_top.jpg" alt="" /></p>
-
-<p><strong><a href="https://pages.github.com/">GitHub Pages</a></strong>とは、<code>username.github.io</code>というレポジトリに静的コンテンツを置くことでWebサイトとして公開できるものです。
-WebサイトのデフォルトURLはレポジトリ名と同じ<code>http://username.github.io</code>となります。
-ちなみに、<code>username</code>は自分のGitHubアカウント名に置き換えてください。</p>
-
-<p><strong>GitHub Pages</strong>としてWebページを作成することでコンテンツをGit管理にできるほか、GitHubレポジトリに置けることでバックアップとしての意味合いも果たします。</p>
-
-<p>そして、<strong>GitHub Pages</strong>では静的ファイルジェネレータの<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>を使ったブログ作成が可能なので、<strong>Octopress</strong>もインストール可能なのです。</p>
-
-<h2>Octopressをローカル環境にインストール</h2>
-
-<p>今回の最終目標は<strong>GitHub Pages</strong>でOctopressのエントリー記事を表示させることですが、記事作成などの主な操作はローカル環境で行う必要があります(GitHubレポジトリの内容を直接操作することはできない)。ローカル環境で記事作成などの操作を行った後に<code>GitHubへPushする</code>ことで<strong>GitHub Pages</strong>に反映させるのです。</p>
-
-<p>Octopressのソースコードを<code>git clone</code>でローカル環境に持ってきます。
-ローカル環境側のRubyバージョンが<code>1.9.3</code>以上の必要があるので、<a href="https://github.com/sstephenson/rbenv">rbenv</a>や<a href="https://github.com/wayneeseguin/rvm">rvm</a>などでインストールしておきます。</p>
-
-<pre><code class="sh">git clone git@github.com:imathis/octopress.git username.github.io
-cd username.github.io
-</code></pre>
-
-<p>gemモジュール群をインストールします。私の環境では、<code>Could not find a JavaScript runtime</code>エラーが発生するのを防ぐために、<strong>therubyracer</strong>プラグインも一緒にインストールします。</p>
-
-<p><code>Gemfile</code>に追記します。</p>
-
-<pre><code class="ruby Gemfile"># for "Could not find a JavaScript runtime" Error
-gem 'therubyracer'
-</code></pre>
-
-<p><code>Gemfile</code>に記述されているGemモジュール、および依存関係のあるGemモジュールをインストールします。</p>
-
-<pre><code class="sh">bundle install
-</code></pre>
-
-<p><code>rake install</code>コマンドを実行して<strong>Octopress初期セットアップとしてデフォルトテーマ用のファイルをJekyllの静的コンテンツ生成パスにコピー</strong>します。
-rakeタスク実行時の標準出力をそのまま記載しているので<code>mkdir</code>や<code>cp</code>はrakeタスク内で実行済みです。</p>
-
-<pre><code class="sh">$ bundle exec rake install
-## Copying classic theme into ./source and ./sass
-mkdir -p source
-cp -r .themes/classic/source/. source
-mkdir -p sass
-cp -r .themes/classic/sass/. sass
-mkdir -p source/_posts
-mkdir -p public
-</code></pre>
-
-<p>この段階で初期ページの表示確認は可能なはずですので<code>rake preview</code>コマンドを実行して、ローカル環境でWebページを公開します。</p>
-
-<p><code>rake preview</code>コマンドを実行することで<strong>Rakefile内のpreviewタスクを実行</strong>します。previewタスクでは<code>jekyll build --watch</code>コマンドを実行して静的コンテンツをジェネレートしつつ、以降の変更を監視し続けます。変更を検知すると再ジェネレートを自動実行してくれます。そして<code>rackup</code>コマンドを実行し、TCPポート4000番でWEBrickサーバを起動します。</p>
-
-<p>ここでも<code>rake preview</code>タスクの実行時の標準出力を(_config.ymlパス以外は)そのまま記載します。</p>
-
-<pre><code class="sh">$ bundle exec rake preview
-Starting to watch source with Jekyll and Compass. Starting Rack on port 4000
-[2014-07-22 01:08:53] INFO  WEBrick 1.3.1
-[2014-07-22 01:08:53] INFO  ruby 2.1.0 (2013-12-25) [x86_64-linux]
-[2014-07-22 01:08:53] INFO  WEBrick::HTTPServer#start: pid=4585 port=4000
-Configuration file: /path/to/username.github.io/_config.yml
-&gt;&gt;&gt; Change detected at 01:08:54 to: screen.scss
-            Source: source
-       Destination: public
-      Generating... 
-                    done.
- Auto-regeneration: enabled
-identical public/stylesheets/screen.css 
-</code></pre>
-
-<p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスすると以下のような初期ページが確認できます。</p>
-
-<p><img src="/images/octopress_initial.jpg" alt="" /></p>
-
-<h2>Octopressで指定可能なrakeタスク</h2>
-
-<p>Octopressをインストールする際に<code>rake install</code>コマンドや<code>rake preview</code>コマンドを実行しましたが、<strong>rakeコマンドの後ろに指定したサブコマンドはRakefileに定義されたタスク</strong>に対応しています。</p>
-
-<p>指定可能なrakeタスクは<code>rake -T</code>コマンドで確認できます。</p>
-
-<pre><code class="sh">$ bundle exec rake -T 
-rake clean                     # Clean out caches: .pygments-cache, .gist-cache, .sass-cache
-rake copydot[source,dest]      # copy dot files for deployment
-rake deploy                    # Default deploy task
-rake gen_deploy                # Generate website and deploy
-rake generate                  # Generate jekyll site
-rake install[theme]            # Initial setup for Octopress: copies the default theme into the path of Jekyll's generator
-rake integrate                 # Move all stashed posts back into the posts directory, ready for site generation
-rake isolate[filename]         # Move all other posts than the one currently being worked on to a temporary stash location (stash) so regenerating the site happens much more quickly
-rake list                      # list tasks
-rake new_page[filename]        # Create a new page in source/(filename)/index.markdown
-rake new_post[title]           # Begin a new post in source/_posts
-rake preview                   # preview the site in a web browser
-rake push                      # deploy public directory to github pages
-rake rsync                     # Deploy website via rsync
-rake set_root_dir[dir]         # Update configurations to support publishing to root or sub directory
-rake setup_github_pages[repo]  # Set up _deploy folder and deploy branch for Github Pages deployment
-rake update_source[theme]      # Move source to source.old, install source theme updates, replace source/_includes/navigation.html with source.old's navigation
-rake update_style[theme]       # Move sass to sass.old, install sass theme updates, replace sass/custom with sass.old/custom
-rake watch                     # Watch the site and regenerate when it changes
-</code></pre>
-
-<h2>記事を投稿する</h2>
-
-<p>新しい記事を投稿するためには<code>rake new_post[title]</code>コマンドを実行します。<code>title</code>部分は任意のタイトル文字を記述します。英字以外だとうまく認識できないケースが考えられるので、ここでは英字で指定します。</p>
-
-<pre><code class="sh">rake new_post[test_post]
-</code></pre>
-
-<p><code>rake new_post[test_post]</code>コマンドで<code>source/_posts/yyyy-mm-dd-test-post.markdown</code>というファイルが作成されます。</p>
-
-<pre><code class="sh">vim source/_posts/yyyy-mm-dd-test-post.markdown
-</code></pre>
-
-<p>テストのために本文を１行だけ追記しました。</p>
-
-<pre><code class="text source/_posts/yyyy-mm-dd-test-post.markdown">---
-layout: post
-title: "test_post"
-date: yyyy-mm-dd 00:00:00 +0900
-comments: true
-categories: 
----
-
-テスト投稿です
-</code></pre>
-
-<p>静的ページを生成します。</p>
-
-<pre><code class="sh">rake generate
-</code></pre>
-
-<p>サーバを立ち上げます。</p>
-
-<pre><code class="sh">rake preview
-</code></pre>
-
-<p>ブラウザで<code>http://localhost:4000</code>(localhostの部分はローカル環境のIPアドレスに置き換えてください)にアクセスします。</p>
-
-<p><img src="/images/octopress_test_page.jpg" alt="" /></p>
-
-<h2>OctopressをGithub Pagesで表示させる</h2>
-
-<p>今までローカル環境で編集してきたOctopressコードを新規作成した記事と共にGitHubにpushします。</p>
-
-<h3>GitHubレポジトリ作成</h3>
-
-<p>GitHubの新規レポジトリ作成ページにアクセスします。</p>
-
-<p><a href="https://github.com/new">https://github.com/new</a></p>
-
-<p><code>Repository name</code>に<code>username.github.io</code>(usernameは自分のGitHubアカウント名)を指定し、<code>Create repository</code>ボタンをクリックします。</p>
-
-<p><img src="/images/create_new_repo.jpg" alt="" /></p>
-
-<h3>ローカル環境にてgitレポジトリの作成</h3>
-
-<p><strong>OctopressでGitHub Pagesを利用する場合のgitレポジトリ作成には<code>setup_github_pages</code>という専用のrakeタスクが用意されています。</strong></p>
-
-<p><code>rake setup_github_pages</code>コマンドを作成したレポジトリのURLと共に実行します。</p>
-
-<ul>
-<li>レポジトリのURL例
-
-<ul>
-<li><code>git@github.com:your_username/your_username.github.io.git</code></li>
-<li><code>https://github.com/your_username/your_username.github.io</code></li>
-</ul>
-</li>
-</ul>
-
-
-<pre><code class="sh">rake setup_github_pages[git@github.com:username/username.github.io.git]
-</code></pre>
-
-<h3>GitHub Pagesへ反映</h3>
-
-<p>Octopressで記事などをGitHubへpushする時には<code>deploy</code>タスクを利用します。</p>
-
-<pre><code class="sh">rake deploy
-</code></pre>
-
-<p>GitHubにpush後10分程度待つと、<code>http://username.github.io</code>で先ほどまでローカル環境で表示できていたOctopressページを表示させることに成功しました。</p>
-
-<h2>ソースをBitbucketで管理</h2>
-
-<p><code>rake deploy</code>コマンドでは、GitHub上に作成されたレポジトリのmasterブランチに<a href="https://github.com/jekyll/jekyll">mojombo/jekyll</a>の静的コンテンツのみがpushされます。そして<code>Gemfile</code>,<code>Rakefile</code>,<code>sassディレクトリ</code>,<code>sourceディレクトリ</code>がレポジトリ管理になっていません。</p>
-
-<p><a href="http://octopress.org/docs/deploying/github/">Deploying to Github Pages</a>では、同一レポジトリに<code>sourceブランチ</code>を作成してソースをcommit、pushするように説明していますが、ソースは公開する必要はないので<strong>Bitbucketで管理</strong>します。</p>
-
-<h3>Bitbucketに新規レポジトリを作成</h3>
-
-<p>Bitbucketの新規レポジトリ作成ページにアクセスします。</p>
-
-<p><a href="https://bitbucket.org/repo/create">https://bitbucket.org/repo/create</a></p>
-
-<p>今回は<code>octopress</code>という名前のレポジトリ`を作成しています。</p>
-
-<p><img src="/images/octopress_repo_bitbucket.jpg" alt="" /></p>
-
-<h3>ソースをコミット</h3>
-
-<p><code>Gemfile</code>,<code>Rakefile</code>,<code>sassディレクトリ</code>,<code>sourceディレクトリ</code>などをレポジトリにコミットします。</p>
-
-<pre><code class="sh">git add -A
-git commit -m 'Modify config. Add source and sass'
-</code></pre>
-
-<h3>Bitbucketに作成したレポジトリへpush</h3>
-
-<pre><code class="sh">git remote add bitbucket git@bitbucket.org:username/octopress.git
-git push -u bitbucket source
-</code></pre>
-
-<h2>まとめ</h2>
-
-<h3>Octopressのインストール</h3>
-
-<ol>
-<li> <a href="https://github.com/imathis/octopress">https://github.com/imathis/octopress</a> からソースコードをclone</li>
-<li> <code>rake install</code>を実行して初期セットアップ</li>
-<li> <code>rake new_post['blog_title']</code>で新規記事を投稿</li>
-<li> <code>rake generate</code>で静的ページを生成</li>
-<li> <code>rake preview</code>でlocalhostの4000番ポートでWebサーバを起動</li>
-</ol>
-
-
-<h3>GtiHub PagesでOctopressで生成した静的ページを表示</h3>
-
-<ol>
-<li> <a href="https://github.com/new">https://github.com/new</a> で新規レポジトリを作成
-
-<ul>
-<li><code>Repository name</code>はusername.github.io(usernameは自分のGitHubアカウント名)</li>
-</ul>
-</li>
-<li> <code>rake setup_github_pages</code>でGitHub pagesを利用するための初期セットアップ</li>
-<li> <code>rake deploy</code>でGitHubレポジトリへpush</li>
-</ol>
-
-
-<h3>Bitbucketでソースコード管理</h3>
-
-<ol>
-<li> <a href="https://bitbucket.org/repo/create">https://bitbucket.org/repo/create</a> で新規レポジトリを作成</li>
-<li> <code>git add -A</code>と<code>git commit</code>でソースコードをコミット</li>
-<li> <code>git remote add</code>でBitbucketレポジトリをremote先として追加</li>
-<li> <code>git push</code>でBitbucketレポジトリにpush</li>
-</ol>
-
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Google Analytics | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/google-analytics/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-09-17T23:02:48+09:00</updated>
+  <updated>2014-09-20T14:19:31+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -29,7 +29,7 @@
 
 <p>Octopressの場合、このトラッキングコードの大枠のコードがテーマのテンプレートHTMLファイルとして用意されているケースがあります。このような場合には<code>_config.yml</code>の<code>google_analytics_tracking_id:</code>という箇所に<a href="https://support.google.com/analytics/answer/1032385?hl=ja">トラッキング ID</a>を記述するだけです。</p>
 
-<p>トラッキング IDとはUA-000000-01」のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
+<p>トラッキング IDとは<code>UA-000000-01</code>のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
 
 <h2>トラッキングIDの取得</h2>
 
@@ -68,6 +68,8 @@ octopress
 <p>静的ファイルを再生成します。</p>
 
 <pre><code class="sh">rake generate
+
+## ローカル環境で確認する場合はpreviewタスクも実行します
 rake preview
 </code></pre>
 
