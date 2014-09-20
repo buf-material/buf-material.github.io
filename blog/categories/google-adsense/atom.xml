@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Google Adsense | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/google-adsense/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-09-21T00:17:46+09:00</updated>
+  <updated>2014-09-21T00:20:18+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -83,11 +83,11 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
 
 <p>今回は、広告をサイドバーに表示してみようと思います。</p>
 
-<p>Octopressではサイドバーのコンテンツはセクションごとに<code>source/_includes/custom/asides/</code>ディレクトリ以下にHTMLファイルを用意し、<code>_config.yml</code>内の<code>default_asides:</code>に表示させたいファイル名をリストで持つことになっています。この時、Octopress側で1つのセクションであることを定義するために一番外枠として<code>&lt;section&gt;と&lt;/section&gt;</code>で括るようにします。</p>
+<p>Octopressではサイドバーのコンテンツはセクションごとに<code>source/_includes/custom/asides/</code>ディレクトリ以下にHTMLファイルを用意し、<code>_config.yml</code>内の<code>default_asides:</code>に表示させたいファイル名をリストで持つことになっています。</p>
 
 <h3>サイドバーに表示するHTMLの準備</h3>
 
-<p><code>source/_includes/custom/asides/google_adsense_336x280.html</code>として作成します。</p>
+<p><code>source/_includes/custom/asides/google_adsense_336x280.html</code>として作成します。この時、Octopress側で1つのセクションであることを定義するために一番外枠として<code>&lt;section&gt;と&lt;/section&gt;</code>で括るようにします。</p>
 
 <p>&#8220;`html source/_includes/custom/asides//google_adsense_336x280.html
 <section></p>
