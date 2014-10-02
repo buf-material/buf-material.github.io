@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Octopressでカテゴリーリストとタグクラウドをサイドメニューに追加する - My Octopress Blog</title>
+  <title>CentOS6でPostgreSQLインストール - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
@@ -14,15 +14,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://yoursite.com/blog/2014/09/01/add-category-list-and-tag-list-on-asides">
+  <link rel="canonical" href="http://yoursite.com/blog/2014/10/02/install-postgresql-to-centos6-for-rails4">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
 
   <!-- http://opengraphprotocol.org/ -->
   <meta name="twitter:card" content="summary_large_image">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="http://yoursite.com/blog/2014/09/01/add-category-list-and-tag-list-on-asides">
-  <meta property="og:title" content="Octopressでカテゴリーリストとタグクラウドをサイドメニューに追加する - My Octopress Blog">
+  <meta property="og:url" content="http://yoursite.com/blog/2014/10/02/install-postgresql-to-centos6-for-rails4">
+  <meta property="og:title" content="CentOS6でPostgreSQLインストール - My Octopress Blog">
   
 
   <script src="/javascripts/libs/jquery/jquery-2.0.3.min.js"></script>
@@ -136,13 +136,13 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-01T19:40:34+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-10-02T14:57:55+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
         
       </p>
     
     
     <h1 class="entry-title" itemprop="name headline">
-        Octopressでカテゴリーリストとタグクラウドをサイドメニューに追加する
+        CentOS6でPostgreSQLインストール
         
     </h1>
     
@@ -150,70 +150,115 @@
 
 
 
-<div class="entry-content clearfix" itemprop="articleBody description"><h2>デフォルトのサイドメニュー</h2>
+<div class="entry-content clearfix" itemprop="articleBody description"><p><a href="http://buf-material.github.io/blog/2014/09/22/install-bootstrap3-on-rails4/">Rails4でBootstrap3を使う(ついでにherokuへpush)</a>で書いたエントリーから<code>PostgreSQL</code>インストール手順を抜き出しただけのエントリーです。</p>
 
-<p>Octopressをインストールした直後は、サイドメニューは<code>Recent Posts</code>のみです。</p>
+<h2 class="text-warning">PostgreSQLの準備</h2>
 
-<p><img src="/images/add-category-list-asides_01.jpg" alt="" /></p>
 
-<p><br>
-そこで<strong>Octopress向けに公開されているプラグインを使ってサイドメニューにカテゴリーリストとタグクラウドを実装</strong>します。</p>
+<h3 class="text-success">PostgreSQLインストール</h3>
 
-<h2>プラグイン</h2>
 
-<p><a href="https://github.com/jekyll/jekyll">jekyll</a>には、特定コンテンツをHTMLとして生成してあなたのサイトに表示させるための<a href="http://jekyllrb.com/docs/plugins/">プラグイン</a>という仕組みを持っています。そして同時に、多くのプラグインが作成・公開されています。</p>
+<p>PostgreSQLの公式yumレポジトリからインストールします。</p>
 
-<p><a href="https://github.com/imathis/octopress">imathis/octopress</a>は<a href="https://github.com/jekyll/jekyll">jekyll</a>のためのフレームワークであり、静的コンテンツ生成にはjekyllを使用しているため、もちろんプラグインを導入することが可能です。</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>yum install -y http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm
+</span><span class='line'>yum install -y postgresql93-server postgresql93-contrib postgresql93-devel
+</span></code></pre></td></tr></table></div></figure>
 
-<h2>tokkonopapa/octopress-tagcloud プラグインのインストール</h2>
 
-<p><a href="https://github.com/tokkonopapa/octopress-tagcloud">tokkonopapa/octopress-tagcloud</a>のソースコードをcloneして、<a href="http://jekyllrb.com/docs/plugins/#installing-a-plugin">jekyllプラグインインストール作法</a>に準じてファイルを配布します。</p>
+<p>PostgreSQLインストール直後のデータベースディレクトリである<code>/var/lib/pgsql/9.3/data</code>を削除してデータベースを初期化(<code>initdb</code>)し、<code>postgresql-9.3サービス</code>を起動します。ついでに、自動起動も設定します。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>git clone git@github.com:tokkonopapa/octopress-tagcloud.git
-</span><span class='line'>cp -p octopress-tagcloud/plugins/tag_cloud.rb plugins/
-</span><span class='line'>cp -p octopress-tagcloud/source/_includes/custom/asides/* <span class="nb">source</span>/_includes/custom/asides/
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rm -rf /var/lib/pgsql/9.3/data
+</span><span class='line'>service postgresql-9.3 initdb
+</span><span class='line'>service postgresql-9.3 start
+</span><span class='line'>chkconfig postgresql-9.3 on
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>jekyllの設定ファイル<code>_config.yml</code>にtokkonopapa/octopress-tagcloud プラグインで生成する静的ファイルをサイドメニューのコンテンツとして使用するための設定を記述します。</p>
 
-<p>Octopressの<code>_config.yml</code>に<code>default_asides:</code>から始まる行があります。<code>default_asides:</code>はサイドメニューに表示するHTMLファイルを配列で記述していきます。</p>
 
-<figure class='code'><figcaption><span>tokkonopapa/octopress-tagcloud configuration (_config.yml)</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<h3 class="text-success">PostgreSQLの認証方式をPeerからTrustへ変更</h3>
+
+
+<p><a href="https://www.postgresql.jp/document/9.3/html/auth-methods.html">https://www.postgresql.jp/document/9.3/html/auth-methods.html</a></p>
+
+<p>PostgreSQLではデフォルトの認証方式として<code>Peer認証</code>が設定されています。Peer認証とは、カーネルからクライアント上のシステムユーザ名を取得し、PostgreSQLデータベースユーザと同一である場合のみ接続が許可される仕組みです。PostgreSQLでは、デフォルトでは<code>postgres</code>データベースユーザしか存在しないため、UnixユーザもPostgreSQLをパッケージインストールすると作成されている<code>postgres</code>である必要があります(<code>su - postgres</code>しないとダメということ)。</p>
+
+<p><strong><code>Peer認証</code>だとUnixのスーパーユーザである<code>root</code>であってもpostgresデータベースユーザへの接続は許可されません。</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default_asides</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span>
-</span><span class='line'>    <span class="nv">asides/recent_posts.html</span><span class="p-Indicator">,</span>
-</span><span class='line'>    <span class="nv">custom/asides/category_list.html</span><span class="p-Indicator">,</span>
-</span><span class='line'>    <span class="nv">custom/asides/tag_cloud.html</span>
-</span><span class='line'><span class="p-Indicator">]</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># id</span>
+</span><span class='line'><span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> 所属グループ<span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># psql --username=postgres</span>
+</span><span class='line'>psql: FATAL:  ユーザ <span class="s2">&quot;postgres&quot;</span> で対向<span class="o">(</span>peer<span class="o">)</span>認証に失敗しました
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>静的ファイルを生成してWebサーバを起動します。</p>
+<p>今回は、<strong>サーバに接続できる全Unixユーザから全データベースユーザへの接続が許可される<code>Trust認証</code>に変更します</strong>。</p>
+
+<p><code>Peer認証</code>から<code>Trust認証</code>への変更は<code>/var/lib/pgsql/9.3/data/pg_hba.conf</code>を修正します。</p>
+
+<figure class='code'><figcaption><span>/var/lib/pgsql/9.3/data/pg_hba.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>#local   all             all                                     peer
+</span><span class='line'>local   all             all                                     trust
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>設定ファイルを修正したので<code>postgresql-9.3</code>サービスを再起動します。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake preview
-</span><span class='line'>
-</span><span class='line'><span class="c"># GitHub Pages等でホスティングさせている場合はデプロイコマンドも実行しましょう</span>
-</span><span class='line'>rake deploy
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>service postgresql-9.3 restart
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>これでサイドメニューに以下画像のようなカテゴリーリストとタグクラウドが表示されたはずです。</p>
 
-<p><img src="/images/add-category-list-asides_02.jpg" alt="" /></p>
+
+<h3 class="text-success">Railsアプリケーション用のデータベースユーザを作成</h3>
+
+
+<h4><p class="text-danger">PostgreSQL 9.3ではCREATE USERはCREATE ROLEの別名になりました。 唯一の違いは、CREATE USERという名前でコマンドが呼び出されると、デフォルトでLOGINになり、CREATE ROLEという名前でコマンドが呼び出されると、デフォルトでNOLOGINとなる点です。</p></h4>
+
+
+<p><a href="https://www.postgresql.jp/document/9.3/html/sql-createuser.html">https://www.postgresql.jp/document/9.3/html/sql-createuser.html</a></p>
 
 <p><br>
-簡単でした!</p>
+PostgreSQLのスーパーユーザである<code>postgres</code>データベースユーザで接続します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>psql --username<span class="o">=</span>postgres
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>今回作成するRailsアプリケーションのプロジェクト名と同一の<code>bootstrap3_sample</code>というデータベースユーザを作成し、データベース作成権限とログイン権限を持つように設定します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">create</span> <span class="k">user</span> <span class="n">bootstrap3_sample</span> <span class="k">with</span> <span class="k">createdb</span> <span class="n">password</span> <span class="s1">&#39;bootstrap3_sample&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記SQLは以下コマンドと同じ効果があります</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>createuser --username<span class="o">=</span>postgres --createdb bootstrap3_sample -P
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>createuser</code>コマンドは<code>postgresql93(末尾の数字はバージョン番号なので適宜目置換を!)</code>RPMパッケージに付属しているPostgreSQLのデータベースユーザ(正確にはロール)を作成するためのコマンドです。SQLでのユーザ作成とは異なり、コマンドでパスワード文字列を指定することは出来ず、<code>-Pオプション</code>によってパスワード文字列を指定するプロンプトが表示されます。</p>
+
+<p>データベースユーザのパスワードがシステムカタログ上に保存される際に暗号化するかどうかは<code>ENCRYPTED/UNENCRYPTED</code>で明示するか、そうでない場合は、<code>/var/lib/pgsql/9.3/data/postgresql.conf</code>の<code>password_encryption</code>設定パラメータに依ります。<code>password_encryption</code>設定パラメータがonの場合に暗号化が有効(default: on)です。</p>
+
+<p>先述した通り、<strong><code>create user</code>SQLはログイン権限オプション(login)を明示しなくても有効となりますし、<code>createuser</code>コマンドでもログイン権限オプション(&ndash;login)がデフォルトで有効なので、ここでは指定していません。この辺りのSQLやコマンドの挙動はPostgreSQLバージョンにも依ると思うので自信の無い場合はログイン権限オプションを明示した方がいいかもしれません。</strong></p>
 </div>
 
 
@@ -237,13 +282,13 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-01T19:40:34+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-10-02T14:57:55+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
           
 
 <span class="glyphicon glyphicon-tags"></span>&nbsp;
 <span class="categories">
   
-    <a class='category' href='/blog/categories/octopress/'>octopress</a>
+    <a class='category' href='/blog/categories/centos6/'>centos6</a>, <a class='category' href='/blog/categories/postgresql/'>postgresql</a>, <a class='category' href='/blog/categories/rails4/'>rails4</a>
   
 </span>
 
@@ -252,7 +297,7 @@
         
           <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yoursite.com/blog/2014/09/01/add-category-list-and-tag-list-on-asides/" data-via="" data-counturl="http://yoursite.com/blog/2014/09/01/add-category-list-and-tag-list-on-asides/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yoursite.com/blog/2014/10/02/install-postgresql-to-centos6-for-rails4/" data-via="" data-counturl="http://yoursite.com/blog/2014/10/02/install-postgresql-to-centos6-for-rails4/" >Tweet</a>
   
   
   
@@ -262,10 +307,8 @@
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a href="/blog/2014/08/31/rejected-octopress-deploy-to-github-pages/" title="Previous Post: OctopressのコンテンツデータをGitHub Pagesへdeployしようとしたらrejectedで失敗する件">&laquo; OctopressのコンテンツデータをGitHub Pagesへdeployしようとしたらrejectedで失敗する件</a></li>
+            <li class="previous"><a href="/blog/2014/09/22/install-bootstrap3-on-rails4/" title="Previous Post: Rails4でBootstrap3を使う(ついでにherokuへpush)">&laquo; Rails4でBootstrap3を使う(ついでにherokuへpush)</a></li>
             
-            
-            <li class="next"><a href="/blog/2014/09/02/customize-octopress-themes-from-classic-to-octostrap3/" title="Next Post: Octopressのテーマをclassicからoctostrap3に変更してみる">Octopressのテーマをclassicからoctostrap3に変更してみる &raquo;</a></li>
             
           </ul>
         
@@ -295,7 +338,7 @@
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2014/10/02/install-postgresql-to-centos6-for-rails4/">CentOS6でPostgreSQLインストール</a>
+    <a class="list-group-item active" href="/blog/2014/10/02/install-postgresql-to-centos6-for-rails4/">CentOS6でPostgreSQLインストール</a>
     
     <a class="list-group-item " href="/blog/2014/09/22/install-bootstrap3-on-rails4/">Rails4でBootstrap3を使う(ついでにherokuへpush)</a>
     

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails4 | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/rails4/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-10-02T20:00:21+09:00</updated>
+  <updated>2014-10-02T23:39:18+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,94 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CentOS6でPostgreSQLインストール]]></title>
+    <link href="http://yoursite.com/blog/2014/10/02/install-postgresql-to-centos6-for-rails4/"/>
+    <updated>2014-10-02T14:57:55+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/02/install-postgresql-to-centos6-for-rails4</id>
+    <content type="html"><![CDATA[<p><a href="http://buf-material.github.io/blog/2014/09/22/install-bootstrap3-on-rails4/">Rails4でBootstrap3を使う(ついでにherokuへpush)</a>で書いたエントリーから<code>PostgreSQL</code>インストール手順を抜き出しただけのエントリーです。</p>
+
+<h2 class="text-warning">PostgreSQLの準備</h2>
+
+
+<h3 class="text-success">PostgreSQLインストール</h3>
+
+
+<p>PostgreSQLの公式yumレポジトリからインストールします。</p>
+
+<pre><code class="sh">yum install -y http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm
+yum install -y postgresql93-server postgresql93-contrib postgresql93-devel
+</code></pre>
+
+<p>PostgreSQLインストール直後のデータベースディレクトリである<code>/var/lib/pgsql/9.3/data</code>を削除してデータベースを初期化(<code>initdb</code>)し、<code>postgresql-9.3サービス</code>を起動します。ついでに、自動起動も設定します。</p>
+
+<pre><code class="sh">rm -rf /var/lib/pgsql/9.3/data
+service postgresql-9.3 initdb
+service postgresql-9.3 start
+chkconfig postgresql-9.3 on
+</code></pre>
+
+<h3 class="text-success">PostgreSQLの認証方式をPeerからTrustへ変更</h3>
+
+
+<p><a href="https://www.postgresql.jp/document/9.3/html/auth-methods.html">https://www.postgresql.jp/document/9.3/html/auth-methods.html</a></p>
+
+<p>PostgreSQLではデフォルトの認証方式として<code>Peer認証</code>が設定されています。Peer認証とは、カーネルからクライアント上のシステムユーザ名を取得し、PostgreSQLデータベースユーザと同一である場合のみ接続が許可される仕組みです。PostgreSQLでは、デフォルトでは<code>postgres</code>データベースユーザしか存在しないため、UnixユーザもPostgreSQLをパッケージインストールすると作成されている<code>postgres</code>である必要があります(<code>su - postgres</code>しないとダメということ)。</p>
+
+<p><strong><code>Peer認証</code>だとUnixのスーパーユーザである<code>root</code>であってもpostgresデータベースユーザへの接続は許可されません。</strong></p>
+
+<pre><code class="sh"># id
+uid=0(root) gid=0(root) 所属グループ=0(root)
+
+# psql --username=postgres
+psql: FATAL:  ユーザ "postgres" で対向(peer)認証に失敗しました
+</code></pre>
+
+<p>今回は、<strong>サーバに接続できる全Unixユーザから全データベースユーザへの接続が許可される<code>Trust認証</code>に変更します</strong>。</p>
+
+<p><code>Peer認証</code>から<code>Trust認証</code>への変更は<code>/var/lib/pgsql/9.3/data/pg_hba.conf</code>を修正します。</p>
+
+<pre><code class="text /var/lib/pgsql/9.3/data/pg_hba.conf">#local   all             all                                     peer
+local   all             all                                     trust
+</code></pre>
+
+<p>設定ファイルを修正したので<code>postgresql-9.3</code>サービスを再起動します。</p>
+
+<pre><code class="sh">service postgresql-9.3 restart
+</code></pre>
+
+<h3 class="text-success">Railsアプリケーション用のデータベースユーザを作成</h3>
+
+
+<h4><p class="text-danger">PostgreSQL 9.3ではCREATE USERはCREATE ROLEの別名になりました。 唯一の違いは、CREATE USERという名前でコマンドが呼び出されると、デフォルトでLOGINになり、CREATE ROLEという名前でコマンドが呼び出されると、デフォルトでNOLOGINとなる点です。</p></h4>
+
+
+<p><a href="https://www.postgresql.jp/document/9.3/html/sql-createuser.html">https://www.postgresql.jp/document/9.3/html/sql-createuser.html</a></p>
+
+<p><br>
+PostgreSQLのスーパーユーザである<code>postgres</code>データベースユーザで接続します。</p>
+
+<pre><code class="sh">psql --username=postgres
+</code></pre>
+
+<p>今回作成するRailsアプリケーションのプロジェクト名と同一の<code>bootstrap3_sample</code>というデータベースユーザを作成し、データベース作成権限とログイン権限を持つように設定します。</p>
+
+<pre><code class="sql">create user bootstrap3_sample with createdb password 'bootstrap3_sample';
+</code></pre>
+
+<p>上記SQLは以下コマンドと同じ効果があります</p>
+
+<pre><code class="sh">createuser --username=postgres --createdb bootstrap3_sample -P
+</code></pre>
+
+<p><code>createuser</code>コマンドは<code>postgresql93(末尾の数字はバージョン番号なので適宜目置換を!)</code>RPMパッケージに付属しているPostgreSQLのデータベースユーザ(正確にはロール)を作成するためのコマンドです。SQLでのユーザ作成とは異なり、コマンドでパスワード文字列を指定することは出来ず、<code>-Pオプション</code>によってパスワード文字列を指定するプロンプトが表示されます。</p>
+
+<p>データベースユーザのパスワードがシステムカタログ上に保存される際に暗号化するかどうかは<code>ENCRYPTED/UNENCRYPTED</code>で明示するか、そうでない場合は、<code>/var/lib/pgsql/9.3/data/postgresql.conf</code>の<code>password_encryption</code>設定パラメータに依ります。<code>password_encryption</code>設定パラメータがonの場合に暗号化が有効(default: on)です。</p>
+
+<p>先述した通り、<strong><code>create user</code>SQLはログイン権限オプション(login)を明示しなくても有効となりますし、<code>createuser</code>コマンドでもログイン権限オプション(&ndash;login)がデフォルトで有効なので、ここでは指定していません。この辺りのSQLやコマンドの挙動はPostgreSQLバージョンにも依ると思うので自信の無い場合はログイン権限オプションを明示した方がいいかもしれません。</strong></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails4でBootstrap3を使う(ついでにherokuへpush)]]></title>
