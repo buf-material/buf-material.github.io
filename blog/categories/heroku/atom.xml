@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Heroku | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/heroku/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-10-02T17:42:11+09:00</updated>
+  <updated>2014-10-02T17:46:20+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -115,9 +115,6 @@ PostgreSQLのスーパーユーザである<code>postgres</code>データベー�
 <p>先述した通り、<strong><code>create user</code>SQLはログイン権限オプション(login)を明示しなくても有効となりますし、<code>createuser</code>コマンドでもログイン権限オプション(&ndash;login)がデフォルトで有効なので、ここでは指定していません。この辺りのSQLやコマンドの挙動はPostgreSQLバージョンにも依ると思うので自信の無い場合はログイン権限オプションを明示した方がいいかもしれません。</strong></p>
 
 <h2 class="text-warning">Railsプロジェクトの作成</h2>
-
-
-<h3 class="text-success">PostgreSQLインストール</h3>
 
 
 <p>新しいRailsプロジェクトを作成します。</p>
