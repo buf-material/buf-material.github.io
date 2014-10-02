@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-09-21T15:34:09+09:00</updated>
+  <updated>2014-10-02T17:42:11+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -423,6 +423,30 @@ octopress
         google adsense
       &lt;/a&gt;
     
+    
+    &lt;a class="list-group-item " href="/blog/categories/bootstrap3/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        bootstrap3
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/heroku/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        heroku
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/postgresql/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        postgresql
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/rails4/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        rails4
+      &lt;/a&gt;
+    
   &lt;/div&gt;
 &lt;/section&gt;
 </code></pre>
@@ -433,7 +457,7 @@ octopress
   &lt;div class="panel-heading"&gt;
     &lt;h3 class="panel-title"&gt;Tag cloud&lt;/h3&gt;
   &lt;/div&gt;
-  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> &lt;/span&gt;
+  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 110.0%'>bootstrap3(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/heroku' style='font-size: 110.0%'>heroku(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 110.0%'>postgresql(1)</a> <a href='/blog/categories/rails4' style='font-size: 110.0%'>rails4(1)</a> &lt;/span&gt;
 &lt;/section&gt;
 </code></pre>
 

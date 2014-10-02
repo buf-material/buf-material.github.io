@@ -3,6 +3,12 @@
   
   
   <url>
+    <loc>http://yoursite.com/blog/2014/09/22/install-bootstrap3-on-rails4/</loc>
+    <lastmod>2014-09-22T14:57:55+09:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/blog/2014/09/18/setting-google-adsense-octopress/</loc>
     <lastmod>2014-09-18T15:27:28+09:00</lastmod>
     <priority>0.8</priority>
@@ -41,14 +47,14 @@
   
   <url>
     <loc>http://yoursite.com/blog/archives/</loc>
-    <lastmod>2014-09-21T15:34:09+09:00</lastmod>
+    <lastmod>2014-10-02T17:42:11+09:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/</loc>
-    <lastmod>2014-09-21T15:34:09+09:00</lastmod>
+    <lastmod>2014-10-02T17:42:11+09:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
