@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails4 | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/rails4/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-10-02T17:46:20+09:00</updated>
+  <updated>2014-10-02T20:00:21+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -18,7 +18,16 @@
     <link href="http://yoursite.com/blog/2014/09/22/install-bootstrap3-on-rails4/"/>
     <updated>2014-09-22T14:57:55+09:00</updated>
     <id>http://yoursite.com/blog/2014/09/22/install-bootstrap3-on-rails4</id>
-    <content type="html"><![CDATA[<p>今まではRailsアプリケーションのデザインを独学でCSS書いたりjQueryプラグイン入れたりしてたのですが、今更ながらboootstrapを利用しようと思い始めました。</p>
+    <content type="html"><![CDATA[<p><a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank">サンプルアプリケーション</a>
+<br></p>
+
+<p><a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank">
+  <img src="http://yoursite.com/images/install-bootstrap3-on-rails4_08.jpg">
+</a>
+<br>
+<br></p>
+
+<p>今まではRailsアプリケーションのデザインを独学でCSS書いたりjQueryプラグイン入れたりしてたのですが、今更ながらboootstrapを利用しようと思い始めました。</p>
 
 <p><a href="http://rubyonrails.org/">Ruby on Rails</a>でBootstrap3をインストールする手順を纏めておきます。</p>
 
@@ -656,7 +665,17 @@ Git remote heroku added
 heroku run rake db:migrate
 </code></pre>
 
-<p>これで<a href="http://buf-material-bootstrap3-sample.herokuapp.com/">http://buf-material-bootstrap3-sample.herokuapp.com/</a> にアクセスすると先ほどローカル環境で見ていたアプリケーション画面が表示されました。</p>
+<p>これで <a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank"><a href="http://buf-material-bootstrap3-sample.herokuapp.com/">http://buf-material-bootstrap3-sample.herokuapp.com/</a></a> にアクセスすると先ほどローカル環境で見ていたアプリケーション画面が表示されました。
+<br></p>
+
+<p><a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank">サンプルアプリケーション</a>
+<br></p>
+
+<p><a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank">
+  <img src="http://yoursite.com/images/install-bootstrap3-on-rails4_08.jpg">
+</a>
+<br>
+<br></p>
 ]]></content>
   </entry>
   
