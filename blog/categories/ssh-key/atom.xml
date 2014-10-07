@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ssh Key | My Octopress Blog]]></title>
+  <link href="http://yoursite.com/blog/categories/ssh-key/atom.xml" rel="self"/>
+  <link href="http://yoursite.com/"/>
+  <updated>2014-10-08T00:35:19+09:00</updated>
+  <id>http://yoursite.com/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[複数のherokuアカウントで異なるSSHを設定したい]]></title>
+    <link href="http://yoursite.com/blog/2014/10/07/multi-ssh-key-management-for-heroku/"/>
+    <updated>2014-10-07T13:16:28+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/07/multi-ssh-key-management-for-heroku</id>
+    <content type="html"><![CDATA[<p><a href="https://www.heroku.com/home">heroku</a>で複数アカウントを管理し出すとSSH鍵が複数必要です。</p>
+
+<p><a href="https://www.heroku.com/home">heroku</a>に限らずSSH用の鍵を複数使い回す場合は、<code>~/.ssh/config</code>にSSH接続先情報と使用するSSH鍵を紐付ける設定をおこないます。</p>
+
+<p>今回は、<a href="https://www.heroku.com/home">heroku</a>において少しハマったので備忘録を残します。</p>
+
+<p>GitHubでも何でも、要は、<strong>レポジトリ毎に使用するSSH鍵を変えたい</strong>場合に有効かと思います。</p>
+
+<h2 class="text-warning">SSH鍵を生成</h2>
+
+
+<p><code>-C</code>オプションでコメント残して、<code>-f</code>オプションで生成する秘密鍵ファイル名を指定します。公開鍵名は<code>-f</code>オプションで指定したファイル名末尾に<code>.pub</code>が付いたファイル名で生成されます。</p>
+
+<pre><code class="sh">cd ~/.ssh/
+ssh-keygen -C "example@example.com" -f id_rsa_heroku_sample_app
+</code></pre>
+
+<h2 class="text-warning">SSH接続情報を設定</h2>
+
+
+<p><code>~/.ssh/config</code>に<a href="https://www.heroku.com/home">heroku</a>の接続情報を記述します。</p>
+
+<p><code>text ~/.ssh/config
+Host heroku_sample_app
+        HostName heroku.com
+        IdentityFile  ~/.ssh/id_rsa_heroku_sample_app
+        User git
+        IdentitiesOnly yes
+        TCPKeepAlive yes
+</code></p>
+
+<h2 class="text-warning">herokuのURL部分を~/.ssh/configと合わせる</h2>
+
+
+<p>gitレポジトリを作成すると<code>.git/config</code>というファイルが作成されます。</p>
+
+<p><code>heroku apps:create</code>コマンドを実行してherokuアプリケーションを作成した際に<code>heroku</code>というremoteが定義されます。そしてこの<code>heroku</code>というremoteの接続情報が<code>.git/config</code>に書き込まれます。通常、<code>git@heroku.com: レポジトリ名.git</code>というURLが設定されているはずです。このURLの<code>heroku.com</code>を先ほど<code>~/.ssh/config</code>で<code>Host</code>として付けた名前に書き換えます。</p>
+
+<pre><code class="text .git/config">[remote "heroku"]
+        #url = git@heroku.com:heroku_sample_app.git
+        url = git@heroku_sample_app:heroku_sample_app.git
+        fetch = +refs/heads/*:refs/remotes/heroku/*
+</code></pre>
+
+<p><br>
+これで<code>git push heroku master</code>コマンドでherokuへpushする時には<code>~/.ssh/id_rsa_heroku_sample_app</code>というSSH鍵を使用して接続してくれるようになります。</p>
+]]></content>
+  </entry>
+  
+</feed>

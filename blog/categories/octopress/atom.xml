@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-10-02T23:39:18+09:00</updated>
+  <updated>2014-10-08T00:35:19+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -431,7 +431,7 @@ octopress
     
     
     &lt;a class="list-group-item " href="/blog/categories/heroku/index.html"&gt;
-        &lt;span class="badge"&gt;1&lt;/span&gt;
+        &lt;span class="badge"&gt;2&lt;/span&gt;
         heroku
       &lt;/a&gt;
     
@@ -443,7 +443,7 @@ octopress
     
     
     &lt;a class="list-group-item " href="/blog/categories/rails4/index.html"&gt;
-        &lt;span class="badge"&gt;2&lt;/span&gt;
+        &lt;span class="badge"&gt;4&lt;/span&gt;
         rails4
       &lt;/a&gt;
     
@@ -451,6 +451,42 @@ octopress
     &lt;a class="list-group-item " href="/blog/categories/centos6/index.html"&gt;
         &lt;span class="badge"&gt;1&lt;/span&gt;
         centos6
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/gmap4rails/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        gmap4rails
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/google-maps/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        google maps
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/google-place/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        google place
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/google_places/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        google_places
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/ssh-key/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        ssh key
+      &lt;/a&gt;
+    
+    
+    &lt;a class="list-group-item " href="/blog/categories/github/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        github
       &lt;/a&gt;
     
   &lt;/div&gt;
@@ -463,7 +499,7 @@ octopress
   &lt;div class="panel-heading"&gt;
     &lt;h3 class="panel-title"&gt;Tag cloud&lt;/h3&gt;
   &lt;/div&gt;
-  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 110.0%'>bootstrap3(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/heroku' style='font-size: 110.0%'>heroku(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 120.0%'>rails4(2)</a> &lt;/span&gt;
+  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 110.0%'>bootstrap3(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 140.0%'>rails4(4)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> &lt;/span&gt;
 &lt;/section&gt;
 </code></pre>
 

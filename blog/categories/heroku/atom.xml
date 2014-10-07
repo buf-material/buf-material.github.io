@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Heroku | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/heroku/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-10-02T23:39:18+09:00</updated>
+  <updated>2014-10-08T00:35:19+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,41 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法]]></title>
+    <link href="http://yoursite.com/blog/2014/10/07/hidden-key-on-rails-for-heroku/"/>
+    <updated>2014-10-07T14:45:31+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/07/hidden-key-on-rails-for-heroku</id>
+    <content type="html"><![CDATA[<p>Rails4でアプリケーションを作って、<a href="https://www.heroku.com/home">heroku</a>にデプロイした！</p>
+
+<p>もちろん<a href="https://bitbucket.org/">Bitbucket</a>でも構わないが、せっかく作ったコードなので公開したい！</p>
+
+<p>でも、<code>config/database.yml</code>の<code>password</code>情報や<code>APIのKey</code>情報なんかをベタ書きしていると他の人に見られてしまう！</p>
+
+<p><strong>そんな時は環境変数を使いましょう！！</strong></p>
+
+<h2 class="text-warning">見られたくない情報を環境変数に書き換える</h2>
+
+
+<p><a href="http://buf-material-gmap-place-sample.herokuapp.com/" target="_blank"><a href="http://buf-material-gmap-place-sample.herokuapp.com/">http://buf-material-gmap-place-sample.herokuapp.com/</a></a>なんかでは、<code>Google place API</code>を利用するために<code>Google API KEY</code>を必要とするコードがあります。その箇所を以下のように書き換えます。</p>
+
+<pre><code class="ruby">    @client = GooglePlaces::Client.new( ENV['GOOGLE_API_KEY'] )
+</code></pre>
+
+<p>ミソは<code>ENV['GOOGLE_API_KEY']</code>ですね。こういう感じで環境変数化してしまいます。</p>
+
+<h2 class="text-warning">herokuに環境変数をセットする</h2>
+
+
+<p><code>heroku config:set</code>コマンドを使用することでheroku上で環境変数をセットすることが出来ます。</p>
+
+<p><code>XXXXXXXXXXXXXXXXXXXXXXXX</code>の箇所に実際のKey情報をセットします。また、<code>--app [heroku上のアプリケーション名]</code>も必要です。</p>
+
+<pre><code class="sh">heroku config:set GOOGLE_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXX" --app buf-material-gmap-place-sample
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails4でBootstrap3を使う(ついでにherokuへpush)]]></title>

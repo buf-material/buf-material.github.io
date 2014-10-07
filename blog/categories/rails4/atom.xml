@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails4 | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/rails4/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-10-02T23:39:18+09:00</updated>
+  <updated>2014-10-08T00:35:19+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,709 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法]]></title>
+    <link href="http://yoursite.com/blog/2014/10/07/hidden-key-on-rails-for-heroku/"/>
+    <updated>2014-10-07T14:45:31+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/07/hidden-key-on-rails-for-heroku</id>
+    <content type="html"><![CDATA[<p>Rails4でアプリケーションを作って、<a href="https://www.heroku.com/home">heroku</a>にデプロイした！</p>
+
+<p>もちろん<a href="https://bitbucket.org/">Bitbucket</a>でも構わないが、せっかく作ったコードなので公開したい！</p>
+
+<p>でも、<code>config/database.yml</code>の<code>password</code>情報や<code>APIのKey</code>情報なんかをベタ書きしていると他の人に見られてしまう！</p>
+
+<p><strong>そんな時は環境変数を使いましょう！！</strong></p>
+
+<h2 class="text-warning">見られたくない情報を環境変数に書き換える</h2>
+
+
+<p><a href="http://buf-material-gmap-place-sample.herokuapp.com/" target="_blank"><a href="http://buf-material-gmap-place-sample.herokuapp.com/">http://buf-material-gmap-place-sample.herokuapp.com/</a></a>なんかでは、<code>Google place API</code>を利用するために<code>Google API KEY</code>を必要とするコードがあります。その箇所を以下のように書き換えます。</p>
+
+<pre><code class="ruby">    @client = GooglePlaces::Client.new( ENV['GOOGLE_API_KEY'] )
+</code></pre>
+
+<p>ミソは<code>ENV['GOOGLE_API_KEY']</code>ですね。こういう感じで環境変数化してしまいます。</p>
+
+<h2 class="text-warning">herokuに環境変数をセットする</h2>
+
+
+<p><code>heroku config:set</code>コマンドを使用することでheroku上で環境変数をセットすることが出来ます。</p>
+
+<p><code>XXXXXXXXXXXXXXXXXXXXXXXX</code>の箇所に実際のKey情報をセットします。また、<code>--app [heroku上のアプリケーション名]</code>も必要です。</p>
+
+<pre><code class="sh">heroku config:set GOOGLE_API_KEY="XXXXXXXXXXXXXXXXXXXXXXXX" --app buf-material-gmap-place-sample
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Rail4でGoogle Place APIを利用した位置情報検索サービスの作成]]></title>
+    <link href="http://yoursite.com/blog/2014/10/02/use-google-place-on-rails4/"/>
+    <updated>2014-10-02T23:54:24+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/02/use-google-place-on-rails4</id>
+    <content type="html"><![CDATA[<p>キーワードで位置情報を検索して検索結果の任意の情報をDBへ保存、そして、DBへ保存した位置情報をGoogle Mapsで表示するアプリケーションを作ってみます。</p>
+
+<p>キーワードから位置情報を検索するのに、<a href="https://developers.google.com/places/documentation/?hl=ja" target="_blank">Google Places API</a>のRuby用のラッパーライブラリである<a href="https://github.com/marceldegraaf/google_places" target="_blank">marceldegraaf/google_places</a>をRails4アプリケーションにインストールします。</p>
+
+<p>DBへ保存した位置情報をGoogle Mapsで表示させるのに、<a href="https://github.com/apneadiving/Google-Maps-for-Rails" target="_blank">gmaps4rails</a>をRails4アプリケーションにインストールします。</p>
+
+<p>また、作成したアプリケーションは<a href="https://www.heroku.com/">heroku</a>にpushしますのでRailsのデータベースドライバとしてPostgreSQLを選択します。</p>
+
+<h2 class="text-warning">PostgreSQLの準備</h2>
+
+
+<h3 class="text-success">PostgreSQLインストール</h3>
+
+
+<p><a href=http://buf-material.github.io/blog/2014/10/02/install-postgresql-to-centos6-for-rails4/ target="_blank">CentOS6でPostgreSQLインストール</a></p>
+
+<h3 class="text-success">データベースユーザ作成</h3>
+
+
+<p>PostgreSQLに<code>postgres</code>ユーザで接続します。</p>
+
+<pre><code class="sh">psql --username=postgres
+</code></pre>
+
+<p><code>create user</code>SQLを実行して、データベースユーザとして<code>google_place_sample</code>をDB作成権限を付与して作成します。</p>
+
+<pre><code class="sql">create user google_place_sample with createdb password 'google_place_sample';
+</code></pre>
+
+<h2 class="text-warning">Railsプロジェクト作成</h2>
+
+
+<h3 class="text-success">Railsプロジェクト作成</h3>
+
+
+<p>新しいRailsプロジェクトを作成します。</p>
+
+<pre><code>rails new google_place_sample --database=postgresql
+cd google_place_sample
+bin/spring stop
+</code></pre>
+
+<h3 class="text-success">therubyracer</h3>
+
+
+<p><code>Gemfile</code>のJavascriptエンジンである<code>therubyracer</code>の設定行をアンコメントします。</p>
+
+<pre><code class="ruby Gemfile"># See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'therubyracer',  platforms: :ruby
+</code></pre>
+
+<p><code>therubyracer</code>ライブラリをインストールします。</p>
+
+<pre><code class="sh">bundle install
+</code></pre>
+
+<h3 class="text-success">PostgreSQLデータベース接続設定</h3>
+
+
+<p>PostgreSQLデータベース接続情報に接続データベースユーザの情報を追記します。</p>
+
+<pre><code class="yaml config/database.yml">default: &amp;default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+
+development:
+  &lt;&lt;: *default
+  database: google_place_sample_development
+  user: google_place_sample
+  password: google_place_sample
+
+test:
+  &lt;&lt;: *default
+  database: google_place_sample_test
+  user: google_place_sample
+  password: google_place_sample
+
+production:
+  &lt;&lt;: *default
+  database: google_place_sample_production
+  username: google_place_sample
+  password: &lt;%= ENV['GOOGLE_PLACE_SAMPLE_DATABASE_PASSWORD'] %&gt;
+</code></pre>
+
+<h2 class="text-success">Bootstrap3インストール</h2>
+
+
+<h3 class="text-warning">Gemライブラリのインストール</h3>
+
+
+<p><br>
+<code>Gemfile</code>に追記します。</p>
+
+<pre><code class="ruby Gemfile"># Install Twitter Bootstrap3
+# https://github.com/twbs/bootstrap-sass
+gem 'bootstrap-sass', '~&gt; 3.2.0'
+
+# -webkit-border-radius みたいなブラウザベンダープレフィックスをよしなに管理してくれる
+# Parse CSS and add vendor prefixes to rules by Can I Use
+# https://twitter.com/autoprefixer
+gem 'autoprefixer-rails'
+</code></pre>
+
+<p>Gemライブラリをインストールします。</p>
+
+<pre><code class="sh">bundle install
+</code></pre>
+
+<h3 class="text-warning">bootstrap-sassを使用する準備</h3>
+
+
+<p>今回は<code>Sass</code>というプリプロセッサに対応した<code>bootstrap3</code>をインストールしているのですが、<strong>CSSの<code>//= require</code>行はSassでは文法として使用できない</strong>>ので注意が必要です。そして、<strong>Sass拡張子のファイルやその他のスタイルシートであっても、Bootstrapからmixinsや変数を利用できないので<code>//= require</code>>行は利用できない</strong>ということです。</p>
+
+<p><a href="https://github.com/twbs/bootstrap-sass#a-ruby-on-rails">本家GiHubのREADME</a>に従い、<code>app/assets/stylesheets/application.css</code>は削除します。</p>
+
+<pre><code class="sh">rm app/assets/stylesheets/application.css
+</code></pre>
+
+<p><code>app/assets/stylesheets/application.css.scss</code>を新規作成します。</p>
+
+<pre><code class="scss app/assets/stylesheets/application.css.scss">@import "bootstrap-sprockets";
+@import "bootstrap";
+</code></pre>
+
+<p><code>app/assets/javascripts/application.js</code>にBootstrap関連のJavascriptsライブラリをrequireします。</p>
+
+<pre><code class="javascript app/assets/javascripts/application.js">//= require bootstrap-sprockets
+</code></pre>
+
+<p><code>app/views/layouts/application.html.erb</code>の<code>head</code>タグに<strong>bootstrap関連のスタイルシートをincludeする設定とメディアクエリーを使用するためのviewport設定</strong>を追記します。</p>
+
+<pre><code class="html app/views/layouts/application.html.erb  headタグ内の記述">  &lt;%= stylesheet_link_tag    "bootstrap", media: "all", "data-turbolinks-track" =&gt; true %&gt;
+  &lt;meta content="width=device-width, initial-scale=1" name="viewport"&gt;
+</code></pre>
+
+<h3 class="text-warning">ナビゲーションメニュー</h3>
+
+
+<pre><code class="erb app/views/layouts/application.html.erb">  &lt;div class="navbar navbar-inverse navbar-fixed-top" role="navigation"&gt;
+    &lt;div class="container"&gt;
+      &lt;div class="navbar-header"&gt;
+        &lt;button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"&gt;
+          &lt;span class="sr-only"&gt;Toggle navigation&lt;/span&gt;
+          &lt;span class="icon-bar"&gt;&lt;/span&gt;
+          &lt;span class="icon-bar"&gt;&lt;/span&gt;
+          &lt;span class="icon-bar"&gt;&lt;/span&gt;
+        &lt;/button&gt;
+        &lt;a class="navbar-brand" href="http://yoursite.com/"&gt;Project name&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class="collapse navbar-collapse"&gt;
+        &lt;ul class="nav navbar-nav"&gt;
+          &lt;li class="active"&gt;&lt;a href="http://yoursite.com/"&gt;Home&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="#about"&gt;About&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href="#contact"&gt;Contact&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;form class="navbar-form navbar-left"&gt;
+          &lt;input type="text" class="form-control col-lg-8" placeholder="Search"&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;&lt;!--/.nav-collapse --&gt;
+    &lt;/div&gt;&lt;!-- /.container --&gt;
+  &lt;/div&gt;&lt;!-- /.navbar --&gt;
+</code></pre>
+
+<h3 class="text-warning">Jumbotron(ジャンボトロン)</h3>
+
+
+<p><code>app/assets/stylesheets/theme-style.css.scss</code>を作成し、スタイルを追加します。</p>
+
+<pre><code class="scss app/assets/stylesheets/theme-style.css.scss">body {
+  padding-top: 70px;
+  padding-bottom: 30px;
+}
+
+.theme-dropdown .dropdown-menu {
+  position: static;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.theme-showcase &gt; p &gt; .btn {
+  margin: 5px 0;
+}
+
+.theme-showcase .navbar .container {
+  width: auto;
+}
+</code></pre>
+
+<p><code>app/assets/stylesheets/application.css.scss</code>に作成した<code>theme-style.css.scss</code>を読む込むように設定します。</p>
+
+<pre><code class="scss app/assets/stylesheets/application.css.scss">@import "theme-style";
+</code></pre>
+
+<p>次にJumbotron(ジャンボトロン)を表示するためのコードを記述します。</p>
+
+<pre><code class="html app/views/layouts/application.html.erb">  &lt;div class="container theme-showcase" role="main"&gt;
+    &lt;!-- Main jumbotron --&gt;
+    &lt;div class="jumbotron"&gt;
+      &lt;h1&gt;Hello, world!&lt;/h1&gt;
+      &lt;p class="text-warning"&gt;bootstrap3-sample&lt;/p&gt;
+    &lt;/div&gt;&lt;!-- /.jumbotron --&gt;
+
+    &lt;%= yield %&gt;
+
+  &lt;/div&gt;&lt;!-- /.container --&gt;
+</code></pre>
+
+<h3 class="text-warning">Railsのフラッシュメッセージ表示</h3>
+
+
+<p>コントローラ内でModelの保存や削除の成功/失敗などのメッセージを変数に格納された場合にはJumbotron(ジャンボトロン)の上部にします。</p>
+
+<pre><code class="erb app/views/layouts/application.html.erb">  &lt;% if (notice) %&gt;
+    &lt;div class="alert alert-info alert-dismissible" role="alert"&gt;
+      &lt;button type="button" class="close" data-dismiss="alert"&gt;
+        &lt;span aria-hidden="true"&gt;&amp;times;&lt;/span&gt;
+        &lt;span class="sr-only"&gt;閉じる&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;strong&gt;&lt;%= notice %&gt;&lt;/strong&gt;
+    &lt;/div&gt;
+  &lt;% end %&gt;
+</code></pre>
+
+<h2 class="text-warning">google_placesライブラリでキーワードから位置情報を取得する</h2>
+
+
+<p><a href="https://github.com/marceldegraaf/google_places" target="_blank"><a href="https://github.com/marceldegraaf/google_places">https://github.com/marceldegraaf/google_places</a></a>をインストールすることで、<code>東京　焼き肉</code>とか<code>沖縄 しまぶた屋</code>などのキーワードで検索して位置情報などを取得することができるようになります。</p>
+
+<h3 class="text-success">Gemライブラリのインストール</h3>
+
+
+<p><code>Gemfile</code>に追記します。</p>
+
+<pre><code class="ruby Gemfile"># A Ruby wrapper around the Google Places API
+# https://github.com/marceldegraaf/google_places
+gem 'google_places'
+</code></pre>
+
+<p>Gemライブラリをインストールします。</p>
+
+<pre><code class="sh">bundle install
+</code></pre>
+
+<h3 class="text-success">コントローラとビューの生成</h3>
+
+
+<p>今回は<code>scaffold</code>で生成しません。</p>
+
+<p><code>rails g controller</code>コマンドを使用してコントローラとビューを生成します。</p>
+
+<div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>アクション名</th>
+        <th>役割</th>
+        <th>ビューの生成</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>index</td>
+        <td>検索フォームと登録済み位置情報テーブル</td>
+        <td><span class="glyphicon glyphicon-ok"></span></td>
+      </tr>
+      <tr>
+        <td>list</td>
+        <td>Google place API検索結果の表示</td>
+        <td><span class="glyphicon glyphicon-ok"></span></td>
+      </tr>
+      <tr>
+        <td>show</td>
+        <td>当該レコードの位置情報を表示</td>
+        <td><span class="glyphicon glyphicon-ok"></span></td>
+      </tr>
+      <tr>
+        <td>create</td>
+        <td>当該位置情報をDBへ保存</td>
+        <td><span class="glyphicon glyphicon-remove"></span></td>
+      </tr>
+      <tr>
+        <td>destroy</td>
+        <td>当該位置情報をDBから削除</td>
+        <td><span class="glyphicon glyphicon-remove"></span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<pre><code class="sh">bundle exec rails g controller place index list show
+</code></pre>
+
+<h4 class="text-default">app/controllers/place_controller.rb</h4>
+
+
+<pre><code class="ruby app/controllers/place_controller.rb">class PlaceController &lt; ApplicationController
+  before_action :set_place, only: [:show, :destroy]
+
+  def index
+    @places = Place.all
+  end
+
+  def show
+  end
+
+  def list
+    keyword = params[:search]
+    @client = GooglePlaces::Client.new( ENV['GOOGLE_API_KEY'] )
+    @places = @client.spots_by_query( keyword )
+  end
+
+  def create
+    @place = Place.new(place_params)
+
+    respond_to do |format|
+      if @place.save
+        format.html { redirect_to place_index_path, notice: "#{@place.name} の位置情報を保存しました" }
+      else
+        format.html { render :index, notice: "#{@place.name} の位置情報を保存できませんでした" }
+      end
+    end
+  end
+
+  def destroy
+    @place.destroy
+
+    respond_to do |format|
+      format.html { redirect_to place_index_path, notice: "#{@place.name} の位置情報を削除しました" }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_place
+      @place = Place.find(params[:id])
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def place_params
+      params.require(:place).permit(:name, :latitude, :longitude, :address)
+    end
+
+end
+</code></pre>
+
+<h4 class="text-default">app/views/place/index.html.erb</h4>
+
+
+<p><img src="/images/google_place_sample_01.jpg" alt="" />
+<br></p>
+
+<p>&#8220;`erb app/views/place/index.html.erb</p>
+
+<h1>位置情報を検索してみよう</h1>
+
+
+
+
+<div class="col-md-6">
+  <%= form_tag place_list_path, :role =>&#8220;form&#8221;, :method => :get do %>
+    <div class="form-group">
+      <%= text_field_tag :search, params[:search], { :class => &#8220;form-control&#8221;, :required => true, } %>
+      <%= button_tag( {:type => &#8220;submit&#8221;, :name => nil, :class => &#8220;btn btn-default&#8221; } ) do %>
+        <span class="glyphicon glyphicon-search">キーワード検索</span>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+
+
+
+<div class="col-md-12">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Address</th>
+        <th colspan="2"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @places.each do |place| %>
+        <tr>
+          <td><%= place.name %></td>
+          <td><%= place.latitude %></td>
+          <td><%= place.longitude %></td>
+          <td><%= place.address %></td>
+          <td><%= link_to ( place ), :title => &#8220;show&#8221; do %>
+            <span class="glyphicon glyphicon-stats"></span>
+          <% end %></td>
+          <td><%= link_to( place, method: :delete, data: { confirm: "#{place.name} の位置情報を削除します" }, :title => &#8220;delete&#8221; ) do %>
+            <span class="glyphicon glyphicon-trash"></span>
+          <% end %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+
+<p>&#8220;`</p>
+
+<h4 class="text-default">app/views/place/list.html.erb</h4>
+
+
+<p><img src="/images/google_place_sample_02.jpg" alt="" />
+<br></p>
+
+<p>&#8220;`erb app/views/place/list.html.erb</p>
+
+<h1>希望の場所は見つかったかな?</h1>
+
+
+
+
+<div class="col-md-12">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Address</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @places.each do |place| %>
+        <tr>
+          <td><%= place.name %></td>
+          <td><%= place.lat %></td>
+          <td><%= place.lng %></td>
+          <td><%= place.formatted_address %></td>
+          <td><%= link_to( '登録', place_index_path( :place => { :name      => place.name,
+                                                                 :latitude  => place.lat,
+                                                                 :longitude => place.lng,
+                                                                 :address   => place.formatted_address, } ),:method => &#8216;post&#8217; ) %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <button type="button" class="btn pull-right btn-lg btn-default">
+    <%= link_to 'Back', place_index_path %>
+  </button>
+
+</div>
+
+
+<p>&#8220;`</p>
+
+<h4 class="text-default">app/views/place/show.html.erb</h4>
+
+
+<p><img src="/images/google_place_sample_03.jpg" alt="" />
+<br></p>
+
+<p>&#8220;`erb app/views/place/show.html.erb</p>
+
+<div class="col-md-12">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Address</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><%= @place.name %></td>
+        <td><%= @place.latitude %></td>
+        <td><%= @place.longitude %></td>
+        <td><%= @place.address %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button type="button" class="btn pull-right btn-lg btn-default">
+    <%= link_to 'Back', place_index_path %>
+  </button>
+
+</div>
+
+
+<p>&#8220;`</p>
+
+<h3 class="text-success">モデルの生成とDBマイグレーション</h3>
+
+
+<p>位置情報を保存するための<code>place</code>モデルを生成します。</p>
+
+<pre><code class="sh">bundle exec rails g model place name:string address:string latitude:float longitude:float
+</code></pre>
+
+<p>DBを作成、マイグレーションを実行します。</p>
+
+<pre><code class="sh">bundle exec rake db:create
+bundle exec rake db:migrate
+</code></pre>
+
+<h3 class="text-success">ルーティング設定</h3>
+
+
+<pre><code class="ruby config/routes.rb">Rails.application.routes.draw do
+  root 'place#index'
+
+  namespace :place do
+    # get 'place/list' request
+    get 'list'
+  end
+
+  resources :place, :only =&gt; [ :index, :show, :create, :destroy ]
+end
+</code></pre>
+
+<h2 class="text-warning">ここまでのサンプルアプリケーション</h2>
+
+
+<p><a href="http://buf-material-gmap-place-sample.herokuapp.com/" target="_blank">google_placeライブラリを使った位置情報検索サンプルアプリケーション</a>
+<br></p>
+
+<p><a href="http://buf-material-gmap-place-sample.herokuapp.com/" target="_blank">
+  <img src="http://yoursite.com/images/google_place_sample_01.jpg" alt="" />
+</a>
+<br></p>
+
+<h2 class="text-warning">gmaps4railsライブラリでDBに保存した位置情報からマップを作成する</h2>
+
+
+<p>ここまでの作業でキーワード検索でリストアップされた施設の位置情報をDBへ保存することが出来ました。</p>
+
+<p>ここで保存している位置情報とは<code>施設名</code>、<code>住所</code>、<code>経度</code>、<code>緯度</code>です。</p>
+
+<p><code>経度</code>と<code>緯度</code>の情報があれば<code>Google Maps</code>上にマークを表示させることが出来ます。</p>
+
+<p><a href=https://github.com/apneadiving/Google-Maps-for-Rails target="_blank">apneadiving/Google-Maps-for-Rails (gmaps4rails)</a>ライブラリを利用することで簡単にDBに保存された<code>経度</code>、<code>緯度</code>を使用してGoogle Mapsを利用できます。</p>
+
+<h3 class="text-success">Gemライブラリのインストール</h3>
+
+
+<pre><code class="ruby Gemfile"># Enables easy Google map + overlays creation in Ruby apps 
+# https://github.com/apneadiving/Google-Maps-for-Rails
+# http://apneadiving.github.io/
+gem 'gmaps4rails'
+</code></pre>
+
+<p>Gemライブラリをインストールします。</p>
+
+<pre><code class="sh">bundle install
+</code></pre>
+
+<h3 class="text-success">gmaps4railsライブラリの使用準備</h3>
+
+
+<p><code>app/views/layouts/application.html.erb</code>の<code>head</code>タグにGoogle Maps関連のライブラリを読み込む設定を追記します。</p>
+
+<pre><code class="html app/views/layouts/application.html.erb  headタグ内の記述">  &lt;script src="//maps.google.com/maps/api/js?v=3.13&amp;amp;sensor=false&amp;amp;libraries=geometry" type="text/javascript"&gt;&lt;/script&gt;
+  &lt;script src='//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.14/src/markerclusterer_packed.js' type='text/javascript'&gt;&lt;/script&gt;
+</code></pre>
+
+<p><code>app/assets/javascripts/application.js</code>にGoogle Maps関連のJavascriptsライブラリをrequireします。</p>
+
+<pre><code class="javascript app/assets/javascripts/application.js">//= require underscore
+//= require gmaps/google
+</code></pre>
+
+<p><a href="https://github.com/jashkenas/underscore/blob/master/underscore.js" target="_blank">underscore/underscore.js</a>を<code>app/assets/javascripts/underscore.js</code>として作成します。</p>
+
+<h3 class="text-success">Google Mapsをレスポンシブで表示するスタイルシート</h3>
+
+
+<h4 class="text-default">app/assets/stylesheets/gmap4rails.css.scss</h4>
+
+
+<pre><code class="scss app/assets/stylesheets/gmap4rails.css.scss">.map_container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    padding-bottom: 56.25%; /* Ratio 16:9 ( 100%/16*9 = 56.25% ) */
+}
+
+.map_container .map_canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+}
+</code></pre>
+
+<p><code>app/assets/stylesheets/gmap4rails.css.scss</code>をimportします。</p>
+
+<pre><code class="scss app/assets/stylesheets/application.css.scss">@import "gmap4rails";
+</code></pre>
+
+<h3 class="text-success">showアクションでMapを表示する</h3>
+
+
+<h4 class="text-default">app/controllers/place_controller.rb</h4>
+
+
+<pre><code class="ruby app/controllers/place_controller.rb のshowアクション">  def show
+    @hash = Gmaps4rails.build_markers(@place) do |place,marker|
+      marker.lat place.latitude
+      marker.lng place.longitude
+      marker.json({title: place.name})
+    end
+  end
+</code></pre>
+
+<h4 class="text-default">app/views/place/show.html.erb</h4>
+
+
+<p>先述した<code>app/views/place/show.html.erb</code>の<code>&lt;/table&gt;</code>タグと<code>&lt;button type="button" class="btn pull-right btn-lg btn-default"&gt;</code>タグの間に以下コードを追記します。</p>
+
+<pre><code class="erb app/views/place/show.html.erb">  &lt;div class="map_container"&gt;
+    &lt;div id="map" class="map_canvas"&gt;&lt;/div&gt;
+  &lt;/div&gt;
+
+
+  &lt;script type="text/javascript"&gt;
+    handler = Gmaps.build('Google');
+    handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
+      markers = handler.addMarkers(&lt;%=raw @hash.to_json %&gt;);
+      handler.bounds.extendWith(markers);
+      handler.fitMapToBounds();
+      handler.getMap().setZoom(12);
+      handler.map.centerOn(marker);
+    });
+  &lt;/script&gt;
+</code></pre>
+
+<p><br>
+無事、Google Mapsが表示されました！
+<img src="/images/google_place_sample_04.jpg" alt="" />
+<br></p>
+
+<h2 class="text-warning">ここまでのサンプルアプリケーション</h2>
+
+
+<p><a href="http://buf-material-gmap-sample.herokuapp.com/" target="_blank">google_placeとgmaps4railsライブラリを使った位置情報検索サンプルアプリケーション</a>
+<br></p>
+
+<p><a href="http://buf-material-gmap-sample.herokuapp.com/" target="_blank">
+  <img src="http://yoursite.com/images/google_place_sample_04.jpg" alt="" />
+</a>
+<br></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[CentOS6でPostgreSQLインストール]]></title>
