@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>OctopressにGoogle Analyticsを導入する - My Octopress Blog</title>
+  <title>Bashシェルの変数にデフォルト値を設定する - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
@@ -14,15 +14,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://yoursite.com/blog/2014/09/16/setting-google-alalytics-octopress">
+  <link rel="canonical" href="http://yoursite.com/blog/2014/10/11/set-default-value-to-bash-variables">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
 
   <!-- http://opengraphprotocol.org/ -->
   <meta name="twitter:card" content="summary_large_image">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="http://yoursite.com/blog/2014/09/16/setting-google-alalytics-octopress">
-  <meta property="og:title" content="OctopressにGoogle Analyticsを導入する - My Octopress Blog">
+  <meta property="og:url" content="http://yoursite.com/blog/2014/10/11/set-default-value-to-bash-variables">
+  <meta property="og:title" content="Bashシェルの変数にデフォルト値を設定する - My Octopress Blog">
   
 
   <script src="/javascripts/libs/jquery/jquery-2.0.3.min.js"></script>
@@ -136,13 +136,13 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-16T23:20:32+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-10-11T10:25:18+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
         
       </p>
     
     
     <h1 class="entry-title" itemprop="name headline">
-        OctopressにGoogle Analyticsを導入する
+        Bashシェルの変数にデフォルト値を設定する
         
     </h1>
     
@@ -150,78 +150,28 @@
 
 
 
-<div class="entry-content clearfix" itemprop="articleBody description"><h2>Google Analytics</h2>
+<div class="entry-content clearfix" itemprop="articleBody description"><h2>変数に値が未セットの場合にのみ任意の文字を代入したい</h2>
 
-<p><img src="/images/google_analytics_01.jpg" alt="" />
-<br></p>
+<p>bashシェルのスクリプトの中で特定の変数に値がセットされていない場合はデフォルト値を代入するということがあります。そこで、変数に値が未セットの場合にのみ特定の値をデフォルト値として代入することができます。</p>
 
-<p><a href="http://www.google.com/analytics/">Google Analytics</a>はGoogleが提供するアクセス解析ツールです。</p>
+<p>bashには様々な変数の参照方法があるんですが、<code>${変数名:=値}</code>と書くことで、<strong>値がセット済みの場合にはその値を返し、未セットの場合には任意の値を返す</strong>という動作をします。</p>
 
-<p>サイトページ内に<a href="https://support.google.com/analytics/answer/1032385?hl=ja">トラッキングコード</a>と呼ばれるJavaScript コードを埋め込み、訪問者がサイトへアクセスした際の閲覧情報がGoogle Analyticsサーバへ送信される仕組みです。Webサーバのアクセスログ等を解析する等とは違い、開発者はこのトラッキングコードを埋め込むだけでアクセス解析ツールを利用できるという手軽さと、様々なアクセス情報を取得・閲覧できることが特徴です。</p>
+<h3>1. インタラクティブなシェル上で変数を定義</h3>
 
-<p>Octopressの場合、このトラッキングコードの大枠のコードがテーマのテンプレートHTMLファイルとして用意されているケースがあります。このような場合には<code>_config.yml</code>の<code>google_analytics_tracking_id:</code>という箇所に<a href="https://support.google.com/analytics/answer/1032385?hl=ja">トラッキング ID</a>を記述するだけです。</p>
-
-<p>トラッキング IDとは<code>UA-000000-01</code>のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
-
-<h2>トラッキングIDの取得</h2>
-
-<p>先述したトラッキング IDを取得します。</p>
-
-<p><a href="http://www.google.com/analytics/">Google Analytics</a>からGoogleアカウントでログインし、<code>アナリティクス設定 &gt; 管理 &gt; 新しいアカウント</code> の順にアクセスし、サイト情報を登録してトラッキングIDを取得します。</p>
-
-<h2>取得したトラッキングIDを設定</h2>
-
-<p><a href="http://octopress.org/">Octopress</a>では既にGoogle Analytics用のテンプレートHTMLが用意されているテーマもあり、デフォルトの<strong>Classic</strong>や先日変更した<strong>octostrap3</strong>でも同様です。</p>
-
-<pre><code>### Octopress Themesに組み込まれているGoogle Analyticsテンプレート
-
-octopress
-└── .themes
-    ├── octostrap3
-    |   └── source
-    |       └── _includes
-    |           └── google_analytics.html
-    |
-    └── classic
-        └── source
-            └── _includes
-                └── google_analytics.html
-
-</code></pre>
-
-
-<p>従って、設定は<code>_config.yml</code>の<code>google_analytics_tracking_id:</code>の項に先ほど取得したトラッキングIDを記述して静的ファイルを再生成するだけでいいようです。</p>
-
-<figure class='code'><figcaption><span>_config.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">google_analytics_tracking_id</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">UA-54XXXXXX-1</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>静的ファイルの再生成とデプロイ</h2>
-
-<p>静的ファイルを再生成します。</p>
+<p>例えば、<code>$var</code>変数に<code>hello</code>という値を代入しておき、上記の書き方で値を参照してみます。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake generate
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span>
 </span><span class='line'>
-</span><span class='line'><span class="c">## ローカル環境で確認する場合はpreviewタスクも実行します</span>
-</span><span class='line'>rake preview
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;goog morning&quot;</span><span class="k">}</span>
+</span><span class='line'>hello
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p><code>GitHub Pages</code>へデプロイします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake deploy
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>確認</h2>
-
-<p><code>GitHub Pages</code>へアクセスした際に表示されるHTMLコードを確認し、HEADタグ内に以下のscriptコードが組み込まれていれば設定できています。</p>
+<p><code>$var</code>変数を空にして<code>goog morning</code>という値を代入してみたいとしましょう。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -230,23 +180,78 @@ octopress
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
-</span><span class='line'>    <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">s</span><span class="p">,</span><span class="nx">o</span><span class="p">,</span><span class="nx">g</span><span class="p">,</span><span class="nx">r</span><span class="p">,</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">){</span><span class="nx">i</span><span class="p">[</span><span class="s1">&#39;GoogleAnalyticsObject&#39;</span><span class="p">]</span><span class="o">=</span><span class="nx">r</span><span class="p">;</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">||</span><span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>    <span class="p">(</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">||</span><span class="p">[]).</span><span class="nx">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)},</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">l</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="k">new</span> <span class="nb">Date</span><span class="p">();</span><span class="nx">a</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="nx">o</span><span class="p">),</span>
-</span><span class='line'>    <span class="nx">m</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="nx">o</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span><span class="nx">a</span><span class="p">.</span><span class="nx">async</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="nx">a</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="nx">g</span><span class="p">;</span><span class="nx">m</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">})(</span><span class="nb">window</span><span class="p">,</span><span class="nb">document</span><span class="p">,</span><span class="s1">&#39;script&#39;</span><span class="p">,</span><span class="s1">&#39;//www.google-analytics.com/analytics.js&#39;</span><span class="p">,</span><span class="s1">&#39;ga&#39;</span><span class="p">);</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="nx">ga</span><span class="p">(</span><span class="s1">&#39;create&#39;</span><span class="p">,</span> <span class="s1">&#39;UA-54XXXXXX-1&#39;</span><span class="p">,</span> <span class="s1">&#39;auto&#39;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">ga</span><span class="p">(</span><span class="s1">&#39;send&#39;</span><span class="p">,</span> <span class="s1">&#39;pageview&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;goog morning&quot;</span><span class="k">}</span>
+</span><span class='line'>goog morning
 </span><span class='line'>
-</span><span class='line'>  <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$var</span>
+</span><span class='line'>goog morning
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Google Analyticsのアクセス解析結果が表示させるまで24時間程度かかるので表示されるのを待ちましょう。</p>
+<p><code>${変数名:=値}</code>という書き方をした場合、返り値としてセットした(あるいはセットされている)<code>値</code>を返します。その返り値を<code>echo</code>でprintしています。</p>
+
+<p>では、<code>echo</code>させずに<code>${変数名:=値}</code>だけを実行するとどうでしょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;goog morning&quot;</span><span class="k">}</span>
+</span><span class='line'>-bash: goog morning: コマンドが見つかりません
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$var</span>
+</span><span class='line'>goog morning
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>シェルは返り値をコマンドとして認識するのですが、<code>goog morning</code>などというコマンドは存在しないのでメッセージが出力されます。しかし、<code>$var</code>変数への値のセットは成功したようです。</p>
+
+<p><code>echo</code>を使わずに、かつメッセージも出力させないためには以下のように、何もしないという<code>コロン(:)</code>を使う方法があります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span>: <span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;goog morning&quot;</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$var</span>
+</span><span class='line'>goog morning
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. シェルスクリプト内の変数値にtrue/falseを使用する場合の注意点</h3>
+
+<p>シェルスクリプトで<code>set -e</code>を先頭に書いておくことで、スクリプト内のコマンドが失敗を返した場合にはスクリプトを終了させることが出来ます。おまじないのように書いていることがありますが、変数の値にに<code>true/false</code>を使用している場合には注意が必要です。</p>
+
+<p><code>true</code>や<code>false</code>はbashシェルの組み込みコマンドとして存在し、その名の通り、<code>true</code>は真を返し、<code>false</code>は偽を返します。なので、<code>${var:=false}</code>などと書いているとこの変数定義の行の実行結果は偽を返すことになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;false&quot;</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$?</span>
+</span><span class='line'>1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>シェルスクリプトで<code>set -e</code>としている場合にはそこでスクリプトが終了してしまい、期待通りに動かない可能性があります。ここでも何もしないという<code>コロン(:)</code>を使用するという方法が有効です。</p>
 </div>
 
 
@@ -270,13 +275,13 @@ octopress
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-16T23:20:32+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-10-11T10:25:18+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
           
 
 <span class="glyphicon glyphicon-tags"></span>&nbsp;
 <span class="categories">
   
-    <a class='category' href='/blog/categories/google-analytics/'>google analytics</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>
+    <a class='category' href='/blog/categories/bash/'>bash</a>
   
 </span>
 
@@ -285,7 +290,7 @@ octopress
         
           <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yoursite.com/blog/2014/09/16/setting-google-alalytics-octopress/" data-via="" data-counturl="http://yoursite.com/blog/2014/09/16/setting-google-alalytics-octopress/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yoursite.com/blog/2014/10/11/set-default-value-to-bash-variables/" data-via="" data-counturl="http://yoursite.com/blog/2014/10/11/set-default-value-to-bash-variables/" >Tweet</a>
   
   
   
@@ -295,10 +300,10 @@ octopress
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a href="/blog/2014/09/02/customize-octopress-themes-from-classic-to-octostrap3/" title="Previous Post: Octopressのテーマをclassicからoctostrap3に変更してみる">&laquo; Octopressのテーマをclassicからoctostrap3に変更してみる</a></li>
+            <li class="previous"><a href="/blog/2014/10/10/set-constant-variables-for-bash/" title="Previous Post: bashで読み込み専用変数を定義する">&laquo; bashで読み込み専用変数を定義する</a></li>
             
             
-            <li class="next"><a href="/blog/2014/09/18/setting-google-adsense-octopress/" title="Next Post: OctopressにGoogle AdSenseを導入する">OctopressにGoogle AdSenseを導入する &raquo;</a></li>
+            <li class="next"><a href="/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/" title="Next Post: bootstrap3-datetimepicker-rails で日時を範囲指定">bootstrap3-datetimepicker-rails で日時を範囲指定 &raquo;</a></li>
             
           </ul>
         
@@ -330,7 +335,7 @@ octopress
     
     <a class="list-group-item " href="/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/">Bootstrap3-datetimepicker-rails で日時を範囲指定</a>
     
-    <a class="list-group-item " href="/blog/2014/10/11/set-default-value-to-bash-variables/">Bashシェルの変数にデフォルト値を設定する</a>
+    <a class="list-group-item active" href="/blog/2014/10/11/set-default-value-to-bash-variables/">Bashシェルの変数にデフォルト値を設定する</a>
     
     <a class="list-group-item " href="/blog/2014/10/10/set-constant-variables-for-bash/">Bashで読み込み専用変数を定義する</a>
     

@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-10-08T00:35:19+09:00</updated>
+  <updated>2014-12-13T15:27:01+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,952 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Bootstrap3-datetimepicker-rails で日時を範囲指定]]></title>
+    <link href="http://yoursite.com/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/"/>
+    <updated>2014-10-13T08:34:54+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker</id>
+    <content type="html"><![CDATA[<p>Rails4で2つの日時情報を<code>開始日時</code>と<code>終了日時</code>という範囲指定をおこなうように実装した時の備忘録です。</p>
+
+<h2 class="text-warning">bootstrap-datetimepicker-railsのインストール</h2>
+
+
+<p>日時を指定するためのカレンダーをbootstrap3で実装しようと思い、調べたら<a href="https://github.com/TrevorS/bootstrap3-datetimepicker-rails" target="_blank">TrevorS/bootstrap3-datetimepicker-rails</a>というgemライブラリが存在しました。</p>
+
+<h3 class="text-success">Gemライブラリのインストール</h3>
+
+
+<p><a href="https://github.com/TrevorS/bootstrap3-datetimepicker-rails" target="_blank">TrevorS/bootstrap3-datetimepicker-rails</a>をインストールします。</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># jQuery plugin for drop-in fix binded events problem caused by Turbolinks</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;jquery-turbolinks&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># See https://github.com/sstephenson/execjs#readme for more supported runtimes</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;therubyracer&#39;</span><span class="p">,</span>  <span class="ss">platforms</span><span class="p">:</span> <span class="ss">:ruby</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Install Twitter Bootstrap3</span>
+</span><span class='line'><span class="c1"># https://github.com/twbs/bootstrap-sass</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;bootstrap-sass&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 3.2.0&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># -webkit-border-radius みたいなブラウザベンダープレフィックスをよしなに管理してくれる</span>
+</span><span class='line'><span class="c1"># Parse CSS and add vendor prefixes to rules by Can I Use </span>
+</span><span class='line'><span class="c1"># https://twitter.com/autoprefixer</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;autoprefixer-rails&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Istall of bootstrap3-datetimepicker-rails</span>
+</span><span class='line'><span class="c1"># See https://github.com/TrevorS/bootstrap3-datetimepicker-rails</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;momentjs-rails&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;= 2.8.1&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;bootstrap3-datetimepicker-rails&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 3.1.3&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ライブラリをインストールします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle install
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">javascriptライブラリのinclude</h3>
+
+
+<p><code>app/assets/javascripts/application.js</code>に以下を追記します。</p>
+
+<figure class='code'><figcaption><span>app/assets/javascripts/application.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//= require jquery</span>
+</span><span class='line'><span class="c1">//= require jquery.turbolinks</span>
+</span><span class='line'><span class="c1">//= require jquery_ujs</span>
+</span><span class='line'><span class="c1">//= require bootstrap-sprockets</span>
+</span><span class='line'><span class="c1">//= require moment</span>
+</span><span class='line'><span class="c1">//= require bootstrap-datetimepicker</span>
+</span><span class='line'><span class="c1">//= require turbolinks</span>
+</span><span class='line'><span class="c1">//= require_tree .</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">スタイルシートの読み込み</h3>
+
+
+<p><code>app/assets/stylesheets/application.css.scss</code>に以下を追記します。</p>
+
+<figure class='code'><figcaption><span>app/assets/stylesheets/application.css.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="k">@import</span> <span class="s2">&quot;bootstrap-sprockets&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;bootstrap&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s1">&#39;</span><span class="s2">bootstrap-datetimepicker&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">2つの期間を指定するdatetimepickerを実装</h2>
+
+
+<h3 class="text-success">Entryリソースの生成</h3>
+
+
+<p>今回は2つの期間を指定したエントリを保存するためのEntryリソースをscaffoldで生成します。
+開始日時を<code>datetime型</code>の<code>start_at</code>アトリビュート、終了日時を<code>datetime型</code>の<code>end_at</code>アトリビュートとして定義しています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle <span class="nb">exec </span>rails g scaffold Entry name:string start_at:datetime end_at:datetime description:string
+</span><span class='line'>bundle <span class="nb">exec </span>rake db:migrate
+</span><span class='line'>
+</span><span class='line'>cat <span class="s">&lt;&lt; EOT &gt; config/routes.rb</span>
+</span><span class='line'><span class="s">Rails.application.routes.draw do</span>
+</span><span class='line'><span class="s">  root &#39;entries#index&#39;</span>
+</span><span class='line'><span class="s">  resources :entries</span>
+</span><span class='line'><span class="s">end</span>
+</span><span class='line'><span class="s">EOT</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">javascriptの記述</h3>
+
+
+<p><a href="http://eonasdan.github.io/bootstrap-datetimepicker/#example9" target="_blank"><a href="http://eonasdan.github.io/bootstrap-datetimepicker/#example9">http://eonasdan.github.io/bootstrap-datetimepicker/#example9</a></a>を参考にしました。</p>
+
+<figure class='code'><figcaption><span>app/views/entries/_form.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span><span class="o">&gt;</span>
+</span><span class='line'>  <span class="nx">$</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// bootstrap-datetimepicker-rails configurations</span>
+</span><span class='line'>    <span class="c1">//   - references</span>
+</span><span class='line'>    <span class="c1">//     1. http://eonasdan.github.io/bootstrap-datetimepicker/#options</span>
+</span><span class='line'>    <span class="c1">//     2. http://shibuso.github.io/datetimepicker_test/datetimepicker_02.html</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// .datepicker_start へのdatetimepicker設定</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.datepicker_start&#39;</span><span class="p">).</span><span class="nx">datetimepicker</span><span class="p">({</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// カレンダー表示言語</span>
+</span><span class='line'>      <span class="c1">// bootstrap-datetimepicker.ja.js が必要</span>
+</span><span class='line'>      <span class="c1">//language: &#39;ja&#39;,</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 月日ピッカーと時間ピッカーを隣に表示する</span>
+</span><span class='line'>      <span class="c1">//sideBySide: true,</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 日時フォーマット</span>
+</span><span class='line'>      <span class="nx">format</span><span class="o">:</span> <span class="s1">&#39;YYYY-MM-DD HH:mm&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 分の選択可能間隔</span>
+</span><span class='line'>      <span class="nx">minuteStepping</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// .datepicker_end へのdatetimepicker設定</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.datepicker_end&#39;</span><span class="p">).</span><span class="nx">datetimepicker</span><span class="p">({</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// カレンダー表示言語</span>
+</span><span class='line'>      <span class="c1">// bootstrap-datetimepicker.ja.js が必要</span>
+</span><span class='line'>      <span class="c1">//language: &#39;ja&#39;,</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 月日ピッカーと時間ピッカーを隣に表示する</span>
+</span><span class='line'>      <span class="c1">//sideBySide: true,</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 日時フォーマット</span>
+</span><span class='line'>      <span class="nx">format</span><span class="o">:</span> <span class="s1">&#39;YYYY-MM-DD HH:mm&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// 分の選択可能間隔</span>
+</span><span class='line'>      <span class="nx">minuteStepping</span><span class="o">:</span> <span class="mi">5</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// set a minimum date of start_at</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.datepicker_start&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;dp.change&quot;</span><span class="p">,</span><span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.datepicker_end&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s2">&quot;DateTimePicker&quot;</span><span class="p">).</span><span class="nx">setMinDate</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">date</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// set a maximum date of end_at</span>
+</span><span class='line'>    <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.datepicker_end&#39;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s2">&quot;dp.change&quot;</span><span class="p">,</span><span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.datepicker_start&#39;</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s2">&quot;DateTimePicker&quot;</span><span class="p">).</span><span class="nx">setMaxDate</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">date</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">viewの記述(ERB)</h3>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/entries/_form.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">form_for</span> <span class="p">(</span> <span class="vi">@entry</span> <span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@entry</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">any?</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;div id=&quot;error_explanation&quot;&gt;</span>
+</span><span class='line'><span class="x">      &lt;h2&gt;</span><span class="cp">&lt;%=</span> <span class="n">pluralize</span><span class="p">(</span><span class="vi">@entry</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> prohibited this entry from being saved:&lt;/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      &lt;ul&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%</span> <span class="vi">@entry</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">        &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">message</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">      &lt;/ul&gt;</span>
+</span><span class='line'><span class="x">    &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;div class=&quot;col-sm-8 col-md-8&quot;&gt;</span>
+</span><span class='line'><span class="x">    &lt;div class=&quot;form-group&quot;&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:name</span><span class="p">,</span> <span class="s1">&#39;名前&#39;</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;form-control&#39;</span><span class="p">,</span> <span class="ss">:placeholder</span> <span class="o">=&gt;</span> <span class="s2">&quot;エントリーの名前を入力してください...&quot;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;div class=&quot;col-sm-8 col-md-8&quot;&gt;</span>
+</span><span class='line'><span class="x">    &lt;div class=&quot;form-group&quot;&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:start_at</span><span class="p">,</span> <span class="s1">&#39;開始日時&#39;</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">      &lt;div class=&#39;input-group datepicker_start&#39;&gt;</span>
+</span><span class='line'><span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:start_at</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;form-control&#39;</span><span class="p">,</span> <span class="ss">:readonly</span> <span class="o">=&gt;</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="ss">:placeholder</span> <span class="o">=&gt;</span> <span class="s2">&quot;開始日時を選択してください...&quot;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">        &lt;span class=&quot;input-group-addon&quot;&gt;</span>
+</span><span class='line'><span class="x">          &lt;span class=&quot;glyphicon glyphicon-calendar&quot;&gt;&lt;/span&gt;</span>
+</span><span class='line'><span class="x">        &lt;/span&gt;</span>
+</span><span class='line'><span class="x">      &lt;/div&gt;</span>
+</span><span class='line'><span class="x">    &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;div class=&quot;col-sm-8 col-md-8&quot;&gt;</span>
+</span><span class='line'><span class="x">    &lt;div class=&quot;form-group&quot;&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:end_at</span><span class="p">,</span> <span class="s1">&#39;終了日時&#39;</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">      &lt;div class=&#39;input-group datepicker_end&#39;&gt;</span>
+</span><span class='line'><span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:end_at</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;form-control&#39;</span><span class="p">,</span> <span class="ss">:readonly</span> <span class="o">=&gt;</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span> <span class="ss">:placeholder</span> <span class="o">=&gt;</span> <span class="s2">&quot;終了日時を選択してください...&quot;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">        &lt;span class=&quot;input-group-addon&quot;&gt;</span>
+</span><span class='line'><span class="x">          &lt;span class=&quot;glyphicon glyphicon-calendar&quot;&gt;&lt;/span&gt;</span>
+</span><span class='line'><span class="x">        &lt;/span&gt;</span>
+</span><span class='line'><span class="x">      &lt;/div&gt;</span>
+</span><span class='line'><span class="x">    &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;div class=&quot;col-sm-8 col-md-8&quot;&gt;</span>
+</span><span class='line'><span class="x">    &lt;div class=&quot;form-group&quot;&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:description</span><span class="p">,</span> <span class="s1">&#39;説明&#39;</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:description</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;form-control&#39;</span><span class="p">,</span> <span class="ss">:placeholder</span> <span class="o">=&gt;</span> <span class="s2">&quot;エントリーの説明を入力してください...&quot;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;div class=&quot;col-sm-8 col-md-8&quot;&gt;</span>
+</span><span class='line'><span class="x">    &lt;div class=&quot;actions&quot;&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s1">&#39;エントリーを作成&#39;</span><span class="p">,</span> <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;btn btn-primary&#39;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">参考にさせて頂いた情報</h2>
+
+
+<p><a href="http://qiita.com/kidachi_/items/9f76a27890d96b9f5838" target="_balnk"><a href="http://qiita.com/kidachi_/items/9f76a27890d96b9f5838">http://qiita.com/kidachi_/items/9f76a27890d96b9f5838</a></a><br>
+<a href="http://www.workabroad.jp/posts/974" target="_blank"><a href="http://www.workabroad.jp/posts/974">http://www.workabroad.jp/posts/974</a></a><br>
+<a href="http://eonasdan.github.io/bootstrap-datetimepicker/#example9" target="_blank"><a href="http://eonasdan.github.io/bootstrap-datetimepicker/#example9">http://eonasdan.github.io/bootstrap-datetimepicker/#example9</a></a><br></p>
+
+<h2 class="text-warning">エントリー期間内に複数のイベントを定義できるように実装する</h2>
+
+
+<p>定義したエントリーの中には複数のイベントを持つことができるようにEventリソースを生成します。イベントは<code>食事</code>などのカテゴリーを持つようにしたいのでCategoryリソースを先に生成します。</p>
+
+<h3 class="text-success">イベントに付けるカテゴリーのリストを生成する</h3>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle <span class="nb">exec </span>rails g scaffold category name:string icon_name:string
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">イベント用のEventリソースを生成する</h3>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle <span class="nb">exec </span>rails g scaffold event entry:references name:string start_at:datetime end_at:datetime description:string category:references
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle <span class="nb">exec </span>rake db:migrate
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">モデルのアソシエーションを記述する</h3>
+
+
+
+
+<figure class='code'><figcaption><span>app/models/entry.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Entry</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:events</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/models/event.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Event</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:entry</span>
+</span><span class='line'>  <span class="n">belongs_to</span> <span class="ss">:category</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/models/category.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">Category</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_many</span> <span class="ss">:events</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">エントリーの編集ページにイベント作成ページへのリンクを設置</h3>
+
+
+<p>イベントは特定のエントリーに属するのでエントリーの編集画面から追加できるようにします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="vi">@entry</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> にイベントを追加&quot;</span><span class="p">,</span> <span class="s2">&quot;/events/</span><span class="si">#{</span><span class="vi">@entry</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/new&quot;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>リンクURLがRESTFulなルーティングリソースではないので<code>config/routes.rb</code>にルーティングを追記します。</p>
+
+<figure class='code'><figcaption><span>config/routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">resources</span> <span class="ss">:events</span>
+</span><span class='line'><span class="n">get</span> <span class="s1">&#39;events/:entry_id/new&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;events#new&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">イベント作成ページの`Entry_id`のテキストフィールドにエントリーIDを表示</h3>
+
+
+
+
+<figure class='code'><figcaption><span>app/controllers/events_controller.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="c1"># GET /events/:entry_id/new</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">new</span>
+</span><span class='line'>    <span class="n">entry_id</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:entry_id</span><span class="p">)</span>
+</span><span class='line'>    <span class="vi">@event</span> <span class="o">=</span> <span class="no">Event</span><span class="o">.</span><span class="n">new</span><span class="p">(</span> <span class="ss">:entry_id</span> <span class="o">=&gt;</span> <span class="n">entry_id</span> <span class="p">)</span>
+</span><span class='line'>  <span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>app/views/events/_form.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">&lt;script type=&quot;text/javascript&quot;&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  $(function(){</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    // bootstrap-datetimepicker-rails configurations</span>
+</span><span class='line'><span class="x">    //   - references</span>
+</span><span class='line'><span class="x">    //     1. http://eonasdan.github.io/bootstrap-datetimepicker/#options</span>
+</span><span class='line'><span class="x">    //     2. http://shibuso.github.io/datetimepicker_test/datetimepicker_02.html</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    var start_at = new Date( </span><span class="cp">&lt;%=</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span> <span class="vi">@entry</span><span class="o">.</span><span class="n">start_at</span><span class="o">.</span><span class="n">to_s</span> <span class="p">)</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">to_i</span><span class="o">*</span><span class="mi">1000</span> <span class="cp">%&gt;</span><span class="x"> );</span>
+</span><span class='line'><span class="x">    var end_at = new Date( </span><span class="cp">&lt;%=</span> <span class="no">DateTime</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span> <span class="vi">@entry</span><span class="o">.</span><span class="n">end_at</span><span class="o">.</span><span class="n">to_s</span> <span class="p">)</span><span class="o">.</span><span class="n">utc</span><span class="o">.</span><span class="n">to_i</span><span class="o">*</span><span class="mi">1000</span> <span class="cp">%&gt;</span><span class="x"> );</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    // define datepicker of start_at</span>
+</span><span class='line'><span class="x">    $(&#39;.datepicker_start&#39;).datetimepicker({</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // カレンダー表示言語</span>
+</span><span class='line'><span class="x">      // bootstrap-datetimepicker.ja.js が必要</span>
+</span><span class='line'><span class="x">      //language: &#39;ja&#39;,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 月日ピッカーと時間ピッカーを隣に表示する</span>
+</span><span class='line'><span class="x">      //sideBySide: true,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 日時フォーマット</span>
+</span><span class='line'><span class="x">      format: &#39;YYYY-MM-DD HH:mm&#39;,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 分の選択可能間隔</span>
+</span><span class='line'><span class="x">      minuteStepping: 5,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 選択可能な最小日</span>
+</span><span class='line'><span class="x">      minDate: start_at,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 選択可能な最大日</span>
+</span><span class='line'><span class="x">      maxDate: end_at,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    });</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    // define datepicker of end_at</span>
+</span><span class='line'><span class="x">    $(&#39;.datepicker_end&#39;).datetimepicker({</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // カレンダー表示言語</span>
+</span><span class='line'><span class="x">      // bootstrap-datetimepicker.ja.js が必要</span>
+</span><span class='line'><span class="x">      //language: &#39;ja&#39;,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 月日ピッカーと時間ピッカーを隣に表示する</span>
+</span><span class='line'><span class="x">      //sideBySide: true,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 日時フォーマット</span>
+</span><span class='line'><span class="x">      format: &#39;YYYY-MM-DD HH:mm&#39;,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 分の選択可能間隔</span>
+</span><span class='line'><span class="x">      minuteStepping: 5,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 選択可能な最小日</span>
+</span><span class='line'><span class="x">      minDate: start_at,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      // 選択可能な最大日</span>
+</span><span class='line'><span class="x">      maxDate: end_at,</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">    });</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  });</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">&lt;/script&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">iv class=&quot;field&quot;&gt;</span>
+</span><span class='line'><span class="x"> |f| </span><span class="err">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@event</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">any?</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;div id=&quot;error_explanation&quot;&gt;</span>
+</span><span class='line'><span class="x">      &lt;h2&gt;</span><span class="cp">&lt;%=</span> <span class="n">pluralize</span><span class="p">(</span><span class="vi">@event</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">count</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"> prohibited this event from being saved:&lt;/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      &lt;ul&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%</span> <span class="vi">@event</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">message</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">        &lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">message</span> <span class="cp">%&gt;</span><span class="x">&lt;/li&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">      &lt;/ul&gt;</span>
+</span><span class='line'><span class="x">    &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;div class=&quot;field&quot;&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:entry_id</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:entry_id</span><span class="p">,</span> <span class="ss">:readonly</span> <span class="o">=&gt;</span> <span class="kp">true</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  &lt;div class=&quot;field&quot;&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:name</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:name</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;!-- 開始日時カレンダー --&gt;</span>
+</span><span class='line'><span class="x">  &lt;div class=&quot;col-sm-8 col-md-8&quot;&gt;</span>
+</span><span class='line'><span class="x">    &lt;div class=&quot;form-group&quot;&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:start_at</span><span class="p">,</span> <span class="s1">&#39;開始日時&#39;</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">      &lt;div class=&#39;input-group datepicker_start&#39;&gt;</span>
+</span><span class='line'><span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:start_at</span><span class="p">,</span>
+</span><span class='line'>                         <span class="ss">:value</span> <span class="o">=&gt;</span> <span class="vi">@entry</span><span class="o">.</span><span class="n">start_at</span><span class="p">,</span>
+</span><span class='line'>                         <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;form-control&#39;</span><span class="p">,</span>
+</span><span class='line'>                         <span class="ss">:readonly</span> <span class="o">=&gt;</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span>
+</span><span class='line'>                         <span class="ss">:placeholder</span> <span class="o">=&gt;</span> <span class="s2">&quot;開始日時を選択してください...&quot;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'>
+</span><span class='line'><span class="x">        &lt;!-- glyphicon --&gt;</span>
+</span><span class='line'><span class="x">        &lt;span class=&quot;input-group-addon&quot;&gt;</span>
+</span><span class='line'><span class="x">          &lt;span class=&quot;glyphicon glyphicon-calendar&quot;&gt;&lt;/span&gt;</span>
+</span><span class='line'><span class="x">        &lt;/span&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      &lt;/div&gt;&lt;!-- /.input-group datepicker_start --&gt;</span>
+</span><span class='line'><span class="x">    &lt;/div&gt;&lt;!-- /.form-group --&gt;</span>
+</span><span class='line'><span class="x">  &lt;/div&gt;&lt;!-- /.col-sm .col-md --&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;!-- 終了日時カレンダー --&gt;</span>
+</span><span class='line'><span class="x">  &lt;div class=&quot;col-sm-8 col-md-8&quot;&gt;</span>
+</span><span class='line'><span class="x">    &lt;div class=&quot;form-group&quot;&gt;</span>
+</span><span class='line'><span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:end_at</span><span class="p">,</span> <span class="s1">&#39;終了日時&#39;</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">      &lt;div class=&#39;input-group datepicker_end&#39;&gt;</span>
+</span><span class='line'><span class="x">        </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:end_at</span><span class="p">,</span>
+</span><span class='line'>                         <span class="ss">:value</span> <span class="o">=&gt;</span> <span class="vi">@entry</span><span class="o">.</span><span class="n">end_at</span><span class="p">,</span>
+</span><span class='line'>                         <span class="ss">:class</span> <span class="o">=&gt;</span> <span class="s1">&#39;form-control&#39;</span><span class="p">,</span>
+</span><span class='line'>                         <span class="ss">:readonly</span> <span class="o">=&gt;</span> <span class="s1">&#39;true&#39;</span><span class="p">,</span>
+</span><span class='line'>                         <span class="ss">:placeholder</span> <span class="o">=&gt;</span> <span class="s2">&quot;終了日時を選択してください...&quot;</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">        &lt;!-- glyphicon --&gt;</span>
+</span><span class='line'><span class="x">        &lt;span class=&quot;input-group-addon&quot;&gt;</span>
+</span><span class='line'><span class="x">          &lt;span class=&quot;glyphicon glyphicon-calendar&quot;&gt;&lt;/span&gt;</span>
+</span><span class='line'><span class="x">        &lt;/span&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">      &lt;/div&gt;&lt;!-- /.input-group datepicker_start --&gt;</span>
+</span><span class='line'><span class="x">    &lt;/div&gt;&lt;!-- /.form-group --&gt;</span>
+</span><span class='line'><span class="x">  &lt;/div&gt;&lt;!-- /.col-sm .col-md --&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="x">  &lt;div class=&quot;field&quot;&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:description</span> <span class="cp">%&gt;</span><span class="x">&lt;br&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">text_field</span> <span class="ss">:description</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  &lt;div class=&quot;actions&quot;&gt;</span>
+</span><span class='line'><span class="x">    </span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">  &lt;/div&gt;</span>
+</span><span class='line'><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>&lt;%= f.label :entry_id %&gt;&lt;br&gt;
+&lt;%= f.text_field :entry_id, :readonly =&gt; true %&gt;
+</code></pre>
+
+<p>  </div>
+&#8220;`</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Bashシェルの変数にデフォルト値を設定する]]></title>
+    <link href="http://yoursite.com/blog/2014/10/11/set-default-value-to-bash-variables/"/>
+    <updated>2014-10-11T10:25:18+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/11/set-default-value-to-bash-variables</id>
+    <content type="html"><![CDATA[<h2>変数に値が未セットの場合にのみ任意の文字を代入したい</h2>
+
+<p>bashシェルのスクリプトの中で特定の変数に値がセットされていない場合はデフォルト値を代入するということがあります。そこで、変数に値が未セットの場合にのみ特定の値をデフォルト値として代入することができます。</p>
+
+<p>bashには様々な変数の参照方法があるんですが、<code>${変数名:=値}</code>と書くことで、<strong>値がセット済みの場合にはその値を返し、未セットの場合には任意の値を返す</strong>という動作をします。</p>
+
+<h3>1. インタラクティブなシェル上で変数を定義</h3>
+
+<p>例えば、<code>$var</code>変数に<code>hello</code>という値を代入しておき、上記の書き方で値を参照してみます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span><span class="s2">&quot;hello&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;goog morning&quot;</span><span class="k">}</span>
+</span><span class='line'>hello
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>$var</code>変数を空にして<code>goog morning</code>という値を代入してみたいとしましょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;goog morning&quot;</span><span class="k">}</span>
+</span><span class='line'>goog morning
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$var</span>
+</span><span class='line'>goog morning
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>${変数名:=値}</code>という書き方をした場合、返り値としてセットした(あるいはセットされている)<code>値</code>を返します。その返り値を<code>echo</code>でprintしています。</p>
+
+<p>では、<code>echo</code>させずに<code>${変数名:=値}</code>だけを実行するとどうでしょう。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;goog morning&quot;</span><span class="k">}</span>
+</span><span class='line'>-bash: goog morning: コマンドが見つかりません
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$var</span>
+</span><span class='line'>goog morning
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>シェルは返り値をコマンドとして認識するのですが、<code>goog morning</code>などというコマンドは存在しないのでメッセージが出力されます。しかし、<code>$var</code>変数への値のセットは成功したようです。</p>
+
+<p><code>echo</code>を使わずに、かつメッセージも出力させないためには以下のように、何もしないという<code>コロン(:)</code>を使う方法があります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span>: <span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;goog morning&quot;</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$var</span>
+</span><span class='line'>goog morning
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. シェルスクリプト内の変数値にtrue/falseを使用する場合の注意点</h3>
+
+<p>シェルスクリプトで<code>set -e</code>を先頭に書いておくことで、スクリプト内のコマンドが失敗を返した場合にはスクリプトを終了させることが出来ます。おまじないのように書いていることがありますが、変数の値にに<code>true/false</code>を使用している場合には注意が必要です。</p>
+
+<p><code>true</code>や<code>false</code>はbashシェルの組み込みコマンドとして存在し、その名の通り、<code>true</code>は真を返し、<code>false</code>は偽を返します。なので、<code>${var:=false}</code>などと書いているとこの変数定義の行の実行結果は偽を返すことになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ var</span><span class="o">=</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="k">${</span><span class="nv">var</span><span class="p">:=</span><span class="s2">&quot;false&quot;</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$?</span>
+</span><span class='line'>1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>シェルスクリプトで<code>set -e</code>としている場合にはそこでスクリプトが終了してしまい、期待通りに動かない可能性があります。ここでも何もしないという<code>コロン(:)</code>を使用するという方法が有効です。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Bashで読み込み専用変数を定義する]]></title>
+    <link href="http://yoursite.com/blog/2014/10/10/set-constant-variables-for-bash/"/>
+    <updated>2014-10-10T08:44:05+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/10/set-constant-variables-for-bash</id>
+    <content type="html"><![CDATA[<h2>bash変数を読み込み専用として定義する</h2>
+
+<p>bashのビルトインコマンドとして<code>typeset</code>と<code>declare</code>という変数定義に関するコマンドがあります。<code>declare</code>コマンドの<code>-r</code>オプションを使用して定義した変数は読み込み専用となり、以降の変数への値代入が出来なくなります。</p>
+
+<p>試しに、<code>hello</code>という文字列を代入した<code>CONSTANT_VAR</code>という変数を読み込み専用として定義してみます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span><span class="nb">declare</span> -r <span class="nv">CONSTANT_VAR</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="k">${</span><span class="nv">CONSTANT_VAR</span><span class="k">}</span>
+</span><span class='line'>hello
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>この<code>CONSTANT_VAR</code>変数に新しい値を代入しようと試みたら以下のようなメッセージが出力され変数への代入が失敗します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ CONSTANT_VAR</span><span class="o">=</span><span class="s2">&quot;goot morning&quot;</span>
+</span><span class='line'>-bash: CONSTANT_VAR: 読み込みのみの変数
+</span><span class='line'>
+</span><span class='line'><span class="nv">$ </span><span class="nb">echo</span> <span class="k">${</span><span class="nv">CONSTANT_VAR</span><span class="k">}</span>
+</span><span class='line'>hello
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法]]></title>

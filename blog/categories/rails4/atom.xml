@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails4 | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/rails4/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-10-08T00:35:19+09:00</updated>
+  <updated>2014-12-13T15:27:01+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,446 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Bootstrap3-datetimepicker-rails で日時を範囲指定]]></title>
+    <link href="http://yoursite.com/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/"/>
+    <updated>2014-10-13T08:34:54+09:00</updated>
+    <id>http://yoursite.com/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker</id>
+    <content type="html"><![CDATA[<p>Rails4で2つの日時情報を<code>開始日時</code>と<code>終了日時</code>という範囲指定をおこなうように実装した時の備忘録です。</p>
+
+<h2 class="text-warning">bootstrap-datetimepicker-railsのインストール</h2>
+
+
+<p>日時を指定するためのカレンダーをbootstrap3で実装しようと思い、調べたら<a href="https://github.com/TrevorS/bootstrap3-datetimepicker-rails" target="_blank">TrevorS/bootstrap3-datetimepicker-rails</a>というgemライブラリが存在しました。</p>
+
+<h3 class="text-success">Gemライブラリのインストール</h3>
+
+
+<p><a href="https://github.com/TrevorS/bootstrap3-datetimepicker-rails" target="_blank">TrevorS/bootstrap3-datetimepicker-rails</a>をインストールします。</p>
+
+<pre><code class="ruby Gemfile"># jQuery plugin for drop-in fix binded events problem caused by Turbolinks
+gem 'jquery-turbolinks'
+
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'therubyracer',  platforms: :ruby
+
+# Install Twitter Bootstrap3
+# https://github.com/twbs/bootstrap-sass
+gem 'bootstrap-sass', '~&gt; 3.2.0'
+
+# -webkit-border-radius みたいなブラウザベンダープレフィックスをよしなに管理してくれる
+# Parse CSS and add vendor prefixes to rules by Can I Use 
+# https://twitter.com/autoprefixer
+gem 'autoprefixer-rails'
+
+# Istall of bootstrap3-datetimepicker-rails
+# See https://github.com/TrevorS/bootstrap3-datetimepicker-rails
+gem 'momentjs-rails', '&gt;= 2.8.1'
+gem 'bootstrap3-datetimepicker-rails', '~&gt; 3.1.3'
+</code></pre>
+
+<p>ライブラリをインストールします。</p>
+
+<pre><code class="sh">bundle install
+</code></pre>
+
+<h3 class="text-success">javascriptライブラリのinclude</h3>
+
+
+<p><code>app/assets/javascripts/application.js</code>に以下を追記します。</p>
+
+<pre><code class="javascript app/assets/javascripts/application.js">//= require jquery
+//= require jquery.turbolinks
+//= require jquery_ujs
+//= require bootstrap-sprockets
+//= require moment
+//= require bootstrap-datetimepicker
+//= require turbolinks
+//= require_tree .
+</code></pre>
+
+<h3 class="text-success">スタイルシートの読み込み</h3>
+
+
+<p><code>app/assets/stylesheets/application.css.scss</code>に以下を追記します。</p>
+
+<pre><code class="scss app/assets/stylesheets/application.css.scss">@import "bootstrap-sprockets";
+@import "bootstrap";
+@import 'bootstrap-datetimepicker';
+</code></pre>
+
+<h2 class="text-warning">2つの期間を指定するdatetimepickerを実装</h2>
+
+
+<h3 class="text-success">Entryリソースの生成</h3>
+
+
+<p>今回は2つの期間を指定したエントリを保存するためのEntryリソースをscaffoldで生成します。
+開始日時を<code>datetime型</code>の<code>start_at</code>アトリビュート、終了日時を<code>datetime型</code>の<code>end_at</code>アトリビュートとして定義しています。</p>
+
+<pre><code class="sh">bundle exec rails g scaffold Entry name:string start_at:datetime end_at:datetime description:string
+bundle exec rake db:migrate
+
+cat &lt;&lt; EOT &gt; config/routes.rb
+Rails.application.routes.draw do
+  root 'entries#index'
+  resources :entries
+end
+EOT
+</code></pre>
+
+<h3 class="text-success">javascriptの記述</h3>
+
+
+<p><a href="http://eonasdan.github.io/bootstrap-datetimepicker/#example9" target="_blank"><a href="http://eonasdan.github.io/bootstrap-datetimepicker/#example9">http://eonasdan.github.io/bootstrap-datetimepicker/#example9</a></a>を参考にしました。</p>
+
+<p>&#8220;`javascript app/views/entries/_form.html.erb</p>
+
+<script type="text/javascript">
+  $(function(){
+
+    // bootstrap-datetimepicker-rails configurations
+    //   - references
+    //     1. http://eonasdan.github.io/bootstrap-datetimepicker/#options
+    //     2. http://shibuso.github.io/datetimepicker_test/datetimepicker_02.html
+
+
+    // .datepicker_start へのdatetimepicker設定
+    $('.datepicker_start').datetimepicker({ 
+
+      // カレンダー表示言語
+      // bootstrap-datetimepicker.ja.js が必要
+      //language: 'ja',
+
+      // 月日ピッカーと時間ピッカーを隣に表示する
+      //sideBySide: true,
+
+      // 日時フォーマット
+      format: 'YYYY-MM-DD HH:mm',
+
+      // 分の選択可能間隔
+      minuteStepping: 5,
+
+    });
+
+    // .datepicker_end へのdatetimepicker設定
+    $('.datepicker_end').datetimepicker({ 
+
+      // カレンダー表示言語
+      // bootstrap-datetimepicker.ja.js が必要
+      //language: 'ja',
+
+      // 月日ピッカーと時間ピッカーを隣に表示する
+      //sideBySide: true,
+
+      // 日時フォーマット
+      format: 'YYYY-MM-DD HH:mm',
+
+      // 分の選択可能間隔
+      minuteStepping: 5,
+
+    });
+
+    // set a minimum date of start_at
+    $('.datepicker_start').on("dp.change",function (e) {
+      $('.datepicker_end').data("DateTimePicker").setMinDate(e.date);
+    });
+
+    // set a maximum date of end_at
+    $('.datepicker_end').on("dp.change",function (e) {
+      $('.datepicker_start').data("DateTimePicker").setMaxDate(e.date);
+    });
+
+  });
+</script>
+
+
+<p>&#8220;`</p>
+
+<h3 class="text-success">viewの記述(ERB)</h3>
+
+
+<pre><code class="erb app/views/entries/_form.html.erb">&lt;%= form_for ( @entry ) do |f| %&gt;
+  &lt;% if @entry.errors.any? %&gt;
+    &lt;div id="error_explanation"&gt;
+      &lt;h2&gt;&lt;%= pluralize(@entry.errors.count, "error") %&gt; prohibited this entry from being saved:&lt;/h2&gt;
+
+      &lt;ul&gt;
+      &lt;% @entry.errors.full_messages.each do |message| %&gt;
+        &lt;li&gt;&lt;%= message %&gt;&lt;/li&gt;
+      &lt;% end %&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;% end %&gt;
+
+  &lt;div class="col-sm-8 col-md-8"&gt;
+    &lt;div class="form-group"&gt;
+      &lt;%= f.label :name, '名前' %&gt;&lt;br&gt;
+      &lt;%= f.text_field :name, :class =&gt; 'form-control', :placeholder =&gt; "エントリーの名前を入力してください..." %&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="col-sm-8 col-md-8"&gt;
+    &lt;div class="form-group"&gt;
+      &lt;%= f.label :start_at, '開始日時' %&gt;&lt;br&gt;
+      &lt;div class='input-group datepicker_start'&gt;
+        &lt;%= f.text_field :start_at, :class =&gt; 'form-control', :readonly =&gt; 'true', :placeholder =&gt; "開始日時を選択してください..." %&gt;
+        &lt;span class="input-group-addon"&gt;
+          &lt;span class="glyphicon glyphicon-calendar"&gt;&lt;/span&gt;
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="col-sm-8 col-md-8"&gt;
+    &lt;div class="form-group"&gt;
+      &lt;%= f.label :end_at, '終了日時' %&gt;&lt;br&gt;
+      &lt;div class='input-group datepicker_end'&gt;
+        &lt;%= f.text_field :end_at, :class =&gt; 'form-control', :readonly =&gt; 'true', :placeholder =&gt; "終了日時を選択してください..." %&gt;
+        &lt;span class="input-group-addon"&gt;
+          &lt;span class="glyphicon glyphicon-calendar"&gt;&lt;/span&gt;
+        &lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="col-sm-8 col-md-8"&gt;
+    &lt;div class="form-group"&gt;
+      &lt;%= f.label :description, '説明' %&gt;&lt;br&gt;
+      &lt;%= f.text_field :description, :class =&gt; 'form-control', :placeholder =&gt; "エントリーの説明を入力してください..." %&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;div class="col-sm-8 col-md-8"&gt;
+    &lt;div class="actions"&gt;
+      &lt;%= f.submit 'エントリーを作成', :class =&gt; 'btn btn-primary' %&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;% end %&gt;
+</code></pre>
+
+<h2 class="text-warning">参考にさせて頂いた情報</h2>
+
+
+<p><a href="http://qiita.com/kidachi_/items/9f76a27890d96b9f5838" target="_balnk"><a href="http://qiita.com/kidachi_/items/9f76a27890d96b9f5838">http://qiita.com/kidachi_/items/9f76a27890d96b9f5838</a></a><br>
+<a href="http://www.workabroad.jp/posts/974" target="_blank"><a href="http://www.workabroad.jp/posts/974">http://www.workabroad.jp/posts/974</a></a><br>
+<a href="http://eonasdan.github.io/bootstrap-datetimepicker/#example9" target="_blank"><a href="http://eonasdan.github.io/bootstrap-datetimepicker/#example9">http://eonasdan.github.io/bootstrap-datetimepicker/#example9</a></a><br></p>
+
+<h2 class="text-warning">エントリー期間内に複数のイベントを定義できるように実装する</h2>
+
+
+<p>定義したエントリーの中には複数のイベントを持つことができるようにEventリソースを生成します。イベントは<code>食事</code>などのカテゴリーを持つようにしたいのでCategoryリソースを先に生成します。</p>
+
+<h3 class="text-success">イベントに付けるカテゴリーのリストを生成する</h3>
+
+
+<pre><code class="sh">bundle exec rails g scaffold category name:string icon_name:string
+</code></pre>
+
+<h3 class="text-success">イベント用のEventリソースを生成する</h3>
+
+
+<pre><code class="sh">bundle exec rails g scaffold event entry:references name:string start_at:datetime end_at:datetime description:string category:references
+</code></pre>
+
+<pre><code class="sh">bundle exec rake db:migrate
+</code></pre>
+
+<h3 class="text-success">モデルのアソシエーションを記述する</h3>
+
+
+<pre><code class="ruby app/models/entry.rb">class Entry &lt; ActiveRecord::Base
+  has_many :events
+end
+</code></pre>
+
+<pre><code class="ruby app/models/event.rb">class Event &lt; ActiveRecord::Base
+  belongs_to :entry
+  belongs_to :category
+end
+</code></pre>
+
+<pre><code class="ruby app/models/category.rb">class Category &lt; ActiveRecord::Base
+  has_many :events
+end
+</code></pre>
+
+<h3 class="text-success">エントリーの編集ページにイベント作成ページへのリンクを設置</h3>
+
+
+<p>イベントは特定のエントリーに属するのでエントリーの編集画面から追加できるようにします。</p>
+
+<pre><code class="erb">&lt;%= link_to "#{@entry.name} にイベントを追加", "/events/#{@entry.id}/new" %&gt;
+</code></pre>
+
+<p>リンクURLがRESTFulなルーティングリソースではないので<code>config/routes.rb</code>にルーティングを追記します。</p>
+
+<pre><code class="ruby config/routes.rb">resources :events
+get 'events/:entry_id/new' =&gt; 'events#new'
+</code></pre>
+
+<h3 class="text-success">イベント作成ページの`Entry_id`のテキストフィールドにエントリーIDを表示</h3>
+
+
+<pre><code class="ruby app/controllers/events_controller.rb">  # GET /events/:entry_id/new
+  def new
+    entry_id = params.require(:entry_id)
+    @event = Event.new( :entry_id =&gt; entry_id )
+  end
+</code></pre>
+
+<p>&#8220;`erb app/views/events/_form.html.erb</p>
+
+<script type="text/javascript">
+
+  $(function(){
+
+    // bootstrap-datetimepicker-rails configurations
+    //   - references
+    //     1. http://eonasdan.github.io/bootstrap-datetimepicker/#options
+    //     2. http://shibuso.github.io/datetimepicker_test/datetimepicker_02.html
+
+    var start_at = new Date( <%= DateTime.parse( @entry.start_at.to_s ).utc.to_i*1000 %> );
+    var end_at = new Date( <%= DateTime.parse( @entry.end_at.to_s ).utc.to_i*1000 %> );
+
+    // define datepicker of start_at
+    $('.datepicker_start').datetimepicker({
+
+      // カレンダー表示言語
+      // bootstrap-datetimepicker.ja.js が必要
+      //language: 'ja',
+
+      // 月日ピッカーと時間ピッカーを隣に表示する
+      //sideBySide: true,
+
+      // 日時フォーマット
+      format: 'YYYY-MM-DD HH:mm',
+
+      // 分の選択可能間隔
+      minuteStepping: 5,
+
+      // 選択可能な最小日
+      minDate: start_at,
+
+      // 選択可能な最大日
+      maxDate: end_at,
+
+    });
+
+    // define datepicker of end_at
+    $('.datepicker_end').datetimepicker({
+
+      // カレンダー表示言語
+      // bootstrap-datetimepicker.ja.js が必要
+      //language: 'ja',
+
+      // 月日ピッカーと時間ピッカーを隣に表示する
+      //sideBySide: true,
+
+      // 日時フォーマット
+      format: 'YYYY-MM-DD HH:mm',
+
+      // 分の選択可能間隔
+      minuteStepping: 5,
+
+      // 選択可能な最小日
+      minDate: start_at,
+
+      // 選択可能な最大日
+      maxDate: end_at,
+
+    });
+
+  });
+
+</script>
+
+
+<p>iv class=&ldquo;field&rdquo;>
+ |f| %>
+  &lt;% if @event.errors.any? %>
+    <div id="error_explanation">
+      <h2>&lt;%= pluralize(@event.errors.count, &ldquo;error&rdquo;) %> prohibited this event from being saved:</h2></p>
+
+<pre><code>  &lt;ul&gt;
+  &lt;% @event.errors.full_messages.each do |message| %&gt;
+    &lt;li&gt;&lt;%= message %&gt;&lt;/li&gt;
+  &lt;% end %&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>  &lt;% end %></p>
+
+<p>  <div class="field">
+    &lt;%= f.label :entry_id %><br>
+    &lt;%= f.text_field :entry_id, :readonly => true %>
+  </div>
+  <div class="field">
+    &lt;%= f.label :name %><br>
+    &lt;%= f.text_field :name %>
+  </div></p>
+
+<p>  <!-- 開始日時カレンダー -->
+  <div class="col-sm-8 col-md-8">
+    <div class="form-group">
+      &lt;%= f.label :start_at, &lsquo;開始日時&rsquo; %><br>
+      <div class='input-group datepicker_start'>
+        &lt;%= f.text_field :start_at,
+                         :value => @entry.start_at,
+                         :class => &lsquo;form-control&rsquo;,
+                         :readonly => &lsquo;true&rsquo;,
+                         :placeholder => &ldquo;開始日時を選択してください&hellip;&rdquo; %></p>
+
+<pre><code>    &lt;!-- glyphicon --&gt;
+    &lt;span class="input-group-addon"&gt;
+      &lt;span class="glyphicon glyphicon-calendar"&gt;&lt;/span&gt;
+    &lt;/span&gt;
+
+  &lt;/div&gt;&lt;!-- /.input-group datepicker_start --&gt;
+&lt;/div&gt;&lt;!-- /.form-group --&gt;
+</code></pre>
+
+<p>  </div><!-- /.col-sm .col-md --></p>
+
+<p>  <!-- 終了日時カレンダー -->
+  <div class="col-sm-8 col-md-8">
+    <div class="form-group">
+      &lt;%= f.label :end_at, &lsquo;終了日時&rsquo; %><br>
+      <div class='input-group datepicker_end'>
+        &lt;%= f.text_field :end_at,
+                         :value => @entry.end_at,
+                         :class => &lsquo;form-control&rsquo;,
+                         :readonly => &lsquo;true&rsquo;,
+                         :placeholder => &ldquo;終了日時を選択してください&hellip;&rdquo; %>
+        <!-- glyphicon -->
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </span></p>
+
+<pre><code>  &lt;/div&gt;&lt;!-- /.input-group datepicker_start --&gt;
+&lt;/div&gt;&lt;!-- /.form-group --&gt;
+</code></pre>
+
+<p>  </div><!-- /.col-sm .col-md --></p>
+
+<p>  <div class="field">
+    &lt;%= f.label :description %><br>
+    &lt;%= f.text_field :description %>
+  </div>
+  <div class="actions">
+    &lt;%= f.submit %>
+  </div>
+&lt;% end %>
+<code>
+    &lt;%= f.label :entry_id %&gt;&lt;br&gt;
+    &lt;%= f.text_field :entry_id, :readonly =&gt; true %&gt;
+  &lt;/div&gt;
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法]]></title>
