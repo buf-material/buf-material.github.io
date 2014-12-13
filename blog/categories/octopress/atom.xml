@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-12-13T15:27:01+09:00</updated>
+  <updated>2014-12-13T17:28:11+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -491,7 +491,7 @@ octopress
     
     
     &lt;a class="list-group-item " href="/blog/categories/bash/index.html"&gt;
-        &lt;span class="badge"&gt;2&lt;/span&gt;
+        &lt;span class="badge"&gt;3&lt;/span&gt;
         bash
       &lt;/a&gt;
     
@@ -507,6 +507,12 @@ octopress
         datetimepicker
       &lt;/a&gt;
     
+    
+    &lt;a class="list-group-item " href="/blog/categories/補完/index.html"&gt;
+        &lt;span class="badge"&gt;1&lt;/span&gt;
+        補完
+      &lt;/a&gt;
+    
   &lt;/div&gt;
 &lt;/section&gt;
 </code></pre>
@@ -517,7 +523,7 @@ octopress
   &lt;div class="panel-heading"&gt;
     &lt;h3 class="panel-title"&gt;Tag cloud&lt;/h3&gt;
   &lt;/div&gt;
-  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/bash' style='font-size: 120.0%'>bash(2)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> &lt;/span&gt;
+  &lt;span id="tag-cloud"&gt;<a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> &lt;/span&gt;
 &lt;/section&gt;
 </code></pre>
 

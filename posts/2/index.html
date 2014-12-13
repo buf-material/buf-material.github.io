@@ -140,6 +140,140 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-16T23:20:32+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/09/16/setting-google-alalytics-octopress/" itemprop="url">OctopressにGoogle Analyticsを導入する</a></h1>
+    
+  </header>
+
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><h2>Google Analytics</h2>
+
+<p><img src="/images/google_analytics_01.jpg" alt="" />
+<br></p>
+
+<p><a href="http://www.google.com/analytics/">Google Analytics</a>はGoogleが提供するアクセス解析ツールです。</p>
+
+<p>サイトページ内に<a href="https://support.google.com/analytics/answer/1032385?hl=ja">トラッキングコード</a>と呼ばれるJavaScript コードを埋め込み、訪問者がサイトへアクセスした際の閲覧情報がGoogle Analyticsサーバへ送信される仕組みです。Webサーバのアクセスログ等を解析する等とは違い、開発者はこのトラッキングコードを埋め込むだけでアクセス解析ツールを利用できるという手軽さと、様々なアクセス情報を取得・閲覧できることが特徴です。</p>
+
+<p>Octopressの場合、このトラッキングコードの大枠のコードがテーマのテンプレートHTMLファイルとして用意されているケースがあります。このような場合には<code>_config.yml</code>の<code>google_analytics_tracking_id:</code>という箇所に<a href="https://support.google.com/analytics/answer/1032385?hl=ja">トラッキング ID</a>を記述するだけです。</p>
+
+<p>トラッキング IDとは<code>UA-000000-01</code>のような文字列で、データの送信先となるアカウントやプロパティを Google アナリティクス側で特定するためのIDです。</p>
+
+<h2>トラッキングIDの取得</h2>
+
+<p>先述したトラッキング IDを取得します。</p>
+
+<p><a href="http://www.google.com/analytics/">Google Analytics</a>からGoogleアカウントでログインし、<code>アナリティクス設定 &gt; 管理 &gt; 新しいアカウント</code> の順にアクセスし、サイト情報を登録してトラッキングIDを取得します。</p>
+
+<h2>取得したトラッキングIDを設定</h2>
+
+<p><a href="http://octopress.org/">Octopress</a>では既にGoogle Analytics用のテンプレートHTMLが用意されているテーマもあり、デフォルトの<strong>Classic</strong>や先日変更した<strong>octostrap3</strong>でも同様です。</p>
+
+<pre><code>### Octopress Themesに組み込まれているGoogle Analyticsテンプレート
+
+octopress
+└── .themes
+    ├── octostrap3
+    |   └── source
+    |       └── _includes
+    |           └── google_analytics.html
+    |
+    └── classic
+        └── source
+            └── _includes
+                └── google_analytics.html
+
+</code></pre>
+
+
+<p>従って、設定は<code>_config.yml</code>の<code>google_analytics_tracking_id:</code>の項に先ほど取得したトラッキングIDを記述して静的ファイルを再生成するだけでいいようです。</p>
+
+<figure class='code'><figcaption><span>_config.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">google_analytics_tracking_id</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">UA-54XXXXXX-1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>静的ファイルの再生成とデプロイ</h2>
+
+<p>静的ファイルを再生成します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake generate
+</span><span class='line'>
+</span><span class='line'><span class="c">## ローカル環境で確認する場合はpreviewタスクも実行します</span>
+</span><span class='line'>rake preview
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>GitHub Pages</code>へデプロイします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake deploy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>確認</h2>
+
+<p><code>GitHub Pages</code>へアクセスした際に表示されるHTMLコードを確認し、HEADタグ内に以下のscriptコードが組み込まれていれば設定できています。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>   <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span><span class="nx">s</span><span class="p">,</span><span class="nx">o</span><span class="p">,</span><span class="nx">g</span><span class="p">,</span><span class="nx">r</span><span class="p">,</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">){</span><span class="nx">i</span><span class="p">[</span><span class="s1">&#39;GoogleAnalyticsObject&#39;</span><span class="p">]</span><span class="o">=</span><span class="nx">r</span><span class="p">;</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">]</span><span class="o">||</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="p">(</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">=</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">q</span><span class="o">||</span><span class="p">[]).</span><span class="nx">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">)},</span><span class="nx">i</span><span class="p">[</span><span class="nx">r</span><span class="p">].</span><span class="nx">l</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="k">new</span> <span class="nb">Date</span><span class="p">();</span><span class="nx">a</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="nx">o</span><span class="p">),</span>
+</span><span class='line'>    <span class="nx">m</span><span class="o">=</span><span class="nx">s</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="nx">o</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span><span class="nx">a</span><span class="p">.</span><span class="nx">async</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="nx">a</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="nx">g</span><span class="p">;</span><span class="nx">m</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">})(</span><span class="nb">window</span><span class="p">,</span><span class="nb">document</span><span class="p">,</span><span class="s1">&#39;script&#39;</span><span class="p">,</span><span class="s1">&#39;//www.google-analytics.com/analytics.js&#39;</span><span class="p">,</span><span class="s1">&#39;ga&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">ga</span><span class="p">(</span><span class="s1">&#39;create&#39;</span><span class="p">,</span> <span class="s1">&#39;UA-54XXXXXX-1&#39;</span><span class="p">,</span> <span class="s1">&#39;auto&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">ga</span><span class="p">(</span><span class="s1">&#39;send&#39;</span><span class="p">,</span> <span class="s1">&#39;pageview&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="o">&lt;</span><span class="err">/script&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Google Analyticsのアクセス解析結果が表示させるまで24時間程度かかるので表示されるのを待ちましょう。</p>
+</div>
+  
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-02T19:50:02+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
         
       </p>
@@ -997,6 +1131,8 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/12/13/install-bash-completion/">Bash-completionをインストール</a>
+    
     <a class="list-group-item " href="/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/">Bootstrap3-datetimepicker-rails で日時を範囲指定</a>
     
     <a class="list-group-item " href="/blog/2014/10/11/set-default-value-to-bash-variables/">Bashシェルの変数にデフォルト値を設定する</a>
@@ -1004,8 +1140,6 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
     <a class="list-group-item " href="/blog/2014/10/10/set-constant-variables-for-bash/">Bashで読み込み専用変数を定義する</a>
     
     <a class="list-group-item " href="/blog/2014/10/07/hidden-key-on-rails-for-heroku/">herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法</a>
-    
-    <a class="list-group-item " href="/blog/2014/10/07/multi-ssh-key-management-for-heroku/">複数のherokuアカウントで異なるSSHを設定したい</a>
     
   </div>
 </section>
@@ -1113,7 +1247,7 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
     
     
     <a class="list-group-item " href="/blog/categories/bash/index.html">
-        <span class="badge">2</span>
+        <span class="badge">3</span>
         bash
       </a>
     
@@ -1129,13 +1263,19 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
         datetimepicker
       </a>
     
+    
+    <a class="list-group-item " href="/blog/categories/補完/index.html">
+        <span class="badge">1</span>
+        補完
+      </a>
+    
   </div>
 </section>
 <section class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Tag cloud</h3>
   </div>
-  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 120.0%'>bash(2)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> </span>
+  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
 </section>
 
       

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Bash | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/bash/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-12-13T15:27:01+09:00</updated>
+  <updated>2014-12-13T17:28:11+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,100 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Bash-completionをインストール]]></title>
+    <link href="http://yoursite.com/blog/2014/12/13/install-bash-completion/"/>
+    <updated>2014-12-13T15:32:44+09:00</updated>
+    <id>http://yoursite.com/blog/2014/12/13/install-bash-completion</id>
+    <content type="html"><![CDATA[<h2>コマンド利用するのに補完機能は欠かせない</h2>
+
+<p><code>ls</code>とか<code>cd</code>でタブキーをトントンッと2回叩くとカレントディレクトリ以下のディレクトリやファイル名がリストされますよね。これが補完です。</p>
+
+<h2>bashの補完機能はcomplete組み込みコマンドで実現</h2>
+
+<p>bashの補完機能は組み込みコマンドの<code>complete</code>コマンドで実現しています。<code>complete</code>コマンドはオプションが豊富なので基本的なオプションの使い方のみご紹介します。</p>
+
+<ul>
+<li><p>全設定の表示
+&#8220;`sh</p>
+
+<h1>complete -p | head</h1>
+
+<p>complete -F <em>kill kill
+complete -F </em>renice renice
+complete -F <em>pgrep pidof
+complete -F </em>postconf postconf
+complete -F <em>java java
+complete -F </em>stream stream
+complete -F <em>update_alternatives alternatives
+complete -F </em>filedir_xspec oodraw
+complete -F <em>filedir_xspec elinks
+complete -F </em>filedir_xspec freeamp
+&#8220;`</p></li>
+<li><p>lsコマンドの設定のみ表示
+&#8220;`sh</p>
+
+<h1>complete -p ls</h1>
+
+<p>complete -o default -F _longopt ls
+&#8220;`</p></li>
+</ul>
+
+
+<p><code>man complete</code>を見ると情報量が多いので詳細はまた今度確認することにしますが、上記lsコマンドの補完設定の概要は、<code>-o default</code>でオプションを指定し、<code>-F _longopt</code>で実行するシェル関数を指定しているようです。<code>_longopt</code>関数に関して興味があれば<code>type -a _longopt</code>を実行してみましょう。</p>
+
+<h2>bash-completionをインストールする</h2>
+
+<p>bash補完を更に便利にするために<a href="http://bash-completion.alioth.debian.org/">bash-completion</a>をインストールします。</p>
+
+<p>  See: <a href="https://github.com/GArik/bash-completion">https://github.com/GArik/bash-completion</a><br>
+  See: <a href="https://alioth.debian.org/projects/bash-completion/">https://alioth.debian.org/projects/bash-completion/</a></p>
+
+<h3>RHEL系</h3>
+
+<pre><code class="sh">yum -y install bash-completion
+</code></pre>
+
+<h3>MacOSX</h3>
+
+<ul>
+<li>Macのbrewで入れたパッケージのインストールプレフィックスは<code>/usr/local</code></li>
+<li>デフォルトでは<code>/usr/local/etc/bash_completion</code>設定ファイルが読み込まれないので<code>~/.bash_profile</code>へ追記</li>
+</ul>
+
+
+<pre><code class="sh">brew install bash-completion
+
+cat &lt;&lt; EOT &gt;&gt; ~/.bash_profile
+# bash-completion
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+EOT
+
+source ~/.bash_profile 
+</code></pre>
+
+<h2>bash-completionだけでは補完されないコマンドの補完</h2>
+
+<p>bash-completionでは補完機能を拡張することができます。Macでは<code>/usr/local/etc/bash_completion.d</code>に、RHEL系では<code>/etc/bash_completion.d</code>に拡張ファイルを置き、ログインし直すか<code>~/.bash_profile</code>を再読み込みすることで有効になります。</p>
+
+<h3>gitコマンド補完</h3>
+
+<pre><code class="sh">wget -O /usr/local/etc/bash_completion.d/git https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
+source ~/.bash_profile
+</code></pre>
+
+<h3>vagrantコマンド補完</h3>
+
+<pre><code class="sh">wget -O /usr/local/etc/bash_completion.d/vagrant https://raw.githubusercontent.com/kura/vagrant-bash-completion/master/etc/bash_completion.d/vagrant
+source ~/.bash_profile
+</code></pre>
+
+<p>これは本当に便利！！</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Bashシェルの変数にデフォルト値を設定する]]></title>
