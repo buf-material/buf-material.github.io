@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Vagrantでボックスを管理 - My Octopress Blog</title>
+  <title>go言語をCentOSにインストールする - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
@@ -14,15 +14,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://yoursite.com/blog/2014/12/14/download-vagrant-box">
+  <link rel="canonical" href="http://yoursite.com/blog/2014/12/14/install-go">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
 
   <!-- http://opengraphprotocol.org/ -->
   <meta name="twitter:card" content="summary_large_image">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="http://yoursite.com/blog/2014/12/14/download-vagrant-box">
-  <meta property="og:title" content="Vagrantでボックスを管理 - My Octopress Blog">
+  <meta property="og:url" content="http://yoursite.com/blog/2014/12/14/install-go">
+  <meta property="og:title" content="go言語をCentOSにインストールする - My Octopress Blog">
   
 
   <script src="/javascripts/libs/jquery/jquery-2.0.3.min.js"></script>
@@ -136,13 +136,13 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-12-14T19:27:57+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-12-14T22:54:28+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
         
       </p>
     
     
     <h1 class="entry-title" itemprop="name headline">
-        Vagrantでボックスを管理
+        go言語をCentOSにインストールする
         
     </h1>
     
@@ -150,81 +150,114 @@
 
 
 
-<div class="entry-content clearfix" itemprop="articleBody description"><h2>ボックス</h2>
-
-<p>VagrantではOSを1からインストールしなくて済むようにベースイメージを利用することができます。Vagrantではこのベースイメージのことはボックスと呼びます。ボックスはOSのスナップショットイメージを固めたtarボールです。</p>
-
-<h3>ボックスの恩恵</h3>
+<div class="entry-content clearfix" itemprop="articleBody description"><h2>インストール</h2>
 
 <ul>
-<li>概して30分は要するOSのインストールを省略できる</li>
-<li><code>vagrant destroy</code>から<code>vagrant up</code>を繰り返すことが容易(やり直しが容易)にできる</li>
-<li>OS環境を容易に合わせることができる</li>
-<li><code>vagrant package</code>でオリジナルのボックスを作成できる
-
-<ul>
-<li><code>vagrant up</code>で毎回インストールするミドルウェアなどをインストール済みのボックスを用意することで構築時間を短縮できる</li>
-</ul>
-</li>
+<li>refs <a href="http://golang.org/doc/install">http://golang.org/doc/install</a></li>
 </ul>
 
-
-<h3>ボックスのダウンロード</h3>
-
-<ul>
-<li>ボックスファイルのリスト
-
-<ul>
-<li><a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a></li>
-</ul>
-</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box add centos7-x86_64-minimal https://f0fff3908f081cb6461b407be80daf97f07ac418.googledrive.com/host/0BwtuV7VyVTSkUG1PM3pCeDJ4dVE/centos7.box
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>ボックスの管理</h3>
-
-<h4>ダウンロード済みのボックスの確認</h4>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box list
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Vagrantではボックスをユーザ毎にグローバルに管理します。デフォルトでは、<code>~/.vagrant.d/boxes</code>以下にボックスごとに保存されています。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>ls  ~/.vagrant.d/boxes/
-</span><span class='line'>CentOS-6.5-x86_64 centos7-x86_64-minimal
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">cd</span> /tmp
+</span><span class='line'>wget https://storage.googleapis.com/golang/go1.4.linux-amd64.tar.gz --no-check-certificate
+</span><span class='line'>tar -C /usr/local -xzf  go1.4.linux-amd64.tar.gz
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>ボックスの保存先は<code>VAGRANT_HOME</code>環境変数をセットすることで変更可能です。</p>
+<h2>環境変数PATHにgoコマンドのパスを通す</h2>
 
-<h4>ボックスの削除</h4>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>cat <span class="s">&lt;&lt; EOT &gt;&gt; ~/.bash_profile</span>
+</span><span class='line'><span class="s">export PATH=$PATH:/usr/local/go/bin</span>
+</span><span class='line'><span class="s">EOT</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>goコマンドのヘルプ</h2>
 
 <ul>
-<li>特定のボックスを削除</li>
+<li><code>go</code>と実行し、以下のように表示されればインストール成功です</li>
 </ul>
 
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box remove centos7-x86_64-minimal
-</span></code></pre></td></tr></table></div></figure>
-
-
-<ul>
-<li>特定のプロバイダー用のボックスを削除</li>
-</ul>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box remove --provider virtualbox
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># go</span>
+</span><span class='line'>Go is a tool <span class="k">for</span> managing Go <span class="nb">source </span>code.
+</span><span class='line'>
+</span><span class='line'>Usage:
+</span><span class='line'>
+</span><span class='line'>        go <span class="nb">command</span> <span class="o">[</span>arguments<span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>The commands are:
+</span><span class='line'>
+</span><span class='line'>    build       compile packages and dependencies
+</span><span class='line'>    clean       remove object files
+</span><span class='line'>    env         print Go environment information
+</span><span class='line'>    fix         run go tool fix on packages
+</span><span class='line'>    fmt         run gofmt on package sources
+</span><span class='line'>    generate    generate Go files by processing <span class="nb">source</span>
+</span><span class='line'><span class="nb">    </span>get         download and install packages and dependencies
+</span><span class='line'>    install     compile and install packages and dependencies
+</span><span class='line'>    list        list packages
+</span><span class='line'>    run         compile and run Go program
+</span><span class='line'>    <span class="nb">test        test </span>packages
+</span><span class='line'>    tool        run specified go tool
+</span><span class='line'>    version     print Go version
+</span><span class='line'>    vet         run go tool vet on packages
+</span><span class='line'>
+</span><span class='line'>Use <span class="s2">&quot;go help [command]&quot;</span> <span class="k">for</span> more information about a command.
+</span><span class='line'>
+</span><span class='line'>Additional <span class="nb">help </span>topics:
+</span><span class='line'>
+</span><span class='line'>    c           calling between Go and C
+</span><span class='line'>    filetype    file types
+</span><span class='line'>    gopath      GOPATH environment variable
+</span><span class='line'>    importpath  import path syntax
+</span><span class='line'>    packages    description of package lists
+</span><span class='line'>    testflag    description of testing flags
+</span><span class='line'>    testfunc    description of testing functions
+</span><span class='line'>
+</span><span class='line'>Use <span class="s2">&quot;go help [topic]&quot;</span> <span class="k">for</span> more information about
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
@@ -250,13 +283,13 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-12-14T19:27:57+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-12-14T22:54:28+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
           
 
 <span class="glyphicon glyphicon-tags"></span>&nbsp;
 <span class="categories">
   
-    <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/vagrant/'>vagrant</a>
+    <a class='category' href='/blog/categories/go/'>go</a>
   
 </span>
 
@@ -265,7 +298,7 @@
         
           <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yoursite.com/blog/2014/12/14/download-vagrant-box/" data-via="" data-counturl="http://yoursite.com/blog/2014/12/14/download-vagrant-box/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yoursite.com/blog/2014/12/14/install-go/" data-via="" data-counturl="http://yoursite.com/blog/2014/12/14/install-go/" >Tweet</a>
   
   
   
@@ -275,10 +308,8 @@
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a href="/blog/2014/12/13/install-bash-completion/" title="Previous Post: bash-completionをインストール">&laquo; bash-completionをインストール</a></li>
+            <li class="previous"><a href="/blog/2014/12/14/download-vagrant-box/" title="Previous Post: Vagrantでボックスを管理">&laquo; Vagrantでボックスを管理</a></li>
             
-            
-            <li class="next"><a href="/blog/2014/12/14/install-go/" title="Next Post: go言語をCentOSにインストールする">go言語をCentOSにインストールする &raquo;</a></li>
             
           </ul>
         
@@ -308,9 +339,9 @@
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2014/12/14/install-go/">go言語をCentOSにインストールする</a>
+    <a class="list-group-item active" href="/blog/2014/12/14/install-go/">go言語をCentOSにインストールする</a>
     
-    <a class="list-group-item active" href="/blog/2014/12/14/download-vagrant-box/">Vagrantでボックスを管理</a>
+    <a class="list-group-item " href="/blog/2014/12/14/download-vagrant-box/">Vagrantでボックスを管理</a>
     
     <a class="list-group-item " href="/blog/2014/12/13/install-bash-completion/">Bash-completionをインストール</a>
     

@@ -140,6 +140,1045 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-22T14:57:55+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/09/22/install-bootstrap3-on-rails4/" itemprop="url">Rails4でBootstrap3を使う(ついでにherokuへpush)</a></h1>
+    
+  </header>
+
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p><a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank">サンプルアプリケーション</a>
+<br></p>
+
+<p><a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank">
+  <img src="/images/install-bootstrap3-on-rails4_08.jpg">
+</a>
+<br>
+<br></p>
+
+<p>今まではRailsアプリケーションのデザインを独学でCSS書いたりjQueryプラグイン入れたりしてたのですが、今更ながらboootstrapを利用しようと思い始めました。</p>
+
+<p><a href="http://rubyonrails.org/">Ruby on Rails</a>でBootstrap3をインストールする手順を纏めておきます。</p>
+
+<p>今回はRailsアプリケーションのプロジェクト名として<code>bootstrap3_sample</code>という文字を使用することにします。</p>
+
+<p>また、ここで使用しているRailsバージョンは<code>Rails 4.1.6</code>です。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> /path/to/rails_app
+</span><span class='line'><span class="nv">$ </span>bundle <span class="nb">exec </span>rails -v
+</span><span class='line'>Rails 4.1.6
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>作成したアプリケーションは<a href="https://www.heroku.com/">heroku</a>にpushしますのでRailsのデータベースドライバとして<code>PostgreSQL</code>を選択します。それに併せてPostgreSQLのインストールや設定についても自分への備忘録として残しておきます。</p>
+
+<h1>Bootstrapを使用するまで</h1>
+
+<h2 class="text-warning">PostgreSQLの準備</h2>
+
+
+<h3 class="text-success">PostgreSQLインストール</h3>
+
+
+<p>PostgreSQLの公式yumレポジトリからインストールします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>yum install -y http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm
+</span><span class='line'>yum install -y postgresql93-server postgresql93-contrib postgresql93-devel
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>PostgreSQLインストール直後のデータベースディレクトリである<code>/var/lib/pgsql/9.3/data</code>を削除してデータベースを初期化(<code>initdb</code>)し、<code>postgresql-9.3サービス</code>を起動します。ついでに、自動起動も設定します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rm -rf /var/lib/pgsql/9.3/data
+</span><span class='line'>service postgresql-9.3 initdb
+</span><span class='line'>service postgresql-9.3 start
+</span><span class='line'>chkconfig postgresql-9.3 on
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">PostgreSQLの認証方式をPeerからTrustへ変更</h3>
+
+
+<p><a href="https://www.postgresql.jp/document/9.3/html/auth-methods.html">https://www.postgresql.jp/document/9.3/html/auth-methods.html</a></p>
+
+<p>PostgreSQLではデフォルトの認証方式として<code>Peer認証</code>が設定されています。Peer認証とは、カーネルからクライアント上のシステムユーザ名を取得し、PostgreSQLデータベースユーザと同一である場合のみ接続が許可される仕組みです。PostgreSQLでは、デフォルトでは<code>postgres</code>データベースユーザしか存在しないため、UnixユーザもPostgreSQLをパッケージインストールすると作成されている<code>postgres</code>である必要があります(<code>su - postgres</code>しないとダメということ)。</p>
+
+<p><strong><code>Peer認証</code>だとUnixのスーパーユーザである<code>root</code>であってもpostgresデータベースユーザへの接続は許可されません。</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># id</span>
+</span><span class='line'><span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> 所属グループ<span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># psql --username=postgres</span>
+</span><span class='line'>psql: FATAL:  ユーザ <span class="s2">&quot;postgres&quot;</span> で対向<span class="o">(</span>peer<span class="o">)</span>認証に失敗しました
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>今回は、<strong>サーバに接続できる全Unixユーザから全データベースユーザへの接続が許可される<code>Trust認証</code>に変更します</strong>。</p>
+
+<p><code>Peer認証</code>から<code>Trust認証</code>への変更は<code>/var/lib/pgsql/9.3/data/pg_hba.conf</code>を修正します。</p>
+
+<figure class='code'><figcaption><span>/var/lib/pgsql/9.3/data/pg_hba.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>#local   all             all                                     peer
+</span><span class='line'>local   all             all                                     trust
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>設定ファイルを修正したので<code>postgresql-9.3</code>サービスを再起動します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>service postgresql-9.3 restart
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">Railsアプリケーション用のデータベースユーザを作成</h3>
+
+
+<h4><p class="text-danger">PostgreSQL 9.3ではCREATE USERはCREATE ROLEの別名になりました。 唯一の違いは、CREATE USERという名前でコマンドが呼び出されると、デフォルトでLOGINになり、CREATE ROLEという名前でコマンドが呼び出されると、デフォルトでNOLOGINとなる点です。</p></h4>
+
+
+<p><a href="https://www.postgresql.jp/document/9.3/html/sql-createuser.html">https://www.postgresql.jp/document/9.3/html/sql-createuser.html</a></p>
+
+<p><br>
+PostgreSQLのスーパーユーザである<code>postgres</code>データベースユーザで接続します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>psql --username<span class="o">=</span>postgres
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>今回作成するRailsアプリケーションのプロジェクト名と同一の<code>bootstrap3_sample</code>というデータベースユーザを作成し、データベース作成権限とログイン権限を持つように設定します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">create</span> <span class="k">user</span> <span class="n">bootstrap3_sample</span> <span class="k">with</span> <span class="k">createdb</span> <span class="n">password</span> <span class="s1">&#39;bootstrap3_sample&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記SQLは以下コマンドと同じ効果があります</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>createuser --username<span class="o">=</span>postgres --createdb bootstrap3_sample -P
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>createuser</code>コマンドは<code>postgresql93(末尾の数字はバージョン番号なので適宜目置換を!)</code>RPMパッケージに付属しているPostgreSQLのデータベースユーザ(正確にはロール)を作成するためのコマンドです。SQLでのユーザ作成とは異なり、コマンドでパスワード文字列を指定することは出来ず、<code>-Pオプション</code>によってパスワード文字列を指定するプロンプトが表示されます。</p>
+
+<p>データベースユーザのパスワードがシステムカタログ上に保存される際に暗号化するかどうかは<code>ENCRYPTED/UNENCRYPTED</code>で明示するか、そうでない場合は、<code>/var/lib/pgsql/9.3/data/postgresql.conf</code>の<code>password_encryption</code>設定パラメータに依ります。<code>password_encryption</code>設定パラメータがonの場合に暗号化が有効(default: on)です。</p>
+
+<p>先述した通り、<strong><code>create user</code>SQLはログイン権限オプション(login)を明示しなくても有効となりますし、<code>createuser</code>コマンドでもログイン権限オプション(&ndash;login)がデフォルトで有効なので、ここでは指定していません。この辺りのSQLやコマンドの挙動はPostgreSQLバージョンにも依ると思うので自信の無い場合はログイン権限オプションを明示した方がいいかもしれません。</strong></p>
+
+<h2 class="text-warning">Railsプロジェクトの作成</h2>
+
+
+<p>新しいRailsプロジェクトを作成します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rails new bootstrap3_sample --database<span class="o">=</span>postgresql
+</span><span class='line'><span class="nb">cd </span>bootstrap3_sample
+</span><span class='line'>bundle <span class="nb">exec </span>spring stop
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">データベース接続情報を設定</h2>
+
+
+
+
+<figure class='code'><figcaption><span>config/database.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default</span><span class="p-Indicator">:</span> <span class="nl">&amp;default</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">adapter</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">postgresql</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">encoding</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">unicode</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">pool</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">5</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">development</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">&lt;&lt;</span><span class="p-Indicator">:</span> <span class="nv">*default</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bootstrap3_sample_development</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">user</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bootstrap3_sample</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bootstrap3_sample</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">test</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">&lt;&lt;</span><span class="p-Indicator">:</span> <span class="nv">*default</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bootstrap3_sample_test</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">user</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bootstrap3_sample</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bootstrap3_sample</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">production</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">&lt;&lt;</span><span class="p-Indicator">:</span> <span class="nv">*default</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">database</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bootstrap3_sample_production</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">username</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">bootstrap3_sample</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">password</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">&lt;%= ENV[&#39;BOOTSTRAP3_SAMPLE_DATABASE_PASSWORD&#39;] %&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">Gemライブラリのインストール</h2>
+
+
+<p>Rails4でBootstrap3をインストールする簡単な方法は<code>Gemライブラリ</code>を使用することです。</p>
+
+<p>今回はTwitter社公式の<a href="https://github.com/twbs/bootstrap-sass">bootstrap-sass</a>を使用します。</p>
+
+<p>比較はしていませんが、<a href="https://github.com/anjlab/bootstrap-rails">anjlab-bootstrap-rails</a>などもあり、<a href="https://github.com/anjlab/anjlab-widgets">anjlab/anjlab-widgets</a>が使えることなどが特徴のようです。こちらのGemは<a href="https://github.com/twbs/bootstrap-sass">bootstrap-sass</a>との併用は推奨されていないようです。</p>
+
+<p><br>
+<code>Gemfile</code>に追記します。<code>therubyracer</code>はアンコメントすれば有効になります。</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># See https://github.com/sstephenson/execjs#readme for more supported runtimes</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;therubyracer&#39;</span><span class="p">,</span>  <span class="ss">platforms</span><span class="p">:</span> <span class="ss">:ruby</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Install Twitter Bootstrap3</span>
+</span><span class='line'><span class="c1"># https://github.com/twbs/bootstrap-sass</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;bootstrap-sass&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 3.2.0&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># -webkit-border-radius みたいなブラウザベンダープレフィックスをよしなに管理してくれる</span>
+</span><span class='line'><span class="c1"># Parse CSS and add vendor prefixes to rules by Can I Use </span>
+</span><span class='line'><span class="c1"># https://twitter.com/autoprefixer</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;autoprefixer-rails&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Railsプロジェクト作成時の<code>Gemfile</code>と比較するとこのようになります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gd">--- a/Gemfile</span>
+</span><span class='line'><span class="gi">+++ b/Gemfile</span>
+</span><span class='line'><span class="gu">@@ -12,7 +12,7 @@ gem &#39;uglifier&#39;, &#39;&gt;= 1.3.0&#39;</span>
+</span><span class='line'> # Use CoffeeScript for .js.coffee assets and views
+</span><span class='line'> gem &#39;coffee-rails&#39;, &#39;~&gt; 4.0.0&#39;
+</span><span class='line'> # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+</span><span class='line'><span class="gd">-# gem &#39;therubyracer&#39;,  platforms: :ruby</span>
+</span><span class='line'><span class="gi">+gem &#39;therubyracer&#39;,  platforms: :ruby</span>
+</span><span class='line'>
+</span><span class='line'> # Use jquery as the JavaScript library
+</span><span class='line'> gem &#39;jquery-rails&#39;
+</span><span class='line'><span class="gu">@@ -38,3 +38,11 @@ gem &#39;spring&#39;,        group: :development</span>
+</span><span class='line'> # Use debugger
+</span><span class='line'> # gem &#39;debugger&#39;, group: [:development, :test]
+</span><span class='line'>
+</span><span class='line'><span class="gi">+# Install Twitter Bootstrap3</span>
+</span><span class='line'><span class="gi">+# https://github.com/twbs/bootstrap-sass</span>
+</span><span class='line'><span class="gi">+gem &#39;bootstrap-sass&#39;, &#39;~&gt; 3.2.0&#39;</span>
+</span><span class='line'><span class="gi">+</span>
+</span><span class='line'><span class="gi">+# -webkit-border-radius みたいなブラウザベンダープレフィックスをよしなに管理してくれる</span>
+</span><span class='line'><span class="gi">+# Parse CSS and add vendor prefixes to rules by Can I Use</span>
+</span><span class='line'><span class="gi">+# https://twitter.com/autoprefixer</span>
+</span><span class='line'><span class="gi">+gem &#39;autoprefixer-rails&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Gemライブラリをインストールします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle install
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">bootstrap-sassを使用する準備</h2>
+
+
+<p>今回は<code>Sass</code>というプリプロセッサに対応した<code>bootstrap3</code>をインストールしているのですが、<strong>CSSの<code>//= require</code>行はSassでは文法として使用できない</strong>ので注意が必要です。そして、<strong>Sass拡張子のファイルやその他のスタイルシートであっても、Bootstrapからmixinsや変数を利用できないので<code>//= require</code>行は利用できない</strong>ということです。</p>
+
+<p><a href="https://github.com/twbs/bootstrap-sass#a-ruby-on-rails">本家GiHubのREADME</a>に従い、<code>app/assets/stylesheets/application.css</code>は削除します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rm app/assets/stylesheets/application.css
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>app/assets/stylesheets/application.css.scss</code>を新規作成します。</p>
+
+<figure class='code'><figcaption><span>app/assets/stylesheets/application.css.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="k">@import</span> <span class="s2">&quot;bootstrap-sprockets&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="k">@import</span> <span class="s2">&quot;bootstrap&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>app/assets/javascripts/application.js</code>にBootstrap関連のJavascriptsライブラリをrequireします。</p>
+
+<figure class='code'><figcaption><span>app/assets/javascripts/application.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">//= require bootstrap-sprockets</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>app/views/layouts/application.html.erb</code>の<code>head</code>タグに<strong>bootstrap関連のスタイルシートをincludeする設定とメディアクエリーを使用するためのviewport設定</strong>を追記します。</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.erb  headタグ内の記述</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="err">&lt;</span>%= stylesheet_link_tag    &quot;bootstrap&quot;, media: &quot;all&quot;, &quot;data-turbolinks-track&quot; =&gt; true %&gt;
+</span><span class='line'>  <span class="nt">&lt;meta</span> <span class="na">content=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span> <span class="na">name=</span><span class="s">&quot;viewport&quot;</span><span class="nt">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">scaffoldで骨組みを生成</h2>
+
+
+<p><code>scaffold</code>を実行します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle <span class="nb">exec </span>rails g scaffold Entry name:string description:string
+</span><span class='line'>bundle <span class="nb">exec </span>rake db:create
+</span><span class='line'>bundle <span class="nb">exec </span>rake db:migrate
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">root_pathの設定</h2>
+
+
+<p>scaffoldで生成されたentriesリソースのindexを<code>root_path</code>に設定します。</p>
+
+<figure class='code'><figcaption><span>config/routes.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'>  <span class="n">root</span> <span class="s1">&#39;entries#index&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><br></p>
+
+<h2 class="text-warning">ここでブレイク</h2>
+
+
+<p>この段階で<code>rails server</code>コマンドを実行してWEBrickを起動すると以下のような画面が表示されます。</p>
+
+<ul>
+<li><a href="http://">http://</a>&lt; サーバIP >:3000</li>
+</ul>
+
+
+<p><img src="/images/install-bootstrap3-on-rails4_08.jpg" alt="" /></p>
+
+<h1 class="text-danger">ここからBootstrapを使っていきます</h1>
+
+
+<h2 class="text-warning">ナビゲーションメニュー</h2>
+
+
+<p><img src="/images/install-bootstrap3-on-rails4_01.jpg" alt="" /></p>
+
+<p><code>body</code>タグの上部にナビゲーションメニューを設置してみます。</p>
+
+<figure class='code'><figcaption><span>application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;navbar navbar-inverse navbar-fixed-top&quot;</span> <span class="na">role=</span><span class="s">&quot;navigation&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;navbar-header&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;navbar-toggle&quot;</span> <span class="na">data-toggle=</span><span class="s">&quot;collapse&quot;</span> <span class="na">data-target=</span><span class="s">&quot;.navbar-collapse&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;sr-only&quot;</span><span class="nt">&gt;</span>Toggle navigation<span class="nt">&lt;/span&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;icon-bar&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;icon-bar&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">&quot;icon-bar&quot;</span><span class="nt">&gt;&lt;/span&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/button&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;a</span> <span class="na">class=</span><span class="s">&quot;navbar-brand&quot;</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Project name<span class="nt">&lt;/a&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;collapse navbar-collapse&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">&quot;nav navbar-nav&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;li</span> <span class="na">class=</span><span class="s">&quot;active&quot;</span><span class="nt">&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;/&quot;</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#about&quot;</span><span class="nt">&gt;</span>About<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">&quot;#contact&quot;</span><span class="nt">&gt;</span>Contact<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/ul&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;form</span> <span class="na">class=</span><span class="s">&quot;navbar-form navbar-left&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">class=</span><span class="s">&quot;form-control col-lg-8&quot;</span> <span class="na">placeholder=</span><span class="s">&quot;Search&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/form&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!--/.nav-collapse --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- /.container --&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- /.navbar --&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">Jumbotron(ジャンボトロン)</h2>
+
+
+<p><img src="/images/install-bootstrap3-on-rails4_02.jpg" alt="" /></p>
+
+<p><code>Jumbotron(ジャンボトロン)</code>と呼ばれるページトップなどに表示する見出しユニットを<code>body</code>タグの上部、ナビゲーションメニューの下あたりに設置してみます。</p>
+
+<p>まず、<code>app/assets/stylesheets/theme-style.css.scss</code>を作成し、スタイルを追加します。</p>
+
+<figure class='code'><figcaption><span>app/assets/stylesheets/theme-style.css.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="nt">body</span> <span class="p">{</span>
+</span><span class='line'>  <span class="na">padding-top</span><span class="o">:</span> <span class="mi">70</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">padding-bottom</span><span class="o">:</span> <span class="mi">30</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nc">.theme-dropdown</span> <span class="nc">.dropdown-menu</span> <span class="p">{</span>
+</span><span class='line'>  <span class="na">position</span><span class="o">:</span> <span class="no">static</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">display</span><span class="o">:</span> <span class="no">block</span><span class="p">;</span>
+</span><span class='line'>  <span class="na">margin-bottom</span><span class="o">:</span> <span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nc">.theme-showcase</span> <span class="o">&gt;</span> <span class="nt">p</span> <span class="o">&gt;</span> <span class="nc">.btn</span> <span class="p">{</span>
+</span><span class='line'>  <span class="na">margin</span><span class="o">:</span> <span class="mi">5</span><span class="kt">px</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nc">.theme-showcase</span> <span class="nc">.navbar</span> <span class="nc">.container</span> <span class="p">{</span>
+</span><span class='line'>  <span class="na">width</span><span class="o">:</span> <span class="no">auto</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>app/assets/stylesheets/application.css.scss</code>に作成した<code>theme-style.css.scss</code>を読む込むように設定します。</p>
+
+<figure class='code'><figcaption><span>app/assets/stylesheets/application.css.scss</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='scss'><span class='line'><span class="k">@import</span> <span class="s2">&quot;theme-style&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>次にJumbotron(ジャンボトロン)を表示するためのコードを記述します。</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;container theme-showcase&quot;</span> <span class="na">role=</span><span class="s">&quot;main&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="c">&lt;!-- Main jumbotron --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;jumbotron&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;h1&gt;</span>Hello, world!<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">&quot;text-warning&quot;</span><span class="nt">&gt;</span>bootstrap3-sample<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- /.jumbotron --&gt;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="err">&lt;</span>%= yield %&gt;
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;/div&gt;</span><span class="c">&lt;!-- /.container --&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">Railsのフラッシュメッセージ表示</h2>
+
+
+<p><img src="/images/install-bootstrap3-on-rails4_03.jpg" alt="" /></p>
+
+<p>後述する<code>app/views/entries/show.html.erb</code>に<code>&lt;%= notice %&gt;</code>というフラッシュメッセージを表示するコードがscaffoldによって自動生成されているのですが、Bootstrap3の<code>Alertsコンポーネント</code>を使って見栄えを良くすると同時に、先述したJumbotron(ジャンボトロン)の上部に表示するために<code>app/views/layouts/application.html.erb</code>に移動しlます。</p>
+
+<figure class='code'><figcaption><span>app/views/layouts/application.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">  </span><span class="cp">&lt;%</span> <span class="k">if</span> <span class="p">(</span><span class="n">notice</span><span class="p">)</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span><span class='line'><span class="x">    &lt;div class=&quot;alert alert-info alert-dismissible&quot; role=&quot;alert&quot;&gt;</span>
+</span><span class='line'><span class="x">      &lt;button type=&quot;button&quot; class=&quot;close&quot; data-dismiss=&quot;alert&quot;&gt;</span>
+</span><span class='line'><span class="x">        &lt;span aria-hidden=&quot;true&quot;&gt;&amp;times;&lt;/span&gt;</span>
+</span><span class='line'><span class="x">        &lt;span class=&quot;sr-only&quot;&gt;閉じる&lt;/span&gt;</span>
+</span><span class='line'><span class="x">      &lt;/button&gt;</span>
+</span><span class='line'><span class="x">      &lt;strong&gt;</span><span class="cp">&lt;%=</span> <span class="n">notice</span> <span class="cp">%&gt;</span><span class="x">&lt;/strong&gt;</span>
+</span><span class='line'><span class="x">    &lt;/div&gt;</span>
+</span><span class='line'><span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h2 class="text-warning">entriesリソースのビューファイルを修正</h2>
+
+
+<p>scaffoldで生成したビューファイルに色々とBootstrap3のスタイルを適用していきます。</p>
+
+<h3 class="text-success">app/views/entries/index.html.erb</h3>
+
+
+<p><img src="/images/install-bootstrap3-on-rails4_04.jpg" alt="" /></p>
+
+<figure class='code'><figcaption><span>app/views/entries/index.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;h1&gt;</span>Listing entries<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'><span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn btn-lg btn-default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>%= link_to &#39;New Entry&#39;, new_entry_path %&gt;
+</span><span class='line'><span class="nt">&lt;/button&gt;</span>
+</span><span class='line'><span class="nt">&lt;br&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-md-6&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">&quot;table table-striped&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;thead&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;th&gt;</span>Name<span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;th&gt;</span>Descriptiion<span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;th</span> <span class="na">colspan=</span><span class="s">&quot;3&quot;</span><span class="nt">&gt;&lt;/th&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/thead&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tbody&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>% @entries.each do |entry| %&gt;
+</span><span class='line'>        <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= entry.name %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= entry.description %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= link_to &#39;Show&#39;, entry %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= link_to &#39;Edit&#39;, edit_entry_path(entry) %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= link_to &#39;Destroy&#39;, entry, method: :delete, data: { confirm: &#39;Are you sure?&#39; } %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>% end %&gt;
+</span><span class='line'>    <span class="nt">&lt;/tbody&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/table&gt;</span>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">app/views/entries/show.html.erb</h3>
+
+
+<p><img src="/images/install-bootstrap3-on-rails4_05.jpg" alt="" /></p>
+
+<figure class='code'><figcaption><span>app/views/entries/show.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-md-6&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">&quot;table table-striped&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;thead&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;th&gt;</span>Name<span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;th&gt;</span>Descriptiion<span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;th&gt;&lt;/th&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/thead&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tbody&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= @entry.name %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= @entry.description %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= link_to &#39;Edit&#39;, edit_entry_path(@entry) %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tbody&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/table&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn pull-right btn-lg btn-default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="err">&lt;</span>%= link_to &#39;Back&#39;, entries_path %&gt;
+</span><span class='line'>  <span class="nt">&lt;/button&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">app/views/entries/new.html.erb</h3>
+
+
+<p><img src="/images/install-bootstrap3-on-rails4_06.jpg" alt="" /></p>
+
+<figure class='code'><figcaption><span>app/views/entries/new.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;h1&gt;</span>New entry<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-md-6&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>%= render &#39;form&#39; %&gt;
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn pull-right btn-lg btn-default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="err">&lt;</span>%= link_to &#39;Back&#39;, entries_path %&gt;
+</span><span class='line'>  <span class="nt">&lt;/button&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">app/views/entries/edit.html.erb</h3>
+
+
+<p><img src="/images/install-bootstrap3-on-rails4_07.jpg" alt="" /></p>
+
+<figure class='code'><figcaption><span>app/views/entries/edit.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;h1&gt;</span>Editing entry<span class="nt">&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;col-md-6&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>%= render &#39;form&#39; %&gt;
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">class=</span><span class="s">&quot;btn pull-right btn-lg btn-default&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="err">&lt;</span>%= link_to &#39;Back&#39;, entries_path %&gt;
+</span><span class='line'>  <span class="nt">&lt;/button&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;/div&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">app/views/entries/_form.html.erb</h3>
+
+
+<figure class='code'><figcaption><span>app/views/entries/_form.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="err">&lt;</span>%= form_for( (@entry), {:role =&gt; &quot;form&quot;} ) do |f| %&gt;
+</span><span class='line'>  <span class="err">&lt;</span>% if @entry.errors.any? %&gt;
+</span><span class='line'>    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">&quot;error_explanation&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;h2&gt;</span><span class="err">&lt;</span>%= pluralize(@entry.errors.count, &quot;error&quot;) %&gt; prohibited this entry from being saved:<span class="nt">&lt;/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="nt">&lt;ul&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>% @entry.errors.full_messages.each do |message| %&gt;
+</span><span class='line'>        <span class="nt">&lt;li&gt;</span><span class="err">&lt;</span>%= message %&gt;<span class="nt">&lt;/li&gt;</span>
+</span><span class='line'>      <span class="err">&lt;</span>% end %&gt;
+</span><span class='line'>      <span class="nt">&lt;/ul&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/div&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>% end %&gt;
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">&quot;table table-striped&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;thead&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;th&gt;</span><span class="err">&lt;</span>%= f.label :name %&gt;<span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;th&gt;</span><span class="err">&lt;</span>%= f.label :description %&gt;<span class="nt">&lt;/th&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/thead&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;tbody&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;tr&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= f.text_field :name %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;td&gt;</span><span class="err">&lt;</span>%= f.text_field :description %&gt;<span class="nt">&lt;/td&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/tr&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/tbody&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/table&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="err">&lt;</span>%= f.submit :class =&gt; &quot;btn btn-default&quot; %&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;</span>% end %&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>herokuにpushしてみる</h1>
+
+<p><a href="https://devcenter.heroku.com/articles/getting-started-with-rails4">https://devcenter.heroku.com/articles/getting-started-with-rails4</a></p>
+
+<h2 class="text-warning">Herokuを使う準備</h2>
+
+
+
+
+<h3 class="text-success">production環境でのアセットコンパイルを有効にする</h3>
+
+
+<p><code>config/environments/production.rb</code>を修正して<code>production環境でのassets</code>を有効にします。</p>
+
+<p>以下の設定パラメータを設定します。</p>
+
+<figure class='code'><figcaption><span>config/environments/production.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">cache_classes</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">serve_static_assets</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">compile</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'><span class="n">config</span><span class="o">.</span><span class="n">assets</span><span class="o">.</span><span class="n">digest</span> <span class="o">=</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>修正後の<code>config/environments/production.rb</code>のdiff情報です。</p>
+
+<figure class='code'><figcaption><span>config/environments/production.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gd">--- a/config/environments/production.rb</span>
+</span><span class='line'><span class="gi">+++ b/config/environments/production.rb</span>
+</span><span class='line'><span class="gu">@@ -20,14 +20,14 @@ Rails.application.configure do</span>
+</span><span class='line'>   # config.action_dispatch.rack_cache = true
+</span><span class='line'>
+</span><span class='line'>   # Disable Rails&#39;s static asset server (Apache or nginx will already do this).
+</span><span class='line'><span class="gd">-  config.serve_static_assets = false</span>
+</span><span class='line'><span class="gi">+  config.serve_static_assets = true</span>
+</span><span class='line'>
+</span><span class='line'>   # Compress JavaScripts and CSS.
+</span><span class='line'>   config.assets.js_compressor = :uglifier
+</span><span class='line'>   # config.assets.css_compressor = :sass
+</span><span class='line'>
+</span><span class='line'>   # Do not fallback to assets pipeline if a precompiled asset is missed.
+</span><span class='line'><span class="gd">-  config.assets.compile = false</span>
+</span><span class='line'><span class="gi">+  config.assets.compile = true</span>
+</span><span class='line'>
+</span><span class='line'>   # Generate digests for assets URLs.
+</span><span class='line'>   config.assets.digest = true
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">gitレポジトリを作成</h3>
+
+
+<p>herokuに対するアプリケーションのデプロイ方法は<code>git push</code>を行うことなので、ローカル環境でgitレポジトリを作成します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">cd</span> /path/to/app
+</span><span class='line'>git init .
+</span><span class='line'>git add ./
+</span><span class='line'>git commit -m <span class="s2">&quot;initial commit&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">herokuにアカウントを登録</h3>
+
+
+<p><a href="https://id.heroku.com/signup/devcenter">こちらからherokuにアカウントを登録する</a></p>
+
+<h3 class="text-success">heroku toolbelt インストール</h3>
+
+
+<p><a href="https://toolbelt.heroku.com/">heroku toolbelt</a>とは、<strong>heroku appsの作成や管理を行うためのHerokuクライアントで、実体は<code>herokuコマンドファイル</code></strong>です。</p>
+
+<p><code>herokuコマンド</code>をインストールする方法は、OSプラットフォームにより3パターンあります。</p>
+
+<ol>
+<li><a href="https://toolbelt.heroku.com/osx">Mac OSX</a>、または<a href="https://toolbelt.heroku.com/windows">Windows</a>ではパッケージが提供されていますのでパッケージをダウンロードしてインストールします。</li>
+<li><a href="https://toolbelt.heroku.com/debian">Debian/Ubuntu</a>にもdeb形式のパッケージが公開されていますが、こちらは直接ダウンロードするのではなく<a href="https://toolbelt.heroku.com/install-ubuntu.sh">インストールスクリプト</a>を利用します。</li>
+<li><a href="https://toolbelt.heroku.com/standalone">Debian/Ubuntu以外のUnix/Linux</a>ではxzファイルフォーマットで圧縮されたtarボールで配布されています。こちらも<a href="https://toolbelt.heroku.com/install.sh">インストールスクリプト</a>を利用します。</li>
+</ol>
+
+
+<p><br>
+今回は<code>CentOS6</code>なので3番目の<a href="https://toolbelt.heroku.com/install.sh">インストールスクリプト</a>を利用します。<a href="https://toolbelt.heroku.com/standalone">https://toolbelt.heroku.com/standalone</a>の内容に沿ってインストールします。</p>
+
+<p>注意点としては、<a href="https://toolbelt.heroku.com/install.sh">インストールスクリプト</a>の実行は<code>sudo</code>権限を持つユーザである必要があります(中でsudoを実行しているため)。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>wget -qO- https://toolbelt.heroku.com/install.sh <span class="p">|</span> sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これで<code>/usr/local/heroku/bin</code>以下に<code>herokuコマンド</code>がインストールされるので、<code>$PATH</code>環境変数に<code>/usr/local/heroku/bin</code>へのパスを設定しておきます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">echo</span> <span class="s1">&#39;export PATH=${PATH}:/usr/local/heroku/bin&#39;</span> &gt;&gt; ~/.bashrc
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">heroku toolbelt を使ってherokuへログイン</h3>
+
+
+<p><code>heroku</code>コマンドラインツールを使ってログインします。先ほど作成した<code>herokuアカウント</code>のメールアドレスとパスワードを入力し、<code>Authentication successful.</code>と表示されればログイン成功です。また、該当Unixユーザでのログインが初めての場合は公開鍵認証に関する設定を行う場合があります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>heroku login
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">heroku appsを作成</h3>
+
+
+<p>今回は<code>buf-material-bootstrap3-sample</code>という名前のアプリケーションをheroku上に作成します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>heroku apps:create buf-material-bootstrap3-sample
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>コマンドの結果が以下のように表示されます。</p>
+
+<p>URLが<a href="http://buf-material-bootstrap3-sample.herokuapp.com/">http://buf-material-bootstrap3-sample.herokuapp.com/</a>で、heroku上に作成されるgitレポジトリのURLがgit@heroku.com:buf-material-bootstrap3-sample.git となりました。</p>
+
+<figure class='code'><figcaption><span>heroku apps:create buf-material-bootstrap3-sample コマンド結果</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Creating buf-material-bootstrap3-sample... done, stack is cedar
+</span><span class='line'>http://buf-material-bootstrap3-sample.herokuapp.com/ | git@heroku.com:buf-material-bootstrap3-sample.git
+</span><span class='line'>Git remote heroku added
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">heroku appsにアプリケーションをデプロイ & DBマイグレーション</h3>
+
+
+<p>herokuへのアプリケーションデプロイはなんと<code>git push heroku master</code>1発なのです!</p>
+
+<p>DBマイグレーションをお忘れなく。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>git push heroku master
+</span><span class='line'>heroku run rake db:migrate
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>これで <a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank"><a href="http://buf-material-bootstrap3-sample.herokuapp.com/">http://buf-material-bootstrap3-sample.herokuapp.com/</a></a> にアクセスすると先ほどローカル環境で見ていたアプリケーション画面が表示されました。
+<br></p>
+
+<p><a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank">サンプルアプリケーション</a>
+<br></p>
+
+<p><a href="http://buf-material-bootstrap3-sample.herokuapp.com/" target="_blank">
+  <img src="/images/install-bootstrap3-on-rails4_08.jpg">
+</a>
+<br>
+<br></p>
+</div>
+  
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-18T15:27:28+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
         
       </p>
@@ -1335,6 +2374,8 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/12/14/install-go/">go言語をCentOSにインストールする</a>
+    
     <a class="list-group-item " href="/blog/2014/12/14/download-vagrant-box/">Vagrantでボックスを管理</a>
     
     <a class="list-group-item " href="/blog/2014/12/13/install-bash-completion/">Bash-completionをインストール</a>
@@ -1342,8 +2383,6 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
     <a class="list-group-item " href="/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/">Bootstrap3-datetimepicker-rails で日時を範囲指定</a>
     
     <a class="list-group-item " href="/blog/2014/10/11/set-default-value-to-bash-variables/">Bashシェルの変数にデフォルト値を設定する</a>
-    
-    <a class="list-group-item " href="/blog/2014/10/10/set-constant-variables-for-bash/">Bashで読み込み専用変数を定義する</a>
     
   </div>
 </section>
@@ -1491,13 +2530,19 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
         vagrant
       </a>
     
+    
+    <a class="list-group-item " href="/blog/categories/go/index.html">
+        <span class="badge">1</span>
+        go
+      </a>
+    
   </div>
 </section>
 <section class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Tag cloud</h3>
   </div>
-  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/bash-completion' style='font-size: 110.0%'>bash-completion(1)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/linux' style='font-size: 110.0%'>linux(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/vagrant' style='font-size: 110.0%'>vagrant(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
+  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/bash-completion' style='font-size: 110.0%'>bash-completion(1)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/go' style='font-size: 110.0%'>go(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/linux' style='font-size: 110.0%'>linux(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/vagrant' style='font-size: 110.0%'>vagrant(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
 </section>
 
       

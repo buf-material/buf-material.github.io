@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-12-14T17:12:57+09:00</updated>
+  <updated>2014-12-14T23:00:16+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,124 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[go言語をCentOSにインストールする]]></title>
+    <link href="http://yoursite.com/blog/2014/12/14/install-go/"/>
+    <updated>2014-12-14T22:54:28+09:00</updated>
+    <id>http://yoursite.com/blog/2014/12/14/install-go</id>
+    <content type="html"><![CDATA[<h2>インストール</h2>
+
+<ul>
+<li>refs <a href="http://golang.org/doc/install">http://golang.org/doc/install</a></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nb">cd</span> /tmp
+</span><span class='line'>wget https://storage.googleapis.com/golang/go1.4.linux-amd64.tar.gz --no-check-certificate
+</span><span class='line'>tar -C /usr/local -xzf  go1.4.linux-amd64.tar.gz
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>環境変数PATHにgoコマンドのパスを通す</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>cat <span class="s">&lt;&lt; EOT &gt;&gt; ~/.bash_profile</span>
+</span><span class='line'><span class="s">export PATH=$PATH:/usr/local/go/bin</span>
+</span><span class='line'><span class="s">EOT</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>goコマンドのヘルプ</h2>
+
+<ul>
+<li><code>go</code>と実行し、以下のように表示されればインストール成功です</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># go</span>
+</span><span class='line'>Go is a tool <span class="k">for</span> managing Go <span class="nb">source </span>code.
+</span><span class='line'>
+</span><span class='line'>Usage:
+</span><span class='line'>
+</span><span class='line'>        go <span class="nb">command</span> <span class="o">[</span>arguments<span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>The commands are:
+</span><span class='line'>
+</span><span class='line'>    build       compile packages and dependencies
+</span><span class='line'>    clean       remove object files
+</span><span class='line'>    env         print Go environment information
+</span><span class='line'>    fix         run go tool fix on packages
+</span><span class='line'>    fmt         run gofmt on package sources
+</span><span class='line'>    generate    generate Go files by processing <span class="nb">source</span>
+</span><span class='line'><span class="nb">    </span>get         download and install packages and dependencies
+</span><span class='line'>    install     compile and install packages and dependencies
+</span><span class='line'>    list        list packages
+</span><span class='line'>    run         compile and run Go program
+</span><span class='line'>    <span class="nb">test        test </span>packages
+</span><span class='line'>    tool        run specified go tool
+</span><span class='line'>    version     print Go version
+</span><span class='line'>    vet         run go tool vet on packages
+</span><span class='line'>
+</span><span class='line'>Use <span class="s2">&quot;go help [command]&quot;</span> <span class="k">for</span> more information about a command.
+</span><span class='line'>
+</span><span class='line'>Additional <span class="nb">help </span>topics:
+</span><span class='line'>
+</span><span class='line'>    c           calling between Go and C
+</span><span class='line'>    filetype    file types
+</span><span class='line'>    gopath      GOPATH environment variable
+</span><span class='line'>    importpath  import path syntax
+</span><span class='line'>    packages    description of package lists
+</span><span class='line'>    testflag    description of testing flags
+</span><span class='line'>    testfunc    description of testing functions
+</span><span class='line'>
+</span><span class='line'>Use <span class="s2">&quot;go help [topic]&quot;</span> <span class="k">for</span> more information about
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Vagrantでボックスを管理]]></title>
