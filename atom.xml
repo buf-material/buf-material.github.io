@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-12-13T17:28:11+09:00</updated>
+  <updated>2014-12-14T16:53:52+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,80 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Vagrantでボックスを管理]]></title>
+    <link href="http://yoursite.com/blog/2014/12/14/download-vagrant-box/"/>
+    <updated>2014-12-14T19:27:57+09:00</updated>
+    <id>http://yoursite.com/blog/2014/12/14/download-vagrant-box</id>
+    <content type="html"><![CDATA[<h2>ボックス</h2>
+
+<p>VagrantではOSを1からインストールしなくて済むようにベースイメージを利用することができます。Vagrantではこのベースイメージのことはボックスと呼びます。ボックスはOSのスナップショットイメージを固めたtarボールです。</p>
+
+<h3>ボックスの恩恵</h3>
+
+<ul>
+<li>概して30分は要するOSのインストールを省略できる</li>
+<li><code>vagrant destroy</code>から<code>vagrant up</code>を繰り返すことが容易(やり直しが容易)にできる</li>
+<li>OS環境を容易に合わせることができる</li>
+<li><code>vagrant package</code>でオリジナルのボックスを作成できる
+
+<ul>
+<li><code>vagrant up</code>で毎回インストールするミドルウェアなどをインストール済みのボックスを用意することで構築時間を短縮できる</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>ボックスのダウンロード</h3>
+
+<ul>
+<li>ボックスファイルのリスト
+
+<ul>
+<li><a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a></li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box add centos7-x86_64-minimal https://f0fff3908f081cb6461b407be80daf97f07ac418.googledrive.com/host/0BwtuV7VyVTSkUG1PM3pCeDJ4dVE/centos7.box
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ボックスの管理</h3>
+
+<h4>ダウンロード済みのボックスの確認</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box list
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ボックスの削除</h4>
+
+<ul>
+<li>特定のボックスを削除</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box remove centos7-x86_64-minimal
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>特定のプロバイダー用のボックスを削除</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box remove --provider virtualbox
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Bash-completionをインストール]]></title>

@@ -140,6 +140,109 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-12-14T19:27:57+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/12/14/download-vagrant-box/" itemprop="url">Vagrantでボックスを管理</a></h1>
+    
+  </header>
+
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><h2>ボックス</h2>
+
+<p>VagrantではOSを1からインストールしなくて済むようにベースイメージを利用することができます。Vagrantではこのベースイメージのことはボックスと呼びます。ボックスはOSのスナップショットイメージを固めたtarボールです。</p>
+
+<h3>ボックスの恩恵</h3>
+
+<ul>
+<li>概して30分は要するOSのインストールを省略できる</li>
+<li><code>vagrant destroy</code>から<code>vagrant up</code>を繰り返すことが容易(やり直しが容易)にできる</li>
+<li>OS環境を容易に合わせることができる</li>
+<li><code>vagrant package</code>でオリジナルのボックスを作成できる
+
+<ul>
+<li><code>vagrant up</code>で毎回インストールするミドルウェアなどをインストール済みのボックスを用意することで構築時間を短縮できる</li>
+</ul>
+</li>
+</ul>
+
+
+<h3>ボックスのダウンロード</h3>
+
+<ul>
+<li>ボックスファイルのリスト
+
+<ul>
+<li><a href="http://www.vagrantbox.es/">http://www.vagrantbox.es/</a></li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box add centos7-x86_64-minimal https://f0fff3908f081cb6461b407be80daf97f07ac418.googledrive.com/host/0BwtuV7VyVTSkUG1PM3pCeDJ4dVE/centos7.box
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>ボックスの管理</h3>
+
+<h4>ダウンロード済みのボックスの確認</h4>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box list
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>ボックスの削除</h4>
+
+<ul>
+<li>特定のボックスを削除</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box remove centos7-x86_64-minimal
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>特定のプロバイダー用のボックスを削除</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>vagrant box remove --provider virtualbox
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-12-13T15:32:44+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
         
       </p>
@@ -3754,210 +3857,6 @@ PostgreSQLのスーパーユーザである<code>postgres</code>データベー�
 
         </article>
       
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-          
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-18T15:27:28+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/09/18/setting-google-adsense-octopress/" itemprop="url">OctopressにGoogle AdSenseを導入する</a></h1>
-    
-  </header>
-
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><h2>Google AdSenseとは</h2>
-
-<p>広告収入を稼ぐためのアフィリエイトサービスと言えばいいのでしょうか。</p>
-
-<p>詳細は、<a href="https://www.google.com/adsense/">Google AdSense</a>について<a href="http://ja.wikipedia.org/wiki/Google_AdSense">wikipedia</a>から転記します。</p>
-
-<pre><code>### http://ja.wikipedia.org/wiki/Google_AdSense から転記
-
-Google AdSense（グーグルアドセンス）はGoogleの提供している検索連動型およびコンテンツ連動型広告の広告配信サービスの総称である。
-
-AdSenseは、Googleが広告ネットワークに対して提供する配信サービスの総称であり、その形態は多岐にわたる。
-コンテンツ向けAdSenseは所有するWebサイト（ブログでも可）にGoogle AdSenseの広告コードを貼り付けると広告が表示され、その広告がクリックされると報酬が得られる仕組みである。Google AdSenseのシステムが自動的にサイトの内容を解析し、そのサイトにあったコンテンツ連動型広告を配信するシステムである[1]。例えば、ゴルフ関連のサイトなら、自動的にゴルフの広告が表示されるよう設計されている(サイトの内容によっては、それと関連する適切な広告がなく、まったく分野の異なる広告が表示されることもある)。Googleでの検索履歴から広告が表示されることもある[2]。 日本では2003年12月一般向けに募集を開始[3]したことでブロガーなどに広まり急速にシェアを広げた。
-その他、ウェブページ内に検索の機能を提供し、検索キーワードに関連する広告を表示する検索向けAdSense、RSSフィードの記事内にAdSense広告を自動的に表示するフィード向けAdSense[4]などがある。
-</code></pre>
-
-
-<p><br>
-ということで、<a href="https://www.google.com/adsense/">Google AdSense</a>を使用してOctopressサイト内に広告を表示してみようと思います。</p>
-
-<h2>Google AdSense側の設定</h2>
-
-<h3>所有サイトのURLを追加する(任意)</h3>
-
-<p><strong>所有サイト</strong>としてサイトのURLを登録しておくことでサイト固有の広告ブロック ルールを作成するなど、サイトに関連する操作を行うことができるようになるようです。具体的には、特定広告主URLや広告ネットワーク、特定カテゴリに関わる広告を表示させたくない場合等に非表示設定をおこなうことが可能です。</p>
-
-<p><img src="/images/google_adsense_02.jpg" alt="" /></p>
-
-<p><a href="https://www.google.com/adsense/">Google AdSense</a>へGoogleアカウントにてログインし、<strong>アカウント > サイト管理</strong>の順にページを移動します。</p>
-
-<p>下の画像のようなテキスト入力フォームがあるので、広告を表示させたいサイトのトップURLを入力し、<strong>サイトを追加</strong>します。</p>
-
-<p><img src="/images/google_adsense_01.jpg" alt="" /></p>
-
-<h3>広告ユニットを作成し、コードを取得する</h3>
-
-<p>Google AdSenseにおける広告は広告タイプ(テキスト広告とディスプレイ広告、テキスト広告のみ、ディスプレイ広告のみ)や広告サイズ(468x60、160x600、レスポンシブ、など)を定義した<strong>広告ユニット</strong>が広告の生成単位となり、広告コードもこの<strong>広告ユニット</strong>単位で生成されます。</p>
-
-<p>サイドバー向けの広告ユニットを作成します。</p>
-
-<p>[広告の設定] > [コンテンツ] > [広告ユニット]までページを進め、<strong>＋新しい広告ユニット</strong>をクリックします。
- <img src="/images/google_adsense_04.jpg" alt="" /></p>
-
-<p><br>
-名前は、あとで広告ユニットを特定しやすいように一意の名前と説明を入力するといいでしょう。
-今回は<code>buf-material_aside_336x280</code>とします。</p>
-
-<p>広告サイズは最初に表示されている<strong>推奨</strong>から選ぶと無難かもしれません。これら推奨の広告サイズはGoogle AdSense側で広告の掲載効果があったとされる広告サイズのようです。今回は<code>336x280 レクタングル (大)</code>を選択します。</p>
-
-<p>また、モバイルで効果的な広告サイズにはモバイルのアイコン（<img src="//storage.googleapis.com/support-kms-prod/SNP_E2D5EEDDCF0F04F7FDDA2775FC774BEA6061_6002584_en_v0" height="auto" alt="mobile icon" title="mobile icon">）が表示されます。</p>
-
-<p>広告サイズに関しては、<code>プレビュー</code>を選択することでポップアップで実際の大きさを確認できますので参考に出来ますね。</p>
-
-<p><br>
-広告タイプは、<code>テキスト広告とディスプレイ広告</code>、<code>テキスト広告のみ</code>、<code>ディスプレイ広告のみ</code>の3つから選択します。今回は推奨されている<code>テキスト広告とディスプレイ広告</code>を選択します。</p>
-
-<p><br>
-<img src="/images/google_adsense_03.jpg" alt="" />
-<br></p>
-
-<p><code>保存してコードを取得</code>を選択し、コードを取得します。</p>
-
-<h2>Octopress側の設定</h2>
-
-<p>今回は、広告をサイドバーに表示してみようと思います。</p>
-
-<p>Octopressではサイドバーのコンテンツはセクションごとに<code>source/_includes/custom/asides/</code>ディレクトリ以下にHTMLファイルを用意し、<code>_config.yml</code>内の<code>default_asides:</code>に表示させたいファイル名をリストで持つことになっています。</p>
-
-<h3>サイドバーに表示するHTMLの準備</h3>
-
-<p><code>source/_includes/custom/asides/google_adsense_336x280.html</code>として作成します。この時、Octopress側で1つのセクションであることを定義するために一番外枠として<code>&lt;section&gt;と&lt;/section&gt;</code>で括るようにします。</p>
-
-<figure class='code'><figcaption><span>source/_includes/custom/asides//google_adsense_336x280.html </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;section&gt;</span>
-</span><span class='line'><span class="nt">&lt;script </span><span class="na">async</span> <span class="na">src=</span><span class="s">&quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
-</span><span class='line'><span class="c">&lt;!-- buf-material_aside_336x280 --&gt;</span>
-</span><span class='line'><span class="nt">&lt;ins</span> <span class="na">class=</span><span class="s">&quot;adsbygoogle&quot;</span>
-</span><span class='line'>     <span class="na">style=</span><span class="s">&quot;display:inline-block;width:336px;height:280px&quot;</span>
-</span><span class='line'>     <span class="na">data-ad-client=</span><span class="s">&quot;ca-pub-XXXXXXXXXXXXXXXX&quot;</span>
-</span><span class='line'>     <span class="na">data-ad-slot=</span><span class="s">&quot;XXXXXXXXXX&quot;</span><span class="nt">&gt;&lt;/ins&gt;</span>
-</span><span class='line'><span class="nt">&lt;script&gt;</span>
-</span><span class='line'><span class="p">(</span><span class="nx">adsbygoogle</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">adsbygoogle</span> <span class="o">||</span> <span class="p">[]).</span><span class="nx">push</span><span class="p">({});</span>
-</span><span class='line'><span class="nt">&lt;/script&gt;</span>
-</span><span class='line'><span class="nt">&lt;/section&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>_config.yml の設定</h3>
-
-<p><code>_config.yml</code>の<code>default_asides:</code>に<code>google_adsense_336x280.html</code>を追記します。この広告はサイドバーの最上段に表示させたいので、<code>default_asides:</code>リストの1番上に記述します。</p>
-
-<figure class='code'><figcaption><span>_config.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">default_asides</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span>
-</span><span class='line'>    <span class="nv">custom/asides/google_adsense_336x280.html</span><span class="p-Indicator">,</span>
-</span><span class='line'>    <span class="nv">asides/recent_posts.html</span><span class="p-Indicator">,</span>
-</span><span class='line'>    <span class="nv">custom/asides/category_list.html</span><span class="p-Indicator">,</span>
-</span><span class='line'>    <span class="nv">custom/asides/tag_cloud.html</span><span class="p-Indicator">,</span>
-</span><span class='line'><span class="p-Indicator">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>静的ファイルの再生成とデプロイ</h2>
-
-<p>静的ファイルを再生成します。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake generate
-</span><span class='line'>
-</span><span class='line'><span class="c">## ローカル環境で確認する場合はpreviewタスクも実行します</span>
-</span><span class='line'>rake preview
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><code>GitHub Pages</code>へデプロイします。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>rake deploy
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>確認</h2>
-
-<p><code>GitHub Pages</code>へアクセスした際に表示されるHTMLコードを確認し、<code>&lt;aside&gt;</code>タグ内に以下のscriptコードが組み込まれていれば設定できています。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="nx">section</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">async</span> <span class="nx">src</span><span class="o">=</span><span class="s2">&quot;//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js&quot;</span><span class="o">&gt;&lt;</span><span class="err">/script&gt;</span>
-</span><span class='line'><span class="c">&lt;!--</span> <span class="nx">buf</span><span class="o">-</span><span class="nx">material_aside_336x280</span> <span class="o">--&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">ins</span> <span class="kr">class</span><span class="o">=</span><span class="s2">&quot;adsbygoogle&quot;</span>
-</span><span class='line'>     <span class="nx">style</span><span class="o">=</span><span class="s2">&quot;display:inline-block;width:336px;height:280px&quot;</span>
-</span><span class='line'>     <span class="nx">data</span><span class="o">-</span><span class="nx">ad</span><span class="o">-</span><span class="nx">client</span><span class="o">=</span><span class="s2">&quot;ca-pub-XXXXXXXXXXXXXXXX&quot;</span>
-</span><span class='line'>     <span class="nx">data</span><span class="o">-</span><span class="nx">ad</span><span class="o">-</span><span class="nx">slot</span><span class="o">=</span><span class="s2">&quot;XXXXXXXXXX&quot;</span><span class="o">&gt;&lt;</span><span class="err">/ins&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
-</span><span class='line'><span class="p">(</span><span class="nx">adsbygoogle</span> <span class="o">=</span> <span class="nb">window</span><span class="p">.</span><span class="nx">adsbygoogle</span> <span class="o">||</span> <span class="p">[]).</span><span class="nx">push</span><span class="p">({});</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/script&gt;</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/section&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-</div>
-  
-  
-
-
-        </article>
-      
     </div>
 
     <ul class="pager">
@@ -3992,6 +3891,8 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/12/14/download-vagrant-box/">Vagrantでボックスを管理</a>
+    
     <a class="list-group-item " href="/blog/2014/12/13/install-bash-completion/">Bash-completionをインストール</a>
     
     <a class="list-group-item " href="/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/">Bootstrap3-datetimepicker-rails で日時を範囲指定</a>
@@ -3999,8 +3900,6 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
     <a class="list-group-item " href="/blog/2014/10/11/set-default-value-to-bash-variables/">Bashシェルの変数にデフォルト値を設定する</a>
     
     <a class="list-group-item " href="/blog/2014/10/10/set-constant-variables-for-bash/">Bashで読み込み専用変数を定義する</a>
-    
-    <a class="list-group-item " href="/blog/2014/10/07/hidden-key-on-rails-for-heroku/">herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法</a>
     
   </div>
 </section>
@@ -4125,9 +4024,27 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
       </a>
     
     
+    <a class="list-group-item " href="/blog/categories/bash-completion/index.html">
+        <span class="badge">1</span>
+        bash-completion
+      </a>
+    
+    
     <a class="list-group-item " href="/blog/categories/補完/index.html">
         <span class="badge">1</span>
         補完
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/linux/index.html">
+        <span class="badge">1</span>
+        linux
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/vagrant/index.html">
+        <span class="badge">1</span>
+        vagrant
       </a>
     
   </div>
@@ -4136,7 +4053,7 @@ AdSenseは、Googleが広告ネットワークに対して提供する配信サ�
   <div class="panel-heading">
     <h3 class="panel-title">Tag cloud</h3>
   </div>
-  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
+  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/bash-completion' style='font-size: 110.0%'>bash-completion(1)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/linux' style='font-size: 110.0%'>linux(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/vagrant' style='font-size: 110.0%'>vagrant(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
 </section>
 
       
