@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Go | My Octopress Blog]]></title>
-  <link href="http://yoursite.com/blog/categories/go/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Hub | My Octopress Blog]]></title>
+  <link href="http://yoursite.com/blog/categories/hub/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
   <updated>2014-12-14T23:23:15+09:00</updated>
   <id>http://yoursite.com/</id>
@@ -79,78 +79,6 @@ See 'git help &lt;command&gt;' for more information on a specific command.
 <h2>bash-completion用のシェルスクリプトを配置</h2>
 
 <pre><code class="sh">wget -O /etc/bash_completion.d/hub https://raw.githubusercontent.com/github/hub/master/etc/hub.bash_completion.sh
-</code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[go言語をCentOSにインストールする]]></title>
-    <link href="http://yoursite.com/blog/2014/12/14/install-go/"/>
-    <updated>2014-12-14T22:54:28+09:00</updated>
-    <id>http://yoursite.com/blog/2014/12/14/install-go</id>
-    <content type="html"><![CDATA[<h2>インストール</h2>
-
-<ul>
-<li>refs <a href="http://golang.org/doc/install">http://golang.org/doc/install</a></li>
-</ul>
-
-
-<pre><code class="sh">cd /tmp
-wget https://storage.googleapis.com/golang/go1.4.linux-amd64.tar.gz --no-check-certificate
-tar -C /usr/local -xzf  go1.4.linux-amd64.tar.gz
-</code></pre>
-
-<h2>環境変数PATHにgoコマンドのパスを通す</h2>
-
-<pre><code class="sh">cat &lt;&lt; EOT &gt;&gt; ~/.bash_profile
-export PATH=$PATH:/usr/local/go/bin
-EOT
-</code></pre>
-
-<h2>goコマンドのヘルプ</h2>
-
-<ul>
-<li><code>go</code>と実行し、以下のように表示されればインストール成功です</li>
-</ul>
-
-
-<pre><code class="sh"># go
-Go is a tool for managing Go source code.
-
-Usage:
-
-        go command [arguments]
-
-The commands are:
-
-    build       compile packages and dependencies
-    clean       remove object files
-    env         print Go environment information
-    fix         run go tool fix on packages
-    fmt         run gofmt on package sources
-    generate    generate Go files by processing source
-    get         download and install packages and dependencies
-    install     compile and install packages and dependencies
-    list        list packages
-    run         compile and run Go program
-    test        test packages
-    tool        run specified go tool
-    version     print Go version
-    vet         run go tool vet on packages
-
-Use "go help [command]" for more information about a command.
-
-Additional help topics:
-
-    c           calling between Go and C
-    filetype    file types
-    gopath      GOPATH environment variable
-    importpath  import path syntax
-    packages    description of package lists
-    testflag    description of testing flags
-    testfunc    description of testing functions
-
-Use "go help [topic]" for more information about 
 </code></pre>
 ]]></content>
   </entry>

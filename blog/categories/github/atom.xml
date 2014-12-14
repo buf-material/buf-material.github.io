@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Github | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-12-14T23:00:16+09:00</updated>
+  <updated>2014-12-14T23:23:15+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,76 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Githubが公開しているgitコマンドのラッパーであるhubをインストールする]]></title>
+    <link href="http://yoursite.com/blog/2014/12/14/install-hub/"/>
+    <updated>2014-12-14T23:03:04+09:00</updated>
+    <id>http://yoursite.com/blog/2014/12/14/install-hub</id>
+    <content type="html"><![CDATA[<h2>インストール</h2>
+
+<ul>
+<li>refs <a href="https://github.com/github/hub">https://github.com/github/hub</a></li>
+</ul>
+
+
+<pre><code>cd /tmp
+git clone https://github.com/github/hub.git
+cd hub/
+./script/build
+cp hub /usr/local/bin/
+</code></pre>
+
+<h3>gitコマンドをhubコマンドのエイリアスとする</h3>
+
+<ul>
+<li>いつもの<code>git</code>コマンドを<code>hub</code>コマンドに置き換える</li>
+</ul>
+
+
+<pre><code class="sh">cat &lt;&lt; EOT &gt;&gt; ~/.bash_profile
+eval "$(hub alias -s)"
+EOT
+
+source ~/.bash_profile
+</code></pre>
+
+<h2>動作確認</h2>
+
+<p><code>which git</code>を実行すると<code>git</code>コマンドの実体は<code>/usr/local/bin/hub</code>であることが分かります。</p>
+
+<pre><code class="sh"># which git
+alias git='hub'
+        /usr/local/bin/hub
+</code></pre>
+
+<p><code>git</code>と実行した時にgithub関連のサブコマンドが追加されてます。</p>
+
+<pre><code class="sh"># git
+
+ .
+ .
+ .
+
+GitHub Commands:
+   pull-request   Open a pull request on GitHub
+   fork           Make a fork of a remote repository on GitHub and add as remote
+   create         Create this repository on GitHub and add GitHub as origin
+   browse         Open a GitHub page in the default browser
+   compare        Open a compare page on GitHub
+   release        List or create releases (beta)
+   issue          List or create issues (beta)
+   ci-status      Show the CI status of a commit
+
+See 'git help &lt;command&gt;' for more information on a specific command.
+</code></pre>
+
+<h2>bash-completion用のシェルスクリプトを配置</h2>
+
+<pre><code class="sh">wget -O /etc/bash_completion.d/hub https://raw.githubusercontent.com/github/hub/master/etc/hub.bash_completion.sh
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法]]></title>

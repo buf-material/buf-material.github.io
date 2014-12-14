@@ -140,6 +140,152 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-10-02T14:57:55+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/10/02/install-postgresql-to-centos6-for-rails4/" itemprop="url">CentOS6でPostgreSQLインストール</a></h1>
+    
+  </header>
+
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p><a href="http://buf-material.github.io/blog/2014/09/22/install-bootstrap3-on-rails4/">Rails4でBootstrap3を使う(ついでにherokuへpush)</a>で書いたエントリーから<code>PostgreSQL</code>インストール手順を抜き出しただけのエントリーです。</p>
+
+<h2 class="text-warning">PostgreSQLの準備</h2>
+
+
+<h3 class="text-success">PostgreSQLインストール</h3>
+
+
+<p>PostgreSQLの公式yumレポジトリからインストールします。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>yum install -y http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm
+</span><span class='line'>yum install -y postgresql93-server postgresql93-contrib postgresql93-devel
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>PostgreSQLインストール直後のデータベースディレクトリである<code>/var/lib/pgsql/9.3/data</code>を削除してデータベースを初期化(<code>initdb</code>)し、<code>postgresql-9.3サービス</code>を起動します。ついでに、自動起動も設定します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>rm -rf /var/lib/pgsql/9.3/data
+</span><span class='line'>service postgresql-9.3 initdb
+</span><span class='line'>service postgresql-9.3 start
+</span><span class='line'>chkconfig postgresql-9.3 on
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">PostgreSQLの認証方式をPeerからTrustへ変更</h3>
+
+
+<p><a href="https://www.postgresql.jp/document/9.3/html/auth-methods.html">https://www.postgresql.jp/document/9.3/html/auth-methods.html</a></p>
+
+<p>PostgreSQLではデフォルトの認証方式として<code>Peer認証</code>が設定されています。Peer認証とは、カーネルからクライアント上のシステムユーザ名を取得し、PostgreSQLデータベースユーザと同一である場合のみ接続が許可される仕組みです。PostgreSQLでは、デフォルトでは<code>postgres</code>データベースユーザしか存在しないため、UnixユーザもPostgreSQLをパッケージインストールすると作成されている<code>postgres</code>である必要があります(<code>su - postgres</code>しないとダメということ)。</p>
+
+<p><strong><code>Peer認証</code>だとUnixのスーパーユーザである<code>root</code>であってもpostgresデータベースユーザへの接続は許可されません。</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># id</span>
+</span><span class='line'><span class="nv">uid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span> 所属グループ<span class="o">=</span>0<span class="o">(</span>root<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># psql --username=postgres</span>
+</span><span class='line'>psql: FATAL:  ユーザ <span class="s2">&quot;postgres&quot;</span> で対向<span class="o">(</span>peer<span class="o">)</span>認証に失敗しました
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>今回は、<strong>サーバに接続できる全Unixユーザから全データベースユーザへの接続が許可される<code>Trust認証</code>に変更します</strong>。</p>
+
+<p><code>Peer認証</code>から<code>Trust認証</code>への変更は<code>/var/lib/pgsql/9.3/data/pg_hba.conf</code>を修正します。</p>
+
+<figure class='code'><figcaption><span>/var/lib/pgsql/9.3/data/pg_hba.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>#local   all             all                                     peer
+</span><span class='line'>local   all             all                                     trust
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>設定ファイルを修正したので<code>postgresql-9.3</code>サービスを再起動します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>service postgresql-9.3 restart
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<h3 class="text-success">Railsアプリケーション用のデータベースユーザを作成</h3>
+
+
+<h4><p class="text-danger">PostgreSQL 9.3ではCREATE USERはCREATE ROLEの別名になりました。 唯一の違いは、CREATE USERという名前でコマンドが呼び出されると、デフォルトでLOGINになり、CREATE ROLEという名前でコマンドが呼び出されると、デフォルトでNOLOGINとなる点です。</p></h4>
+
+
+<p><a href="https://www.postgresql.jp/document/9.3/html/sql-createuser.html">https://www.postgresql.jp/document/9.3/html/sql-createuser.html</a></p>
+
+<p><br>
+PostgreSQLのスーパーユーザである<code>postgres</code>データベースユーザで接続します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>psql --username<span class="o">=</span>postgres
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>今回作成するRailsアプリケーションのプロジェクト名と同一の<code>bootstrap3_sample</code>というデータベースユーザを作成し、データベース作成権限とログイン権限を持つように設定します。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">create</span> <span class="k">user</span> <span class="n">bootstrap3_sample</span> <span class="k">with</span> <span class="k">createdb</span> <span class="n">password</span> <span class="s1">&#39;bootstrap3_sample&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上記SQLは以下コマンドと同じ効果があります</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>createuser --username<span class="o">=</span>postgres --createdb bootstrap3_sample -P
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>createuser</code>コマンドは<code>postgresql93(末尾の数字はバージョン番号なので適宜目置換を!)</code>RPMパッケージに付属しているPostgreSQLのデータベースユーザ(正確にはロール)を作成するためのコマンドです。SQLでのユーザ作成とは異なり、コマンドでパスワード文字列を指定することは出来ず、<code>-Pオプション</code>によってパスワード文字列を指定するプロンプトが表示されます。</p>
+
+<p>データベースユーザのパスワードがシステムカタログ上に保存される際に暗号化するかどうかは<code>ENCRYPTED/UNENCRYPTED</code>で明示するか、そうでない場合は、<code>/var/lib/pgsql/9.3/data/postgresql.conf</code>の<code>password_encryption</code>設定パラメータに依ります。<code>password_encryption</code>設定パラメータがonの場合に暗号化が有効(default: on)です。</p>
+
+<p>先述した通り、<strong><code>create user</code>SQLはログイン権限オプション(login)を明示しなくても有効となりますし、<code>createuser</code>コマンドでもログイン権限オプション(&ndash;login)がデフォルトで有効なので、ここでは指定していません。この辺りのSQLやコマンドの挙動はPostgreSQLバージョンにも依ると思うので自信の無い場合はログイン権限オプションを明示した方がいいかもしれません。</strong></p>
+</div>
+  
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-09-22T14:57:55+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
         
       </p>
@@ -2374,6 +2520,8 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/12/14/install-hub/">Githubが公開しているgitコマンドのラッパーであるhubをインストールする</a>
+    
     <a class="list-group-item " href="/blog/2014/12/14/install-go/">go言語をCentOSにインストールする</a>
     
     <a class="list-group-item " href="/blog/2014/12/14/download-vagrant-box/">Vagrantでボックスを管理</a>
@@ -2381,8 +2529,6 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
     <a class="list-group-item " href="/blog/2014/12/13/install-bash-completion/">Bash-completionをインストール</a>
     
     <a class="list-group-item " href="/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/">Bootstrap3-datetimepicker-rails で日時を範囲指定</a>
-    
-    <a class="list-group-item " href="/blog/2014/10/11/set-default-value-to-bash-variables/">Bashシェルの変数にデフォルト値を設定する</a>
     
   </div>
 </section>
@@ -2484,7 +2630,7 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
     
     
     <a class="list-group-item " href="/blog/categories/github/index.html">
-        <span class="badge">1</span>
+        <span class="badge">2</span>
         github
       </a>
     
@@ -2532,8 +2678,20 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
     
     
     <a class="list-group-item " href="/blog/categories/go/index.html">
-        <span class="badge">1</span>
+        <span class="badge">2</span>
         go
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/git/index.html">
+        <span class="badge">1</span>
+        git
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/hub/index.html">
+        <span class="badge">1</span>
+        hub
       </a>
     
   </div>
@@ -2542,7 +2700,7 @@ rakeタスク実行時の標準出力をそのまま記載しているので<cod
   <div class="panel-heading">
     <h3 class="panel-title">Tag cloud</h3>
   </div>
-  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/bash-completion' style='font-size: 110.0%'>bash-completion(1)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/github' style='font-size: 110.0%'>github(1)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/go' style='font-size: 110.0%'>go(1)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/linux' style='font-size: 110.0%'>linux(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/vagrant' style='font-size: 110.0%'>vagrant(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
+  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/bash-completion' style='font-size: 110.0%'>bash-completion(1)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/git' style='font-size: 110.0%'>git(1)</a> <a href='/blog/categories/github' style='font-size: 120.0%'>github(2)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/go' style='font-size: 120.0%'>go(2)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/hub' style='font-size: 110.0%'>hub(1)</a> <a href='/blog/categories/linux' style='font-size: 110.0%'>linux(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/vagrant' style='font-size: 110.0%'>vagrant(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
 </section>
 
       

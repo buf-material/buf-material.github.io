@@ -4,7 +4,7 @@
   <title><![CDATA[My Octopress Blog]]></title>
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-12-14T23:00:16+09:00</updated>
+  <updated>2014-12-14T23:23:15+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -12,6 +12,113 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Githubが公開しているgitコマンドのラッパーであるhubをインストールする]]></title>
+    <link href="http://yoursite.com/blog/2014/12/14/install-hub/"/>
+    <updated>2014-12-14T23:03:04+09:00</updated>
+    <id>http://yoursite.com/blog/2014/12/14/install-hub</id>
+    <content type="html"><![CDATA[<h2>インストール</h2>
+
+<ul>
+<li>refs <a href="https://github.com/github/hub">https://github.com/github/hub</a></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd /tmp
+</span><span class='line'>git clone https://github.com/github/hub.git
+</span><span class='line'>cd hub/
+</span><span class='line'>./script/build
+</span><span class='line'>cp hub /usr/local/bin/</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>gitコマンドをhubコマンドのエイリアスとする</h3>
+
+<ul>
+<li>いつもの<code>git</code>コマンドを<code>hub</code>コマンドに置き換える</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>cat <span class="s">&lt;&lt; EOT &gt;&gt; ~/.bash_profile</span>
+</span><span class='line'><span class="s">eval &quot;$(hub alias -s)&quot;</span>
+</span><span class='line'><span class="s">EOT</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">source</span> ~/.bash_profile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>動作確認</h2>
+
+<p><code>which git</code>を実行すると<code>git</code>コマンドの実体は<code>/usr/local/bin/hub</code>であることが分かります。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># which git</span>
+</span><span class='line'><span class="nb">alias </span><span class="nv">git</span><span class="o">=</span><span class="s1">&#39;hub&#39;</span>
+</span><span class='line'>        /usr/local/bin/hub
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>git</code>と実行した時にgithub関連のサブコマンドが追加されてます。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># git</span>
+</span><span class='line'>
+</span><span class='line'> .
+</span><span class='line'> .
+</span><span class='line'> .
+</span><span class='line'>
+</span><span class='line'>GitHub Commands:
+</span><span class='line'>   pull-request   Open a pull request on GitHub
+</span><span class='line'>   fork           Make a fork of a remote repository on GitHub and add as remote
+</span><span class='line'>   create         Create this repository on GitHub and add GitHub as origin
+</span><span class='line'>   browse         Open a GitHub page in the default browser
+</span><span class='line'>   compare        Open a compare page on GitHub
+</span><span class='line'>   release        List or create releases <span class="o">(</span>beta<span class="o">)</span>
+</span><span class='line'>   issue          List or create issues <span class="o">(</span>beta<span class="o">)</span>
+</span><span class='line'>   ci-status      Show the CI status of a commit
+</span><span class='line'>
+</span><span class='line'>See <span class="s1">&#39;git help &lt;command&gt;&#39;</span> <span class="k">for</span> more information on a specific command.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>bash-completion用のシェルスクリプトを配置</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>wget -O /etc/bash_completion.d/hub https://raw.githubusercontent.com/github/hub/master/etc/hub.bash_completion.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[go言語をCentOSにインストールする]]></title>
