@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Vagrant | My Octopress Blog]]></title>
   <link href="http://yoursite.com/blog/categories/vagrant/atom.xml" rel="self"/>
   <link href="http://yoursite.com/"/>
-  <updated>2014-12-14T16:53:52+09:00</updated>
+  <updated>2014-12-14T17:12:57+09:00</updated>
   <id>http://yoursite.com/</id>
   <author>
     <name><![CDATA[Your Name]]></name>
@@ -58,6 +58,14 @@
 
 <pre><code class="sh">vagrant box list
 </code></pre>
+
+<p>Vagrantではボックスをユーザ毎にグローバルに管理します。デフォルトでは、<code>~/.vagrant.d/boxes</code>以下にボックスごとに保存されています。</p>
+
+<pre><code class="sh">$ ls  ~/.vagrant.d/boxes/
+CentOS-6.5-x86_64   centos7-x86_64-minimal
+</code></pre>
+
+<p>ボックスの保存先は<code>VAGRANT_HOME</code>環境変数をセットすることで変更可能です。</p>
 
 <h4>ボックスの削除</h4>
 
