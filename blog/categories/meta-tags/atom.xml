@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Meta-tags | My Octopress Blog]]></title>
+  <link href="http://yoursite.com/blog/categories/meta-tags/atom.xml" rel="self"/>
+  <link href="http://yoursite.com/"/>
+  <updated>2014-12-15T18:10:23+09:00</updated>
+  <id>http://yoursite.com/</id>
+  <author>
+    <name><![CDATA[Your Name]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[meta-tagsプラグインをインストールしてrailsサイトのSEOを強化しよう]]></title>
+    <link href="http://yoursite.com/blog/2014/12/15/install-meta-tags-plugin/"/>
+    <updated>2014-12-15T17:52:02+09:00</updated>
+    <id>http://yoursite.com/blog/2014/12/15/install-meta-tags-plugin</id>
+    <content type="html"><![CDATA[<h2>RailsアプリケーションでSEO(検索エンジン最適化)やってますか?</h2>
+
+<ul>
+<li>railsで作ったWebサイトやWebサービスを作ってもサイト訪問者が増えない</li>
+<li>railsで作ったWebサイトやWebサービスが検索エンジンにヒットしない</li>
+</ul>
+
+
+<p>これらの課題に対応することを<strong>Search Engine Optimization(略してSEO)</strong>といいます。</p>
+
+<p>SEOの手法としてページ毎に見出しタグ(h*)をしっかり書いて構造を明確にしたり、メタタグをきっちり書いたり色々あるのですが、今回はRailsアプリケーションに簡単にメタタグを追加できるプラグインである<strong>『meta-tags』</strong>を紹介します。</p>
+
+<h2>meta-tags</h2>
+
+<ul>
+<li><a href="https://github.com/kpumuk/meta-tags">https://github.com/kpumuk/meta-tags</a></li>
+<li>Search Engine Optimization (SEO) plugin for Ruby on Rails applications.</li>
+</ul>
+
+
+<h3>インストール</h3>
+
+<p>bundlerで入るので<code>Gemfile</code>に追記します。</p>
+
+<pre><code class="ruby Gemfile"># SEO
+#  - meta-tags
+#    - See https://github.com/kpumuk/meta-tags
+gem 'meta-tags'
+</code></pre>
+
+<p>インストールします。</p>
+
+<pre><code class="sh">bundle install
+</code></pre>
+
+<h3>基本的なメタタグの記述</h3>
+
+<ul>
+<li>headタグに記述
+
+<ul>
+<li>デフォルトパラメータはapplication_helperに書いてもいいそう
+
+<ul>
+<li><a href="https://github.com/kpumuk/meta-tags#using-with-pjax">https://github.com/kpumuk/meta-tags#using-with-pjax</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<pre><code class="erb app/views/layouts/applicatio.html.erb">  &lt;%= display_meta_tags({
+    # title and site are attached, and it's indicated as a title tag.
+    #   - site + separator + title
+    :separator   =&gt; "",
+    # title and site are attached reversely.
+    #   - title + separator + site
+    #   - true/false
+    :reverse     =&gt; "",
+    # page title
+    :title       =&gt;  ('SITE TITLE'),
+    :site        =&gt; "",
+    # called meta tags as they are not displayed by the browsers as that of titles.
+    #   - Important for SEO
+    :description =&gt; 'site description',
+    # not important for seo, because search engine have not referances keyword meta tags
+    :keyword     =&gt; '',
+    # CSS Device Adaptation
+    :viewport    =&gt; "width=device-width, 
+                     maximum-scale=1.0, 
+                     minimum-scale=0.5, 
+                     user-scalable=yes, 
+                     initial-scale=1.0"
+  }) %&gt;
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

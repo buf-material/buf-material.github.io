@@ -1233,6 +1233,8 @@ PostgreSQLのスーパーユーザである<code>postgres</code>データベー�
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/12/15/install-meta-tags-plugin/">meta-tagsプラグインをインストールしてrailsサイトのSEOを強化しよう</a>
+    
     <a class="list-group-item " href="/blog/2014/12/14/install-hub/">Githubが公開しているgitコマンドのラッパーであるhubをインストールする</a>
     
     <a class="list-group-item " href="/blog/2014/12/14/install-go/">go言語をCentOSにインストールする</a>
@@ -1240,8 +1242,6 @@ PostgreSQLのスーパーユーザである<code>postgres</code>データベー�
     <a class="list-group-item " href="/blog/2014/12/14/download-vagrant-box/">Vagrantでボックスを管理</a>
     
     <a class="list-group-item " href="/blog/2014/12/13/install-bash-completion/">Bash-completionをインストール</a>
-    
-    <a class="list-group-item " href="/blog/2014/10/13/datetime-as-start-end-set-on-bootstrap3-datetimepicker/">Bootstrap3-datetimepicker-rails で日時を範囲指定</a>
     
   </div>
 </section>
@@ -1407,13 +1407,31 @@ PostgreSQLのスーパーユーザである<code>postgres</code>データベー�
         hub
       </a>
     
+    
+    <a class="list-group-item " href="/blog/categories/meta-tags/index.html">
+        <span class="badge">1</span>
+        meta-tags
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/rails/index.html">
+        <span class="badge">1</span>
+        rails
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/seo/index.html">
+        <span class="badge">1</span>
+        seo
+      </a>
+    
   </div>
 </section>
 <section class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Tag cloud</h3>
   </div>
-  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/bash-completion' style='font-size: 110.0%'>bash-completion(1)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/git' style='font-size: 110.0%'>git(1)</a> <a href='/blog/categories/github' style='font-size: 120.0%'>github(2)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/go' style='font-size: 120.0%'>go(2)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/hub' style='font-size: 110.0%'>hub(1)</a> <a href='/blog/categories/linux' style='font-size: 110.0%'>linux(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/vagrant' style='font-size: 110.0%'>vagrant(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
+  <span id="tag-cloud"><a href='/blog/categories/bash' style='font-size: 130.0%'>bash(3)</a> <a href='/blog/categories/bash-completion' style='font-size: 110.0%'>bash-completion(1)</a> <a href='/blog/categories/blog' style='font-size: 110.0%'>blog(1)</a> <a href='/blog/categories/bootstrap3' style='font-size: 120.0%'>bootstrap3(2)</a> <a href='/blog/categories/bootstrap3-datetimepicker-rails' style='font-size: 110.0%'>bootstrap3-datetimepicker-rails(1)</a> <a href='/blog/categories/centos6' style='font-size: 110.0%'>centos6(1)</a> <a href='/blog/categories/datetimepicker' style='font-size: 110.0%'>datetimepicker(1)</a> <a href='/blog/categories/git' style='font-size: 110.0%'>git(1)</a> <a href='/blog/categories/github' style='font-size: 120.0%'>github(2)</a> <a href='/blog/categories/github-pages' style='font-size: 110.0%'>github pages(1)</a> <a href='/blog/categories/gmap4rails' style='font-size: 110.0%'>gmap4rails(1)</a> <a href='/blog/categories/go' style='font-size: 120.0%'>go(2)</a> <a href='/blog/categories/google-adsense' style='font-size: 110.0%'>google adsense(1)</a> <a href='/blog/categories/google-analytics' style='font-size: 110.0%'>google analytics(1)</a> <a href='/blog/categories/google-maps' style='font-size: 110.0%'>google maps(1)</a> <a href='/blog/categories/google-place' style='font-size: 110.0%'>google place(1)</a> <a href='/blog/categories/google-places' style='font-size: 110.0%'>google_places(1)</a> <a href='/blog/categories/heroku' style='font-size: 120.0%'>heroku(2)</a> <a href='/blog/categories/hub' style='font-size: 110.0%'>hub(1)</a> <a href='/blog/categories/linux' style='font-size: 110.0%'>linux(1)</a> <a href='/blog/categories/meta-tags' style='font-size: 110.0%'>meta-tags(1)</a> <a href='/blog/categories/octopress' style='font-size: 160.0%'>octopress(6)</a> <a href='/blog/categories/postgresql' style='font-size: 120.0%'>postgresql(2)</a> <a href='/blog/categories/rails' style='font-size: 110.0%'>rails(1)</a> <a href='/blog/categories/rails4' style='font-size: 150.0%'>rails4(5)</a> <a href='/blog/categories/seo' style='font-size: 110.0%'>seo(1)</a> <a href='/blog/categories/ssh-key' style='font-size: 110.0%'>ssh key(1)</a> <a href='/blog/categories/vagrant' style='font-size: 110.0%'>vagrant(1)</a> <a href='/blog/categories/bu-wan' style='font-size: 110.0%'>補完(1)</a> </span>
 </section>
 
     

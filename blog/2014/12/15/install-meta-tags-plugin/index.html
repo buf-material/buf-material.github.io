@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法 - My Octopress Blog</title>
+  <title>meta-tagsプラグインをインストールしてrailsサイトのSEOを強化しよう - My Octopress Blog</title>
   <meta name="author" content="Your Name">
 
   
@@ -14,15 +14,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://yoursite.com/blog/2014/10/07/hidden-key-on-rails-for-heroku">
+  <link rel="canonical" href="http://yoursite.com/blog/2014/12/15/install-meta-tags-plugin">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
 
   <!-- http://opengraphprotocol.org/ -->
   <meta name="twitter:card" content="summary_large_image">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="http://yoursite.com/blog/2014/10/07/hidden-key-on-rails-for-heroku">
-  <meta property="og:title" content="herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法 - My Octopress Blog">
+  <meta property="og:url" content="http://yoursite.com/blog/2014/12/15/install-meta-tags-plugin">
+  <meta property="og:title" content="meta-tagsプラグインをインストールしてrailsサイトのSEOを強化しよう - My Octopress Blog">
   
 
   <script src="/javascripts/libs/jquery/jquery-2.0.3.min.js"></script>
@@ -136,13 +136,13 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-10-07T14:45:31+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-12-15T17:52:02+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
         
       </p>
     
     
     <h1 class="entry-title" itemprop="name headline">
-        herokuとGitHubにデプロイする時にパスワードやキー情報を隠したい時の対処方法
+        meta-tagsプラグインをインストールしてrailsサイトのSEOを強化しよう
         
     </h1>
     
@@ -150,38 +150,112 @@
 
 
 
-<div class="entry-content clearfix" itemprop="articleBody description"><p>Rails4でアプリケーションを作って、<a href="https://www.heroku.com/home">heroku</a>にデプロイした！</p>
+<div class="entry-content clearfix" itemprop="articleBody description"><h2>RailsアプリケーションでSEO(検索エンジン最適化)やってますか?</h2>
 
-<p>もちろん<a href="https://bitbucket.org/">Bitbucket</a>でも構わないが、せっかく作ったコードなので公開したい！</p>
-
-<p>でも、<code>config/database.yml</code>の<code>password</code>情報や<code>APIのKey</code>情報なんかをベタ書きしていると他の人に見られてしまう！</p>
-
-<p><strong>そんな時は環境変数を使いましょう！！</strong></p>
-
-<h2 class="text-warning">見られたくない情報を環境変数に書き換える</h2>
+<ul>
+<li>railsで作ったWebサイトやWebサービスを作ってもサイト訪問者が増えない</li>
+<li>railsで作ったWebサイトやWebサービスが検索エンジンにヒットしない</li>
+</ul>
 
 
-<p><a href="http://buf-material-gmap-place-sample.herokuapp.com/" target="_blank"><a href="http://buf-material-gmap-place-sample.herokuapp.com/">http://buf-material-gmap-place-sample.herokuapp.com/</a></a>なんかでは、<code>Google place API</code>を利用するために<code>Google API KEY</code>を必要とするコードがあります。その箇所を以下のように書き換えます。</p>
+<p>これらの課題に対応することを<strong>Search Engine Optimization(略してSEO)</strong>といいます。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="vi">@client</span> <span class="o">=</span> <span class="no">GooglePlaces</span><span class="o">::</span><span class="no">Client</span><span class="o">.</span><span class="n">new</span><span class="p">(</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;GOOGLE_API_KEY&#39;</span><span class="o">]</span> <span class="p">)</span>
+<p>SEOの手法としてページ毎に見出しタグ(h*)をしっかり書いて構造を明確にしたり、メタタグをきっちり書いたり色々あるのですが、今回はRailsアプリケーションに簡単にメタタグを追加できるプラグインである<strong>『meta-tags』</strong>を紹介します。</p>
+
+<h2>meta-tags</h2>
+
+<ul>
+<li><a href="https://github.com/kpumuk/meta-tags">https://github.com/kpumuk/meta-tags</a></li>
+<li>Search Engine Optimization (SEO) plugin for Ruby on Rails applications.</li>
+</ul>
+
+
+<h3>インストール</h3>
+
+<p>bundlerで入るので<code>Gemfile</code>に追記します。</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># SEO</span>
+</span><span class='line'><span class="c1">#  - meta-tags</span>
+</span><span class='line'><span class="c1">#    - See https://github.com/kpumuk/meta-tags</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;meta-tags&#39;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>ミソは<code>ENV['GOOGLE_API_KEY']</code>ですね。こういう感じで環境変数化してしまいます。</p>
-
-<h2 class="text-warning">herokuに環境変数をセットする</h2>
-
-
-<p><code>heroku config:set</code>コマンドを使用することでheroku上で環境変数をセットすることが出来ます。</p>
-
-<p><code>XXXXXXXXXXXXXXXXXXXXXXXX</code>の箇所に実際のKey情報をセットします。また、<code>--app [heroku上のアプリケーション名]</code>も必要です。</p>
+<p>インストールします。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>heroku config:set <span class="nv">GOOGLE_API_KEY</span><span class="o">=</span><span class="s2">&quot;XXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> --app buf-material-gmap-place-sample
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>bundle install
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h3>基本的なメタタグの記述</h3>
+
+<ul>
+<li>headタグに記述
+
+<ul>
+<li>デフォルトパラメータはapplication_helperに書いてもいいそう
+
+<ul>
+<li><a href="https://github.com/kpumuk/meta-tags#using-with-pjax">https://github.com/kpumuk/meta-tags#using-with-pjax</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>app/views/layouts/applicatio.html.erb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='erb'><span class='line'><span class="x">  </span><span class="cp">&lt;%=</span> <span class="n">display_meta_tags</span><span class="p">({</span>
+</span><span class='line'>    <span class="c1"># title and site are attached, and it&#39;s indicated as a title tag.</span>
+</span><span class='line'>    <span class="c1">#   - site + separator + title</span>
+</span><span class='line'>    <span class="ss">:separator</span>   <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1"># title and site are attached reversely.</span>
+</span><span class='line'>    <span class="c1">#   - title + separator + site</span>
+</span><span class='line'>    <span class="c1">#   - true/false</span>
+</span><span class='line'>    <span class="ss">:reverse</span>     <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1"># page title</span>
+</span><span class='line'>    <span class="ss">:title</span>       <span class="o">=&gt;</span>  <span class="p">(</span><span class="s1">&#39;SITE TITLE&#39;</span><span class="p">),</span>
+</span><span class='line'>    <span class="ss">:site</span>        <span class="o">=&gt;</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1"># called meta tags as they are not displayed by the browsers as that of titles.</span>
+</span><span class='line'>    <span class="c1">#   - Important for SEO</span>
+</span><span class='line'>    <span class="ss">:description</span> <span class="o">=&gt;</span> <span class="s1">&#39;site description&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1"># not important for seo, because search engine have not referances keyword meta tags</span>
+</span><span class='line'>    <span class="ss">:keyword</span>     <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="c1"># CSS Device Adaptation</span>
+</span><span class='line'>    <span class="ss">:viewport</span>    <span class="o">=&gt;</span> <span class="s2">&quot;width=device-width, </span>
+</span><span class='line'><span class="s2">                     maximum-scale=1.0, </span>
+</span><span class='line'><span class="s2">                     minimum-scale=0.5, </span>
+</span><span class='line'><span class="s2">                     user-scalable=yes, </span>
+</span><span class='line'><span class="s2">                     initial-scale=1.0&quot;</span>
+</span><span class='line'>  <span class="p">})</span> <span class="cp">%&gt;</span><span class="x"></span>
+</span></code></pre></td></tr></table></div></figure>
 
 </div>
 
@@ -206,13 +280,13 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-10-07T14:45:31+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-12-15T17:52:02+09:00"  data-updated="true" itemprop="datePublished dateCreated"></time>
           
 
 <span class="glyphicon glyphicon-tags"></span>&nbsp;
 <span class="categories">
   
-    <a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/heroku/'>heroku</a>, <a class='category' href='/blog/categories/rails4/'>rails4</a>
+    <a class='category' href='/blog/categories/meta-tags/'>meta-tags</a>, <a class='category' href='/blog/categories/rails/'>rails</a>, <a class='category' href='/blog/categories/seo/'>seo</a>
   
 </span>
 
@@ -221,7 +295,7 @@
         
           <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yoursite.com/blog/2014/10/07/hidden-key-on-rails-for-heroku/" data-via="" data-counturl="http://yoursite.com/blog/2014/10/07/hidden-key-on-rails-for-heroku/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://yoursite.com/blog/2014/12/15/install-meta-tags-plugin/" data-via="" data-counturl="http://yoursite.com/blog/2014/12/15/install-meta-tags-plugin/" >Tweet</a>
   
   
   
@@ -231,10 +305,8 @@
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a href="/blog/2014/10/07/multi-ssh-key-management-for-heroku/" title="Previous Post: 複数のherokuアカウントで異なるSSHを設定したい">&laquo; 複数のherokuアカウントで異なるSSHを設定したい</a></li>
+            <li class="previous"><a href="/blog/2014/12/14/install-hub/" title="Previous Post: githubが公開しているgitコマンドのラッパーであるhubをインストールする">&laquo; githubが公開しているgitコマンドのラッパーであるhubをインストールする</a></li>
             
-            
-            <li class="next"><a href="/blog/2014/10/10/set-constant-variables-for-bash/" title="Next Post: bashで読み込み専用変数を定義する">bashで読み込み専用変数を定義する &raquo;</a></li>
             
           </ul>
         
@@ -264,7 +336,7 @@
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2014/12/15/install-meta-tags-plugin/">meta-tagsプラグインをインストールしてrailsサイトのSEOを強化しよう</a>
+    <a class="list-group-item active" href="/blog/2014/12/15/install-meta-tags-plugin/">meta-tagsプラグインをインストールしてrailsサイトのSEOを強化しよう</a>
     
     <a class="list-group-item " href="/blog/2014/12/14/install-hub/">Githubが公開しているgitコマンドのラッパーであるhubをインストールする</a>
     
